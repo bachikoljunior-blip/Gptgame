@@ -89,19 +89,46 @@
       box-shadow: 0 0 0 1px rgba(199, 255, 69, 0.04), 0 28px 90px #000;
     }
 
+    #sceneCanvas,
     #gameCanvas {
+      position: absolute;
+      inset: 0;
       display: block;
       width: 100%;
       height: 100%;
-      background: var(--arena);
+    }
+
+    #sceneCanvas {
+      z-index: 0;
+      background:
+        radial-gradient(circle at 50% 46%, #0d2134 0, #050b13 48%, #02050a 100%);
+    }
+
+    #gameCanvas {
+      z-index: 2;
+      background: transparent;
       touch-action: none;
       user-select: none;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
     }
 
+    #gameShell::after {
+      position: absolute;
+      z-index: 3;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      box-shadow:
+        inset 0 0 72px rgba(0, 0, 0, 0.38),
+        inset 0 -100px 120px rgba(0, 0, 0, 0.14);
+    }
+
+    #gameShell[data-mode="menu"] #sceneCanvas,
     #gameShell[data-mode="menu"] #gameCanvas,
+    #gameShell[data-mode="tutorial"] #sceneCanvas,
     #gameShell[data-mode="tutorial"] #gameCanvas,
+    #gameShell[data-mode="result"] #sceneCanvas,
     #gameShell[data-mode="result"] #gameCanvas {
       filter: saturate(0.72) brightness(0.7);
     }
@@ -130,37 +157,65 @@
       backdrop-filter: blur(8px);
     }
 
+    #attackButton,
     #dashButton {
       position: absolute;
       z-index: 12;
       right: calc(var(--safe-right) + clamp(16px, 4vw, 24px));
-      bottom: calc(var(--safe-bottom) + clamp(20px, 5vw, 34px));
-      width: clamp(78px, 22vw, 112px);
-      min-width: 78px;
       aspect-ratio: 1;
-      min-height: 78px;
       padding: 0;
-      border: 3px solid var(--lime);
       border-radius: 50%;
-      background:
-        radial-gradient(circle, #07111d 0 61%, transparent 62%),
-        conic-gradient(var(--lime) calc(var(--dash-ready, 1) * 1turn), rgba(199, 255, 69, 0.12) 0),
-        #07111d;
-      color: var(--white);
-      box-shadow: inset 0 0 0 6px #07111d, 0 0 0 1px rgba(237, 247, 244, 0.4);
-      font-size: clamp(13px, 3.6vw, 18px);
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-shadow: 0 0 12px rgba(199, 255, 69, 0.45);
       touch-action: none;
       user-select: none;
       -webkit-user-select: none;
     }
 
-    #dashButton.is-pressed {
+    #attackButton {
+      bottom: calc(var(--safe-bottom) + clamp(18px, 4.5vw, 28px));
+      width: clamp(88px, 25vw, 118px);
+      min-width: 88px;
+      min-height: 88px;
+      border: 3px solid var(--lime);
+      background:
+        radial-gradient(circle, rgba(199, 255, 69, 0.2) 0 56%, transparent 57%),
+        conic-gradient(var(--lime) calc(var(--fire-ready, 1) * 1turn), rgba(199, 255, 69, 0.12) 0),
+        #07111d;
+      color: var(--white);
+      box-shadow: inset 0 0 0 6px #07111d, 0 0 0 1px rgba(237, 247, 244, 0.4), 0 0 22px rgba(199, 255, 69, 0.1);
+      font-size: clamp(15px, 4.2vw, 21px);
+      font-weight: 950;
+      letter-spacing: 0.1em;
+      text-shadow: 0 0 14px rgba(199, 255, 69, 0.55);
+    }
+
+    #attackButton.is-pressed {
       color: #07111d;
       background: var(--lime);
-      box-shadow: inset 0 0 0 6px var(--lime), 0 0 22px rgba(199, 255, 69, 0.45);
+      box-shadow: inset 0 0 0 6px var(--lime), 0 0 28px rgba(199, 255, 69, 0.55);
+    }
+
+    #dashButton {
+      bottom: calc(var(--safe-bottom) + clamp(120px, 31vw, 152px));
+      width: clamp(64px, 18vw, 84px);
+      min-width: 64px;
+      min-height: 64px;
+      border: 3px solid var(--cyan);
+      background:
+        radial-gradient(circle, #07111d 0 61%, transparent 62%),
+        conic-gradient(var(--cyan) calc(var(--dash-ready, 1) * 1turn), rgba(142, 233, 255, 0.12) 0),
+        #07111d;
+      color: var(--white);
+      box-shadow: inset 0 0 0 6px #07111d, 0 0 0 1px rgba(237, 247, 244, 0.4);
+      font-size: clamp(11px, 3.1vw, 15px);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-shadow: 0 0 12px rgba(142, 233, 255, 0.45);
+    }
+
+    #dashButton.is-pressed {
+      color: #07111d;
+      background: var(--cyan);
+      box-shadow: inset 0 0 0 6px var(--cyan), 0 0 22px rgba(142, 233, 255, 0.45);
     }
 
     #dashButton[aria-disabled="true"] {
@@ -200,6 +255,54 @@
       border-radius: 50%;
       background: rgba(237, 247, 244, 0.18);
       box-shadow: 0 0 0 5px rgba(237, 247, 244, 0.04);
+    }
+
+    #crosshair {
+      --crosshair-color: var(--white);
+      position: absolute;
+      z-index: 10;
+      left: 50%;
+      top: 50%;
+      width: 42px;
+      height: 42px;
+      translate: -50% -50%;
+      border: 1px solid rgba(237, 247, 244, 0.68);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(3, 7, 13, 0.9), inset 0 0 8px rgba(3, 7, 13, 0.7);
+      pointer-events: none;
+      transition: border-color 70ms linear, box-shadow 70ms linear, opacity 90ms linear;
+    }
+
+    #crosshair::before,
+    #crosshair::after {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      content: "";
+      translate: -50% -50%;
+      box-shadow: 0 0 5px #03070d;
+    }
+
+    #crosshair::before {
+      width: 52px;
+      height: 2px;
+      background: linear-gradient(to right, var(--crosshair-color) 0 18%, transparent 18% 82%, var(--crosshair-color) 82% 100%);
+    }
+
+    #crosshair::after {
+      width: 2px;
+      height: 52px;
+      background: linear-gradient(to bottom, var(--crosshair-color) 0 18%, transparent 18% 82%, var(--crosshair-color) 82% 100%);
+    }
+
+    #crosshair.targeted {
+      --crosshair-color: var(--lime);
+      border-color: var(--lime);
+      box-shadow: 0 0 16px rgba(199, 255, 69, 0.62), inset 0 0 8px rgba(3, 7, 13, 0.7);
+    }
+
+    #crosshair.fallback {
+      opacity: 0;
     }
 
     .overlay {
@@ -676,7 +779,8 @@
 </head>
 <body>
   <main id="gameShell" data-mode="menu">
-    <canvas id="gameCanvas" width="480" height="800" aria-label="ECHO SEVENの戦闘画面。ドラッグで移動し、DASHボタンで攻撃を回避します。">
+    <canvas id="sceneCanvas" width="480" height="800" aria-hidden="true"></canvas>
+    <canvas id="gameCanvas" width="480" height="800" aria-label="ECHO SEVENの一人称3D戦闘画面。左側をドラッグして移動、右側をドラッグして照準を動かします。">
       お使いのブラウザはCanvas表示に対応していません。
     </canvas>
 
@@ -686,6 +790,8 @@
     </div>
 
     <div id="movePad" aria-hidden="true"><div id="moveKnob"></div></div>
+    <div id="crosshair" aria-hidden="true" hidden></div>
+    <button id="attackButton" type="button" aria-label="手動射撃" hidden>FIRE</button>
     <button id="dashButton" type="button" aria-label="ダッシュ" hidden>DASH</button>
     <div id="loopBanner" hidden></div>
     <div id="screenFlash" aria-hidden="true"></div>
@@ -693,7 +799,7 @@
 
     <section class="overlay" id="menuOverlay" role="dialog" aria-modal="true" aria-labelledby="menuTitle">
       <div class="panel">
-        <p class="eyebrow">TIME-LOOP ACTION</p>
+        <p class="eyebrow">FIRST-PERSON TIME-LOOP ACTION</p>
         <h1 id="menuTitle">ECHO//<span style="color:var(--lime)">SEVEN</span></h1>
         <p class="lead"><span class="tagline">7回の時間。6人の過去。1つのコア。</span><br>あなたの動きは次の周回で味方になる。</p>
         <div class="stat-strip" aria-label="これまでの記録">
@@ -716,15 +822,15 @@
         <div class="tutorial-grid">
           <div class="tutorial-step">
             <span class="step-number">1</span>
-            <div><strong>DRAG TO MOVE</strong><small>DASHと反対側を押したまま滑らせて移動。攻撃は最も近い敵へ自動で行う。</small></div>
+            <div><strong>MOVE + LOOK</strong><small id="tutorialMoveCopy">左側をドラッグして移動。右側をドラッグして一人称視点の照準を動かす。</small></div>
           </div>
           <div class="tutorial-step">
             <span class="step-number">2</span>
-            <div><strong>DASH THROUGH</strong><small>DASH中は無敵。移動しながら別の指で同時に押せる。</small></div>
+            <div><strong>FIRE MANUALLY</strong><small>FIREを押した時だけ照準方向へ攻撃する。押し続けて連射、DASH中は無敵。</small></div>
           </div>
           <div class="tutorial-step">
             <span class="step-number">3</span>
-            <div><strong>YOUR PATH RETURNS</strong><small>15秒後、今の動きと攻撃がエコーとして再生される。7周目の敵を全員で倒せ。</small></div>
+            <div><strong>YOUR AIM RETURNS</strong><small>15秒後、移動・照準・実際に撃った瞬間がエコーとして再生される。7周目を全員で突破せよ。</small></div>
           </div>
         </div>
         <button class="primary" id="tutorialStartButton" type="button">LOOP 01 を開始</button>
@@ -820,11 +926,12 @@
     var STEP = 1 / HZ;
     var LOOP_TICKS = 900;
     var SAVE_VERSION = 2;
-    var RULES_VERSION = 1;
-    var BUILD_ID = "2026.07.31-d";
+    var RULES_VERSION = 2;
+    var BUILD_ID = "2026.08.01-c";
     var SAVE_KEY = "echoSeven.save.v2";
     var CORE_X = 240;
     var CORE_Y = 410;
+    var PLAYER_CORE_CLEARANCE = 48;
     var PLAYER_START_X = 240;
     var PLAYER_START_Y = 470;
     var MAX_ENEMIES = 80;
@@ -835,10 +942,13 @@
     var testMode = query.get("e7test") === "1" || query.get("debug") === "1";
     var manualClock = false;
 
+    var sceneCanvas = document.getElementById("sceneCanvas");
     var canvas = document.getElementById("gameCanvas");
-    var ctx = canvas.getContext("2d", { alpha: false, desynchronized: true });
+    var ctx = canvas.getContext("2d", { alpha: true, desynchronized: true });
     var shell = document.getElementById("gameShell");
+    var attackButton = document.getElementById("attackButton");
     var dashButton = document.getElementById("dashButton");
+    var crosshair = document.getElementById("crosshair");
     var movePad = document.getElementById("movePad");
     var moveKnob = document.getElementById("moveKnob");
     var gameIcons = document.getElementById("gameIcons");
@@ -865,6 +975,12 @@
       pointerOriginX: 0,
       pointerOriginY: 0,
       pointerLastAt: 0,
+      lookPointerId: null,
+      lookLastX: 0,
+      lookPointerLastAt: 0,
+      lookDelta: 0,
+      fireHeld: false,
+      fireQueued: false,
       dashQueued: false,
       keys: Object.create(null)
     };
@@ -880,6 +996,7 @@
     var lastRenderAt = 0;
     var accumulator = 0;
     var resizeQueued = false;
+    var resizePreserveInput = false;
     var frameIntervals = [];
     var updateTimes = [];
     var renderTimes = [];
@@ -906,6 +1023,15 @@
       return { x: x / length, y: y / length, length: length };
     }
 
+    function rotateDirection(x, y, angle) {
+      var cosine = Math.cos(angle);
+      var sine = Math.sin(angle);
+      return {
+        x: x * cosine - y * sine,
+        y: x * sine + y * cosine
+      };
+    }
+
     function roundDisplay(v) {
       return Math.max(0, Math.round(v)).toLocaleString("ja-JP");
     }
@@ -923,6 +1049,7 @@
 
     function createRunMetrics() {
       var dpr = Math.max(0.1, effectiveDpr || 1);
+      var resources = displayResourceSnapshot();
       return {
         startedAt: performance.now(),
         frameIntervals: [],
@@ -945,8 +1072,11 @@
         audioResumeFailuresStart: audio ? audio.resumeFailures : 0,
         dprMin: dpr,
         dprMax: dpr,
-        backingPixelsMax: canvas.width * canvas.height,
+        backingPixelsMax: resources.backingPixels,
+        framebufferBytesMax: resources.framebufferBytes,
         concurrentDash: false,
+        concurrentFire: false,
+        manualShots: 0,
         pauses: 0,
         backgroundPauses: 0,
         rotationPauses: 0
@@ -973,13 +1103,28 @@
 
     function recordDisplayMetrics() {
       if (!runMetrics) return;
+      var resources = displayResourceSnapshot();
       runMetrics.dprMin = Math.min(runMetrics.dprMin, effectiveDpr);
       runMetrics.dprMax = Math.max(runMetrics.dprMax, effectiveDpr);
-      runMetrics.backingPixelsMax = Math.max(runMetrics.backingPixelsMax, canvas.width * canvas.height);
+      runMetrics.backingPixelsMax = Math.max(runMetrics.backingPixelsMax, resources.backingPixels);
+      runMetrics.framebufferBytesMax = Math.max(runMetrics.framebufferBytesMax, resources.framebufferBytes);
+    }
+
+    function displayResourceSnapshot() {
+      var overlayPixels = Math.max(0, canvas.width * canvas.height);
+      var scenePixels = Math.max(0, sceneCanvas.width * sceneCanvas.height);
+      var sceneBytes = renderer3d && typeof renderer3d.estimateFramebufferBytes === "function"
+        ? renderer3d.estimateFramebufferBytes(sceneCanvas.width, sceneCanvas.height)
+        : scenePixels * 4;
+      return {
+        backingPixels: overlayPixels + scenePixels,
+        framebufferBytes: overlayPixels * 4 + sceneBytes
+      };
     }
 
     function runMetricSnapshot() {
       var metrics = runMetrics || createRunMetrics();
+      var resources = displayResourceSnapshot();
       var currentEnemies = game && game.enemies ? game.enemies.length : 0;
       var currentFriendly = game && game.friendly ? game.friendly.length : 0;
       var currentHostile = game && game.hostile ? game.hostile.length : 0;
@@ -1008,9 +1153,13 @@
         effectiveDpr: effectiveDpr,
         dprMin: metrics.dprMin,
         dprMax: metrics.dprMax,
-        backingPixels: canvas.width * canvas.height,
+        backingPixels: resources.backingPixels,
         backingPixelsMax: metrics.backingPixelsMax,
+        framebufferBytes: resources.framebufferBytes,
+        framebufferBytesMax: metrics.framebufferBytesMax,
         concurrentDash: metrics.concurrentDash,
+        concurrentFire: metrics.concurrentFire,
+        manualShots: metrics.manualShots,
         pauses: metrics.pauses,
         backgroundPauses: metrics.backgroundPauses,
         rotationPauses: metrics.rotationPauses,
@@ -1020,6 +1169,10 @@
         viewportWidth: Math.round(cssWidth),
         viewportHeight: Math.round(cssHeight),
         deviceDpr: Number(window.devicePixelRatio || 1),
+        renderer: renderer3d && renderer3d.ready ? "WebGL 3D" : "Canvas 2D fallback",
+        triangles: renderer3d ? Math.round(renderer3d.triangles) : 0,
+        rendererSamples: renderer3d ? renderer3d.samples : 1,
+        rendererDepthBits: renderer3d ? renderer3d.depthBits : 0,
         elapsedSeconds: Math.max(0, (performance.now() - metrics.startedAt) / 1000)
       };
     }
@@ -1076,7 +1229,8 @@
         "Q" + metrics.qualityStart + "→Q" + metrics.qualityFloor +
         " · DPR " + metrics.dprMin.toFixed(2) + "–" + metrics.dprMax.toFixed(2);
       document.getElementById("diagnosticInput").textContent =
-        "同時DASH " + (metrics.concurrentDash ? "確認" : "未確認") +
+        "移動+射撃 " + (metrics.concurrentFire ? "確認" : "未確認") +
+        " · 同時DASH " + (metrics.concurrentDash ? "確認" : "未確認") +
         " · 停止 " + metrics.pauses + "回";
       document.getElementById("diagnosticAudio").textContent =
         "最大 " + metrics.maxAudioVoices + " · 残り " + metrics.audioVoicesRemaining +
@@ -1115,8 +1269,14 @@
           " / particles " + metrics.maxParticles,
         "quality: Q" + metrics.qualityStart + "->Q" + metrics.qualityFloor +
           " / drops " + metrics.qualityDrops +
-          " / backing pixels " + metrics.backingPixelsMax,
-        "input: simultaneous drag+DASH " + (metrics.concurrentDash ? "yes" : "no") +
+          " / backing pixels " + metrics.backingPixelsMax +
+          " / framebuffer " + (metrics.framebufferBytesMax / 1048576).toFixed(1) + " MiB est.",
+        "renderer: " + metrics.renderer + " / triangles " + metrics.triangles +
+          " / samples " + metrics.rendererSamples +
+          " / depth " + metrics.rendererDepthBits + "bit",
+        "input: manual shots " + metrics.manualShots +
+          " / simultaneous move+fire " + (metrics.concurrentFire ? "yes" : "no") +
+          " / drag+DASH " + (metrics.concurrentDash ? "yes" : "no") +
           " / pauses " + metrics.pauses +
           " / background " + metrics.backgroundPauses +
           " / rotation " + metrics.rotationPauses,
@@ -1185,6 +1345,7 @@
         runs: 0,
         totalKills: 0,
         lastSeed: 0,
+        tutorialRulesVersion: RULES_VERSION,
         tutorialSeen: false,
         settings: {
           sound: true,
@@ -1206,7 +1367,8 @@
       safe.runs = clamp(Number(raw.runs) || 0, 0, 999999);
       safe.totalKills = clamp(Number(raw.totalKills) || 0, 0, 99999999);
       safe.lastSeed = (Number(raw.lastSeed) || 0) >>> 0;
-      safe.tutorialSeen = Boolean(raw.tutorialSeen);
+      safe.tutorialRulesVersion = Number(raw.tutorialRulesVersion) === RULES_VERSION ? RULES_VERSION : 0;
+      safe.tutorialSeen = safe.tutorialRulesVersion === RULES_VERSION && Boolean(raw.tutorialSeen);
       if (raw.settings && typeof raw.settings === "object") {
         safe.settings.sound = raw.settings.sound !== false;
         safe.settings.haptics = raw.settings.haptics !== false && !reducedMotion;
@@ -1334,7 +1496,7 @@
         damage: 1,
         fireInterval: 24,
         projectileSpeed: 575,
-        targetRange: 280,
+        homingRange: 180,
         steering: 0,
         echoScalar: 0.7,
         forked: false,
@@ -1521,7 +1683,7 @@
       else if (id === "dashburst") game.build.dashBurst = true;
       else if (id === "cryo") game.build.slow = true;
       else if (id === "magnetar") {
-        game.build.targetRange += 55;
+        game.build.homingRange += 55;
         game.build.projectileSpeed *= 1.2;
         game.build.steering = Math.PI;
       } else if (id === "plating") {
@@ -1575,7 +1737,7 @@
         active: true,
         inactiveTicks: 0,
         invuln: 60,
-        shotCooldown: 12,
+        shotCooldown: 0,
         dashCooldown: 0,
         dashTicks: 0,
         dashDirX: 0,
@@ -1647,8 +1809,9 @@
     }
 
     function spawnFriendlyBullet(x, y, angle, actor, scalar) {
-      if (game.friendly.length >= MAX_FRIENDLY) return;
+      if (game.friendly.length >= MAX_FRIENDLY) return false;
       var forkAngles = game.build.forked ? [-Math.PI / 30, Math.PI / 30] : [0];
+      var spawned = false;
       for (var i = 0; i < forkAngles.length && game.friendly.length < MAX_FRIENDLY; i += 1) {
         var finalAngle = angle + forkAngles[i];
         var forkScalar = game.build.forked ? 0.58 : 1;
@@ -1665,18 +1828,22 @@
           life: 48,
           pierce: game.build.pierce,
           steering: game.build.steering,
+          homingRange: game.build.homingRange,
           lastHit: 0,
           alive: true
         });
+        spawned = true;
       }
+      return spawned;
     }
 
-    function fireActor(x, y, actor, scalar) {
-      var target = nearestEnemy(x, y, game.build.targetRange, 0);
-      if (!target) return false;
-      var angle = Math.atan2(target.y - y, target.x - x);
-      spawnFriendlyBullet(x, y, angle, actor, scalar);
-      return true;
+    function fireActor(x, y, actor, scalar, aimX, aimY) {
+      var rawAimX = Number(aimX);
+      var rawAimY = Number(aimY);
+      var aim = normalize(Number.isFinite(rawAimX) ? rawAimX : 0, Number.isFinite(rawAimY) ? rawAimY : 0);
+      if (aim.length < 0.5) return false;
+      var angle = Math.atan2(aim.y, aim.x);
+      return spawnFriendlyBullet(x + aim.x * 13, y + aim.y * 13, angle, actor, scalar);
     }
 
     function spawnHostileBullet(x, y, angle, damage, speed, radius, targetCore) {
@@ -1761,6 +1928,17 @@
       input.moveY = n.y;
     }
 
+    function viewRelativeMove(player) {
+      var strength = clamp(Math.hypot(input.moveX, input.moveY), 0, 1);
+      if (strength < 0.08) return { x: 0, y: 0, length: 0 };
+      var strafe = input.moveX;
+      var forward = -input.moveY;
+      var worldX = -player.facingY * strafe + player.facingX * forward;
+      var worldY = player.facingX * strafe + player.facingY * forward;
+      var direction = normalize(worldX, worldY);
+      return { x: direction.x * strength, y: direction.y * strength, length: strength };
+    }
+
     function doDashBurst(x, y, scalar, actor) {
       addPulse(x, y, 70, "#c7ff45", 18, "damage");
       if (!game.build.dashBurst) return;
@@ -1777,6 +1955,22 @@
       }
     }
 
+    function resolvePlayerCoreCollision(player) {
+      var dx = player.x - CORE_X;
+      var dy = player.y - CORE_Y;
+      var distance = Math.hypot(dx, dy);
+      if (distance >= PLAYER_CORE_CLEARANCE) return false;
+      if (distance < 0.0001) {
+        var fallback = normalize(-player.facingX, -player.facingY);
+        dx = fallback.length > 0 ? fallback.x : 0;
+        dy = fallback.length > 0 ? fallback.y : 1;
+        distance = 1;
+      }
+      player.x = CORE_X + dx / distance * PLAYER_CORE_CLEARANCE;
+      player.y = CORE_Y + dy / distance * PLAYER_CORE_CLEARANCE;
+      return true;
+    }
+
     function updatePlayer() {
       var player = game.player;
       var previousX = player.x;
@@ -1789,7 +1983,9 @@
 
       if (!player.active) {
         player.inactiveTicks -= 1;
+        input.lookDelta = 0;
         input.dashQueued = false;
+        input.fireQueued = false;
         if (player.inactiveTicks <= 0) {
           player.active = true;
           player.hp = 60;
@@ -1801,12 +1997,19 @@
         return;
       }
 
-      setMoveFromKeys();
-      var move = normalize(input.moveX, input.moveY);
-      if (move.length > 0.08) {
-        player.facingX = move.x;
-        player.facingY = move.y;
+      var turn = input.lookDelta;
+      input.lookDelta = 0;
+      if (input.keys.KeyQ) turn -= 0.045;
+      if (input.keys.KeyE) turn += 0.045;
+      if (Math.abs(turn) > 0.00001) {
+        var facing = rotateDirection(player.facingX, player.facingY, turn);
+        var normalizedFacing = normalize(facing.x, facing.y);
+        player.facingX = normalizedFacing.x;
+        player.facingY = normalizedFacing.y;
       }
+
+      setMoveFromKeys();
+      var move = viewRelativeMove(player);
 
       if (input.dashQueued && player.dashCooldown <= 0 && player.dashTicks <= 0) {
         if (runMetrics && input.pointerId !== null && move.length > 0.15) runMetrics.concurrentDash = true;
@@ -1823,6 +2026,7 @@
       if (player.dashTicks > 0) {
         player.x += player.dashDirX * 575 * STEP;
         player.y += player.dashDirY * 575 * STEP;
+        resolvePlayerCoreCollision(player);
         player.dashTicks -= 1;
         for (var hb = 0; hb < game.hostile.length; hb += 1) {
           var hostile = game.hostile[hb];
@@ -1838,6 +2042,7 @@
       } else {
         player.x += move.x * game.build.moveSpeed * STEP;
         player.y += move.y * game.build.moveSpeed * STEP;
+        resolvePlayerCoreCollision(player);
       }
 
       player.x = clamp(player.x, 24, W - 24);
@@ -1845,9 +2050,17 @@
       player.vx = (player.x - previousX) / STEP;
       player.vy = (player.y - previousY) / STEP;
 
-      if (player.shotCooldown <= 0 && fireActor(player.x, player.y, 0, 1)) {
+      var keyboardFire = Boolean(input.keys.KeyF);
+      if ((input.fireHeld || input.fireQueued || keyboardFire) &&
+          player.shotCooldown <= 0 &&
+          fireActor(player.x, player.y, 0, 1, player.facingX, player.facingY)) {
         player.fireThisTick = true;
         player.shotCooldown = game.build.fireInterval;
+        input.fireQueued = false;
+        if (runMetrics) {
+          runMetrics.manualShots += 1;
+          if (move.length > 0.15) runMetrics.concurrentFire = true;
+        }
         playSound("shoot");
       }
     }
@@ -1865,9 +2078,19 @@
         runtime.y = frame.y;
         runtime.active = frame.a === 1;
         runtime.dash = frame.d === 1;
+        var previous = recording[Math.max(0, game.tick - 1)] || frame;
+        var fallbackAim = normalize(frame.x - previous.x, frame.y - previous.y);
+        var recordedX = Number(frame.fx);
+        var recordedY = Number(frame.fy);
+        var recordedAim = normalize(
+          Number.isFinite(recordedX) ? recordedX : fallbackAim.x,
+          Number.isFinite(recordedY) ? recordedY : (fallbackAim.length > 0 ? fallbackAim.y : -1)
+        );
+        runtime.facingX = recordedAim.x;
+        runtime.facingY = recordedAim.y;
         game.echoRuntime[i] = runtime;
         if (runtime.active && frame.f === 1) {
-          fireActor(runtime.x, runtime.y, i + 1, game.build.echoScalar);
+          fireActor(runtime.x, runtime.y, i + 1, game.build.echoScalar, runtime.facingX, runtime.facingY);
         }
         if (runtime.active && runtime.dash) {
           doDashBurst(runtime.x, runtime.y, game.build.echoScalar, i + 1);
@@ -1882,6 +2105,8 @@
         y: Math.round(p.y * 100) / 100,
         a: p.active ? 1 : 0,
         f: p.fireThisTick ? 1 : 0,
+        fx: Math.round(p.facingX * 10000) / 10000,
+        fy: Math.round(p.facingY * 10000) / 10000,
         d: p.dashPulseThisTick ? 1 : 0
       });
     }
@@ -1900,6 +2125,9 @@
         var n = normalize(p.x - sourceX, p.y - sourceY);
         p.x += n.x * 20;
         p.y += n.y * 20;
+        p.x = clamp(p.x, 24, W - 24);
+        p.y = clamp(p.y, 112, H - 64);
+        resolvePlayerCoreCollision(p);
       }
       if (p.hp <= 0) {
         p.hp = 0;
@@ -2107,7 +2335,7 @@
         var bullet = game.friendly[i];
         if (!bullet.alive) continue;
         if (bullet.steering > 0) {
-          var target = nearestEnemy(bullet.x, bullet.y, 180, bullet.lastHit);
+          var target = nearestEnemy(bullet.x, bullet.y, bullet.homingRange || 180, bullet.lastHit);
           if (target) {
             var current = Math.atan2(bullet.vy, bullet.vx);
             var desired = Math.atan2(target.y - bullet.y, target.x - bullet.x);
@@ -2270,7 +2498,15 @@
       }
       while (game.recorder.length < LOOP_TICKS) {
         var p = game.player;
-        game.recorder.push({ x: p.x, y: p.y, a: p.active ? 1 : 0, f: 0, d: 0 });
+        game.recorder.push({
+          x: p.x,
+          y: p.y,
+          a: p.active ? 1 : 0,
+          f: 0,
+          fx: p.facingX,
+          fy: p.facingY,
+          d: 0
+        });
       }
       if (game.recorder.length > LOOP_TICKS) game.recorder.length = LOOP_TICKS;
       game.recordings.push(game.recorder);
@@ -2350,6 +2586,7 @@
       game.runStartAt = performance.now();
       game.result = null;
       game.terminalLock = false;
+      game.shake = 0;
       game.maxEnemies = 0;
       game.maxProjectiles = 0;
       game.maxParticles = 0;
@@ -2498,7 +2735,9 @@
     }
 
     function drawActor(x, y, color, alpha, size, facingX, facingY, outline) {
-      var angle = Math.atan2(facingY || -1, facingX || 0);
+      var safeFacingX = Number(facingX);
+      var safeFacingY = Number(facingY);
+      var angle = Math.atan2(Number.isFinite(safeFacingY) ? safeFacingY : -1, Number.isFinite(safeFacingX) ? safeFacingX : 0);
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(angle + Math.PI / 2);
@@ -2536,10 +2775,7 @@
             if (old && old.a) drawActor(old.x, old.y, "#82919a", 0.035 + (18 - t) * 0.004, 12, 0, -1, true);
           }
         }
-        var previous = recording[Math.max(0, game.tick - 1)] || runtime;
-        var fx = runtime.x - previous.x;
-        var fy = runtime.y - previous.y;
-        drawActor(runtime.x, runtime.y, "#d9e7ea", 0.25 + i * 0.055, 13, fx, fy || -1, true);
+        drawActor(runtime.x, runtime.y, "#d9e7ea", 0.25 + i * 0.055, 13, runtime.facingX, runtime.facingY, true);
         if (runtime.dash) {
           ctx.save();
           ctx.globalAlpha = 0.5;
@@ -2556,12 +2792,42 @@
       var p = game.player;
       if (!p || !p.active) return;
       var flicker = p.invuln > 0 && Math.floor(p.invuln / 3) % 2 === 0;
+      ctx.save();
+      ctx.globalAlpha = 0.82;
+      ctx.strokeStyle = "#c7ff45";
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([7, 6]);
+      ctx.beginPath();
+      ctx.moveTo(p.x + p.facingX * 18, p.y + p.facingY * 18);
+      ctx.lineTo(p.x + p.facingX * 105, p.y + p.facingY * 105);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.arc(p.x + p.facingX * 105, p.y + p.facingY * 105, 6, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
       if (flicker) ctx.globalAlpha = 0.35;
       if (p.dashTicks > 0 && !reducedMotion) {
         drawActor(p.x - p.dashDirX * 18, p.y - p.dashDirY * 18, "#c7ff45", 0.2, 14, p.dashDirX, p.dashDirY, false);
       }
       drawActor(p.x, p.y, "#c7ff45", 1, 15, p.facingX, p.facingY, false);
       ctx.globalAlpha = 1;
+    }
+
+    function crosshairHasTarget() {
+      if (!game.player || !game.player.active) return false;
+      var player = game.player;
+      for (var i = 0; i < game.enemies.length; i += 1) {
+        var enemy = game.enemies[i];
+        if (!enemy.alive || enemy.telegraphTicks > 0) continue;
+        var dx = enemy.x - player.x;
+        var dy = enemy.y - player.y;
+        var forwardDistance = dx * player.facingX + dy * player.facingY;
+        if (forwardDistance <= 0 || forwardDistance > 460) continue;
+        var sideDistance = Math.abs(dx * player.facingY - dy * player.facingX);
+        if (sideDistance <= enemy.radius + 5) return true;
+      }
+      return false;
     }
 
     function drawEnemy(enemy) {
@@ -2669,6 +2935,889 @@
       ctx.globalAlpha = 1;
     }
 
+    function firstPersonActive() {
+      return Boolean(
+        game.player &&
+        game.player.active &&
+        (game.mode === "playing" || game.mode === "countdown" || game.mode === "rewind" || game.mode === "paused")
+      );
+    }
+
+    function createRenderer3D(surface) {
+      var api = {
+        ready: false,
+        mode: "canvas-2d",
+        triangles: 0,
+        staticBuilds: 0,
+        dynamicBufferResizes: 0,
+        samples: 1,
+        depthBits: 0,
+        glError: 0,
+        renderChecks: 0,
+        lastError: "",
+        resize: function () {},
+        render: function () {},
+        projectArenaPoint: function () { return null; },
+        cameraPose: function () { return null; },
+        estimateFramebufferBytes: function (width, height) {
+          return Math.max(0, width * height * 4);
+        }
+      };
+      if (!surface || typeof surface.getContext !== "function") return api;
+
+      var gl = null;
+      var program = null;
+      var buffer = null;
+      var staticSolidBuffer = null;
+      var staticGlowBuffer = null;
+      var attributes = null;
+      var uniforms = null;
+      var solid = [];
+      var glow = [];
+      var staticSolid = [];
+      var staticGlow = [];
+      var staticSolidVertices = 0;
+      var staticGlowVertices = 0;
+      var staticQuality = -1;
+      var dynamicGpuCapacity = 0;
+      var dynamicSolidData = new Float32Array(0);
+      var dynamicGlowData = new Float32Array(0);
+      var stride = 11 * 4;
+      var SCALE_3D = 0.0345;
+      var FIRST_PERSON_AIM_Y = 0.5;
+      var colorCache = Object.create(null);
+
+      function shader(type, source) {
+        var result = gl.createShader(type);
+        gl.shaderSource(result, source);
+        gl.compileShader(result);
+        if (!gl.getShaderParameter(result, gl.COMPILE_STATUS)) {
+          gl.deleteShader(result);
+          return null;
+        }
+        return result;
+      }
+
+      function initialize() {
+        try {
+          var contextOptions = {
+            alpha: false,
+            antialias: true,
+            depth: true,
+            stencil: false,
+            desynchronized: true,
+            powerPreference: "high-performance",
+            preserveDrawingBuffer: false
+          };
+          gl = surface.getContext("webgl2", contextOptions);
+          var isWebGL2 = Boolean(gl);
+          if (!gl) gl = surface.getContext("webgl", contextOptions) || surface.getContext("experimental-webgl", contextOptions);
+          if (!gl) return;
+          var contextAttributes = typeof gl.getContextAttributes === "function" ? gl.getContextAttributes() : null;
+          var reportedSamples = typeof gl.getParameter === "function" && gl.SAMPLES !== undefined
+            ? Number(gl.getParameter(gl.SAMPLES)) || 0
+            : 0;
+          api.samples = contextAttributes && contextAttributes.antialias === false
+            ? 1
+            : Math.max(1, reportedSamples || 4);
+          api.depthBits = typeof gl.getParameter === "function" && gl.DEPTH_BITS !== undefined
+            ? Math.max(0, Number(gl.getParameter(gl.DEPTH_BITS)) || 0)
+            : 24;
+          api.glError = 0;
+          api.renderChecks = 0;
+          var vertexSource = (isWebGL2 ? [
+            "#version 300 es",
+            "in vec3 aPosition;",
+            "in vec3 aNormal;",
+            "in vec4 aColor;",
+            "in float aGlow;",
+            "uniform mat4 uViewProjection;",
+            "uniform vec3 uCamera;",
+            "uniform vec3 uLightDir;",
+            "out vec4 vColor;",
+            "out float vLight;",
+            "out float vFog;",
+            "out float vGlow;"
+          ] : [
+            "attribute vec3 aPosition;",
+            "attribute vec3 aNormal;",
+            "attribute vec4 aColor;",
+            "attribute float aGlow;",
+            "uniform mat4 uViewProjection;",
+            "uniform vec3 uCamera;",
+            "uniform vec3 uLightDir;",
+            "varying vec4 vColor;",
+            "varying float vLight;",
+            "varying float vFog;",
+            "varying float vGlow;"
+          ]).concat([
+            "void main(){",
+            "  gl_Position=uViewProjection*vec4(aPosition,1.0);",
+            "  float diffuse=max(dot(normalize(aNormal),normalize(uLightDir)),0.0);",
+            "  vLight=0.34+diffuse*0.66;",
+            "  vFog=clamp((distance(aPosition,uCamera)-13.0)/32.0,0.0,0.82);",
+            "  vColor=aColor;",
+            "  vGlow=aGlow;",
+            "}"
+          ]).join("\n");
+          var fragmentSource = (isWebGL2 ? [
+            "#version 300 es",
+            "precision mediump float;",
+            "in vec4 vColor;",
+            "in float vLight;",
+            "in float vFog;",
+            "in float vGlow;",
+            "out vec4 fragmentColor;"
+          ] : [
+            "precision mediump float;",
+            "varying vec4 vColor;",
+            "varying float vLight;",
+            "varying float vFog;",
+            "varying float vGlow;"
+          ]).concat([
+            "void main(){",
+            "  vec3 fog=vec3(0.012,0.029,0.052);",
+            "  vec3 lit=vColor.rgb*(vLight+vGlow*1.12);",
+            isWebGL2
+              ? "  fragmentColor=vec4(mix(lit,fog,vFog),vColor.a);"
+              : "  gl_FragColor=vec4(mix(lit,fog,vFog),vColor.a);",
+            "}"
+          ]).join("\n");
+          var vertex = shader(gl.VERTEX_SHADER, vertexSource);
+          var fragment = shader(gl.FRAGMENT_SHADER, fragmentSource);
+          if (!vertex || !fragment) return;
+          program = gl.createProgram();
+          gl.attachShader(program, vertex);
+          gl.attachShader(program, fragment);
+          gl.linkProgram(program);
+          gl.deleteShader(vertex);
+          gl.deleteShader(fragment);
+          if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+          buffer = gl.createBuffer();
+          staticSolidBuffer = gl.createBuffer();
+          staticGlowBuffer = gl.createBuffer();
+          staticQuality = -1;
+          staticSolidVertices = 0;
+          staticGlowVertices = 0;
+          dynamicGpuCapacity = 0;
+          attributes = {
+            position: gl.getAttribLocation(program, "aPosition"),
+            normal: gl.getAttribLocation(program, "aNormal"),
+            color: gl.getAttribLocation(program, "aColor"),
+            glow: gl.getAttribLocation(program, "aGlow")
+          };
+          uniforms = {
+            viewProjection: gl.getUniformLocation(program, "uViewProjection"),
+            camera: gl.getUniformLocation(program, "uCamera"),
+            lightDir: gl.getUniformLocation(program, "uLightDir")
+          };
+          gl.useProgram(program);
+          applyLayout(buffer);
+          gl.enable(gl.DEPTH_TEST);
+          gl.depthFunc(gl.LEQUAL);
+          gl.disable(gl.CULL_FACE);
+          gl.clearColor(0.008, 0.018, 0.034, 1);
+          api.ready = true;
+          api.mode = "webgl-3d";
+          api.lastError = "";
+        } catch (error) {
+          api.ready = false;
+          api.mode = "canvas-2d";
+        }
+      }
+
+      function color(hex, alpha) {
+        var key = String(hex || "#ffffff").toLowerCase();
+        var base = colorCache[key];
+        if (!base) {
+          var match = key.match(/^#([0-9a-f]{6})$/i);
+          if (!match) base = [1, 1, 1];
+          else {
+            var value = parseInt(match[1], 16);
+            base = [((value >> 16) & 255) / 255, ((value >> 8) & 255) / 255, (value & 255) / 255];
+          }
+          colorCache[key] = base;
+        }
+        return [base[0], base[1], base[2], alpha === undefined ? 1 : alpha];
+      }
+
+      function vertex(target, point, normal, tint, emissive) {
+        target.push(
+          point[0], point[1], point[2],
+          normal[0], normal[1], normal[2],
+          tint[0], tint[1], tint[2], tint[3],
+          emissive || 0
+        );
+      }
+
+      function triangle(target, a, b, c, normal, tint, emissive) {
+        vertex(target, a, normal, tint, emissive);
+        vertex(target, b, normal, tint, emissive);
+        vertex(target, c, normal, tint, emissive);
+      }
+
+      function rotatedPoint(cx, cy, cz, x, y, z, yaw) {
+        var cosine = Math.cos(yaw || 0);
+        var sine = Math.sin(yaw || 0);
+        return [cx + x * cosine - z * sine, cy + y, cz + x * sine + z * cosine];
+      }
+
+      function addBox(target, cx, cy, cz, width, height, depth, tint, yaw, emissive) {
+        var hx = width / 2;
+        var hy = height / 2;
+        var hz = depth / 2;
+        var points = [
+          rotatedPoint(cx, cy, cz, -hx, -hy, -hz, yaw),
+          rotatedPoint(cx, cy, cz, hx, -hy, -hz, yaw),
+          rotatedPoint(cx, cy, cz, hx, hy, -hz, yaw),
+          rotatedPoint(cx, cy, cz, -hx, hy, -hz, yaw),
+          rotatedPoint(cx, cy, cz, -hx, -hy, hz, yaw),
+          rotatedPoint(cx, cy, cz, hx, -hy, hz, yaw),
+          rotatedPoint(cx, cy, cz, hx, hy, hz, yaw),
+          rotatedPoint(cx, cy, cz, -hx, hy, hz, yaw)
+        ];
+        var cosine = Math.cos(yaw || 0);
+        var sine = Math.sin(yaw || 0);
+        var faces = [
+          [0, 1, 2, 3, [sine, 0, -cosine]],
+          [5, 4, 7, 6, [-sine, 0, cosine]],
+          [4, 0, 3, 7, [-cosine, 0, -sine]],
+          [1, 5, 6, 2, [cosine, 0, sine]],
+          [3, 2, 6, 7, [0, 1, 0]],
+          [4, 5, 1, 0, [0, -1, 0]]
+        ];
+        for (var i = 0; i < faces.length; i += 1) {
+          var face = faces[i];
+          triangle(target, points[face[0]], points[face[1]], points[face[2]], face[4], tint, emissive);
+          triangle(target, points[face[0]], points[face[2]], points[face[3]], face[4], tint, emissive);
+        }
+      }
+
+      function addPrism(target, cx, cy, cz, radius, height, sides, tint, rotation, emissive) {
+        var topY = cy + height;
+        var center = [cx, topY, cz];
+        var top = [];
+        var bottom = [];
+        for (var i = 0; i < sides; i += 1) {
+          var angle = (rotation || 0) + i * Math.PI * 2 / sides;
+          top.push([cx + Math.cos(angle) * radius, topY, cz + Math.sin(angle) * radius]);
+          bottom.push([cx + Math.cos(angle) * radius, cy, cz + Math.sin(angle) * radius]);
+        }
+        for (var s = 0; s < sides; s += 1) {
+          var next = (s + 1) % sides;
+          triangle(target, center, top[s], top[next], [0, 1, 0], tint, emissive);
+          var middle = (rotation || 0) + (s + 0.5) * Math.PI * 2 / sides;
+          var normal = [Math.cos(middle), 0.18, Math.sin(middle)];
+          triangle(target, bottom[s], bottom[next], top[next], normal, tint, emissive);
+          triangle(target, bottom[s], top[next], top[s], normal, tint, emissive);
+        }
+      }
+
+      function addRing(target, cx, cy, cz, radius, thickness, segments, tint, emissive) {
+        var outer = radius + thickness / 2;
+        var inner = Math.max(0, radius - thickness / 2);
+        for (var i = 0; i < segments; i += 1) {
+          var a = i * Math.PI * 2 / segments;
+          var b = (i + 1) * Math.PI * 2 / segments;
+          var p1 = [cx + Math.cos(a) * inner, cy, cz + Math.sin(a) * inner];
+          var p2 = [cx + Math.cos(a) * outer, cy, cz + Math.sin(a) * outer];
+          var p3 = [cx + Math.cos(b) * outer, cy, cz + Math.sin(b) * outer];
+          var p4 = [cx + Math.cos(b) * inner, cy, cz + Math.sin(b) * inner];
+          triangle(target, p1, p2, p3, [0, 1, 0], tint, emissive);
+          triangle(target, p1, p3, p4, [0, 1, 0], tint, emissive);
+        }
+      }
+
+      function addBeam(target, x1, z1, x2, z2, y, width, height, tint, emissive) {
+        var dx = x2 - x1;
+        var dz = z2 - z1;
+        var length = Math.max(0.001, Math.hypot(dx, dz));
+        var yaw = Math.atan2(dx, dz);
+        addBox(target, (x1 + x2) / 2, y, (z1 + z2) / 2, width, height, length, tint, yaw, emissive);
+      }
+
+      function perspective(fovy, aspect, near, far) {
+        var f = 1 / Math.tan(fovy / 2);
+        var nf = 1 / (near - far);
+        return [
+          f / aspect, 0, 0, 0,
+          0, f, 0, 0,
+          0, 0, (far + near) * nf, -1,
+          0, 0, 2 * far * near * nf, 0
+        ];
+      }
+
+      function lookAt(eye, center, roll) {
+        var zx = eye[0] - center[0];
+        var zy = eye[1] - center[1];
+        var zz = eye[2] - center[2];
+        var zl = Math.hypot(zx, zy, zz) || 1;
+        zx /= zl; zy /= zl; zz /= zl;
+        var xx = zz;
+        var xy = 0;
+        var xz = -zx;
+        var xl = Math.hypot(xx, xz) || 1;
+        xx /= xl; xz /= xl;
+        var yx = zy * xz;
+        var yy = zz * xx - zx * xz;
+        var yz = -zy * xx;
+        var rollAngle = Number(roll) || 0;
+        if (Math.abs(rollAngle) > 0.000001) {
+          var rollCosine = Math.cos(rollAngle);
+          var rollSine = Math.sin(rollAngle);
+          var baseXx = xx;
+          var baseXy = xy;
+          var baseXz = xz;
+          xx = baseXx * rollCosine + yx * rollSine;
+          xy = baseXy * rollCosine + yy * rollSine;
+          xz = baseXz * rollCosine + yz * rollSine;
+          yx = yx * rollCosine - baseXx * rollSine;
+          yy = yy * rollCosine - baseXy * rollSine;
+          yz = yz * rollCosine - baseXz * rollSine;
+        }
+        return [
+          xx, yx, zx, 0,
+          xy, yy, zy, 0,
+          xz, yz, zz, 0,
+          -(xx * eye[0] + xy * eye[1] + xz * eye[2]),
+          -(yx * eye[0] + yy * eye[1] + yz * eye[2]),
+          -(zx * eye[0] + zy * eye[1] + zz * eye[2]),
+          1
+        ];
+      }
+
+      function multiply(a, b) {
+        var result = new Array(16);
+        for (var column = 0; column < 4; column += 1) {
+          for (var row = 0; row < 4; row += 1) {
+            result[column * 4 + row] =
+              a[row] * b[column * 4] +
+              a[4 + row] * b[column * 4 + 1] +
+              a[8 + row] * b[column * 4 + 2] +
+              a[12 + row] * b[column * 4 + 3];
+          }
+        }
+        return result;
+      }
+
+      function worldX(x) { return (x - CORE_X) * SCALE_3D; }
+      function worldZ(y) { return (y - CORE_Y) * SCALE_3D; }
+
+      function cameraState(now, subjectX, subjectY, facingX, facingY, effects, forceFirstPerson) {
+        var hasSubject = Number.isFinite(subjectX) && Number.isFinite(subjectY);
+        var useFirstPerson = hasSubject && (forceFirstPerson || firstPersonActive());
+        var shakeAmount = effects && save.settings.shake && !reducedMotion ? game.shake * 0.018 : 0;
+        if (useFirstPerson) {
+          var rawFacingX = Number(facingX);
+          var rawFacingY = Number(facingY);
+          var facing = normalize(Number.isFinite(rawFacingX) ? rawFacingX : 0, Number.isFinite(rawFacingY) ? rawFacingY : -1);
+          var fx = facing.length > 0 ? facing.x : 0;
+          var fz = facing.length > 0 ? facing.y : -1;
+          var eye = [
+            worldX(subjectX),
+            FIRST_PERSON_AIM_Y,
+            worldZ(subjectY)
+          ];
+          var center = [eye[0] + fx * 8, eye[1], eye[2] + fz * 8];
+          var firstPersonRoll = Math.sin(now * 0.021) * shakeAmount * 0.28;
+          var firstPersonProjection = perspective(
+            Math.PI * 0.45,
+            Math.max(0.25, surface.width / Math.max(1, surface.height)),
+            0.065,
+            70
+          );
+          return {
+            mode: "first-person",
+            eye: eye,
+            center: center,
+            forward: [fx, 0, fz],
+            viewProjection: multiply(firstPersonProjection, lookAt(eye, center, firstPersonRoll))
+          };
+        }
+        var focusX = hasSubject ? worldX(subjectX) * 0.055 : 0;
+        var focusZ = hasSubject ? worldZ(subjectY) * 0.035 : 0;
+        var menuDrift = effects && (game.mode === "menu" || game.mode === "tutorial") && !reducedMotion
+          ? Math.sin(now * 0.00018) * 0.7
+          : 0;
+        var overviewEye = [
+          menuDrift + Math.sin(now * 0.021) * shakeAmount,
+          31 + Math.cos(now * 0.019) * shakeAmount,
+          16 + Math.sin(now * 0.017) * shakeAmount
+        ];
+        var overviewCenter = [focusX, 0.12, focusZ + 0.35];
+        var projection = perspective(Math.PI * 0.305, Math.max(0.25, surface.width / Math.max(1, surface.height)), 0.1, 70);
+        return {
+          mode: "overview",
+          eye: overviewEye,
+          center: overviewCenter,
+          forward: [0, -0.88, -0.48],
+          viewProjection: multiply(projection, lookAt(overviewEye, overviewCenter))
+        };
+      }
+
+      function projectPoint(matrix, point) {
+        var x = point[0];
+        var y = point[1];
+        var z = point[2];
+        var w = matrix[3] * x + matrix[7] * y + matrix[11] * z + matrix[15];
+        if (!Number.isFinite(w) || Math.abs(w) < 0.000001) return null;
+        return {
+          x: (matrix[0] * x + matrix[4] * y + matrix[8] * z + matrix[12]) / w,
+          y: (matrix[1] * x + matrix[5] * y + matrix[9] * z + matrix[13]) / w,
+          z: (matrix[2] * x + matrix[6] * y + matrix[10] * z + matrix[14]) / w,
+          w: w
+        };
+      }
+
+      function buildStaticEnvironment() {
+        var quality = game.quality;
+        addBox(staticSolid, 0, -0.16, 0.8, 17.2, 0.22, 25.8, color("#050d17"), 0, 0);
+        addBox(staticSolid, 0, -0.025, 0.8, 16.2, 0.035, 24.8, color("#081827"), 0, 0);
+
+        addBox(staticSolid, worldX(12), 0.72, 0.48, 0.34, 1.48, 23.5, color("#102235"), 0, 0);
+        addBox(staticSolid, worldX(468), 0.72, 0.48, 0.34, 1.48, 23.5, color("#102235"), 0, 0);
+        addBox(staticSolid, 0, 0.72, worldZ(96), 15.95, 1.48, 0.34, color("#102235"), 0, 0);
+        addBox(staticSolid, 0, 0.72, worldZ(752), 15.95, 1.48, 0.34, color("#102235"), 0, 0);
+        addBeam(staticGlow, worldX(15), worldZ(99), worldX(465), worldZ(99), 1.47, 0.035, 0.04, color("#8ee9ff", 0.22), 0.8);
+        addBeam(staticGlow, worldX(15), worldZ(749), worldX(465), worldZ(749), 1.47, 0.035, 0.04, color("#c7ff45", 0.16), 0.8);
+
+        if (quality > 0) {
+          for (var gx = -7; gx <= 7; gx += 2) {
+            addBeam(staticSolid, gx, -11.3, gx, 12.8, 0.002, 0.018, 0.018, color("#183146"), 0);
+          }
+          for (var gz = -11; gz <= 12; gz += 2) {
+            addBeam(staticSolid, -7.8, gz, 7.8, gz, 0.003, 0.018, 0.018, color("#183146"), 0);
+          }
+        }
+
+        var ringSegments = quality === 2 ? 40 : quality === 1 ? 28 : 20;
+        addRing(staticGlow, 0, 0.012, 0, 2.75, 0.028, ringSegments, color("#23465a", 0.38), 0.35);
+        addRing(staticGlow, 0, 0.014, 0, 5.25, 0.024, ringSegments, color("#23465a", 0.26), 0.28);
+        addRing(staticGlow, 0, 0.016, 0, 7.35, 0.025, ringSegments, color("#c7ff45", 0.12), 0.55);
+
+        var pylons = quality === 0 ? 8 : 12;
+        for (var i = 0; i < pylons; i += 1) {
+          var angle = -Math.PI / 2 + i * Math.PI * 2 / pylons;
+          var px = Math.cos(angle) * 7.9;
+          var pz = Math.sin(angle) * 11.4 + 0.8;
+          var height = 0.48 + (i % 3) * 0.2;
+          addBox(staticSolid, px, height / 2, pz, 0.34, height, 0.68, color("#132638"), -angle, 0);
+          addBox(staticGlow, px, height + 0.035, pz, 0.22, 0.045, 0.34, color(i % 4 === 0 ? "#c7ff45" : "#8ee9ff", 0.42), -angle, 0.8);
+        }
+
+        if (quality > 0) {
+          for (var tower = 0; tower < 14; tower += 1) {
+            var side = tower % 2 ? -1 : 1;
+            var tz = -10.7 + Math.floor(tower / 2) * 3.4;
+            var th = 0.35 + ((tower * 7) % 5) * 0.16;
+            addBox(staticSolid, side * (8.25 + (tower % 3) * 0.22), th / 2 - 0.03, tz, 0.34, th, 0.72, color("#0b1a29"), 0, 0);
+          }
+        }
+      }
+
+      function buildEnvironmentMotion(now) {
+        if (game.quality !== 2 || reducedMotion) return;
+        var scan = now * 0.00018;
+        addBeam(glow, Math.cos(scan) * 7.1, Math.sin(scan) * 7.1, -Math.cos(scan) * 7.1, -Math.sin(scan) * 7.1, 0.026, 0.024, 0.015, color("#8ee9ff", 0.12), 1);
+      }
+
+      function buildCore(now) {
+        var motion = reducedMotion ? 0 : now * 0.001;
+        var ratio = clamp(game.coreHp / game.coreMax, 0, 1);
+        var coreColor = ratio > 0.3 ? "#edf7f4" : "#ff6b61";
+        addPrism(solid, 0, 0, 0, 1.08, 0.18, 12, color("#132638"), Math.PI / 12, 0);
+        addPrism(solid, 0, 0.18, 0, 0.62, 0.86, 7, color(coreColor), motion * 0.14, 0.14);
+        addPrism(glow, 0, 0.32, 0, 0.32, 1.16, 6, color("#8ee9ff", 0.52), -motion * 0.22, 1);
+        addBox(glow, 0, 1.15, 0, 0.08, 1.95, 0.08, color("#c7ff45", 0.26), 0, 1);
+        addRing(glow, 0, 0.48, 0, 0.9, 0.06, 24, color(coreColor, 0.54), 0.95);
+        addRing(glow, 0, 0.92, 0, 0.67, 0.045, 21, color("#8ee9ff", 0.46), 0.9);
+        if (game.coreShield > 0) {
+          addRing(glow, 0, 0.08, 0, 1.52, 0.08, 28, color("#8ee9ff", 0.68), 1);
+        }
+      }
+
+      function buildPulses() {
+        var quality = game.quality;
+        var count = Math.min(game.pulses.length, quality === 0 ? 10 : 20);
+        for (var i = game.pulses.length - count; i < game.pulses.length; i += 1) {
+          var pulse = game.pulses[i];
+          var alpha = clamp(pulse.life / pulse.maxLife, 0, 1);
+          var px = worldX(pulse.x);
+          var pz = worldZ(pulse.y);
+          var radius = pulse.radius * SCALE_3D;
+          var segments = quality === 2 ? 24 : quality === 1 ? 18 : 12;
+          var width = pulse.kind === "charge" ? 0.09 : 0.055;
+          addRing(glow, px, 0.035, pz, radius, width, segments, color(pulse.color, alpha * 0.62), 1);
+          if (pulse.kind === "telegraph") {
+            addBeam(glow, px - 0.3, pz, px + 0.3, pz, 0.045, 0.035, 0.018, color("#ff6b61", alpha * 0.72), 1);
+            addBeam(glow, px, pz - 0.3, px, pz + 0.3, 0.045, 0.035, 0.018, color("#ff6b61", alpha * 0.72), 1);
+          }
+        }
+      }
+
+      function buildActor(x, y, facingX, facingY, echo, alpha, dashing) {
+        var px = worldX(x);
+        var pz = worldZ(y);
+        var rawFacingX = Number(facingX);
+        var rawFacingY = Number(facingY);
+        var fx = Number.isFinite(rawFacingX) ? rawFacingX : 0;
+        var fz = Number.isFinite(rawFacingY) ? rawFacingY : -1;
+        var direction = Math.hypot(fx, fz) || 1;
+        fx /= direction;
+        fz /= direction;
+        var yaw = Math.atan2(fx, fz) + Math.PI / 2;
+        var actorAlpha = alpha === undefined ? 1 : clamp(alpha, 0, 1);
+        var playerBase = color("#c7ff45");
+        var playerBrightness = 0.22 + actorAlpha * 0.78;
+        var playerTint = [
+          playerBase[0] * playerBrightness,
+          playerBase[1] * playerBrightness,
+          playerBase[2] * playerBrightness,
+          1
+        ];
+        var tint = echo ? color("#d9e7ea", actorAlpha) : playerTint;
+        var target = echo ? glow : solid;
+        addPrism(solid, px, 0.012, pz, 0.38, 0.025, 10, color("#02060b"), 0, 0);
+        addPrism(target, px, 0.05, pz, echo ? 0.31 : 0.36, echo ? 0.38 : 0.46, 3, tint, yaw, echo ? 0.75 : 0.22);
+        addBox(target, px + fx * 0.04, 0.47, pz + fz * 0.04, 0.18, 0.11, 0.22, echo ? color("#8ee9ff", actorAlpha * 0.8) : color("#07111d"), yaw - Math.PI / 2, echo ? 0.7 : 0);
+        addBox(glow, px + fx * 0.33, 0.24, pz + fz * 0.33, 0.08, 0.08, 0.2, color(echo ? "#edf7f4" : "#c7ff45", echo ? actorAlpha * 0.7 : actorAlpha * 0.8), yaw - Math.PI / 2, 1);
+        if (dashing) {
+          addBeam(glow, px - fx * 1.05, pz - fz * 1.05, px - fx * 0.18, pz - fz * 0.18, 0.25, 0.12, 0.08, color("#c7ff45", echo ? actorAlpha * 0.45 : actorAlpha * 0.65), 1);
+          addRing(glow, px, 0.05, pz, 0.56, 0.06, 18, color("#c7ff45", 0.42), 1);
+        }
+      }
+
+      function buildFirstPersonRig(player) {
+        var facing = normalize(player.facingX, player.facingY);
+        var fx = facing.length > 0 ? facing.x : 0;
+        var fz = facing.length > 0 ? facing.y : -1;
+        var rightX = -fz;
+        var rightZ = fx;
+        var px = worldX(player.x) + fx * 0.52 + rightX * 0.23;
+        var pz = worldZ(player.y) + fz * 0.52 + rightZ * 0.23;
+        var yaw = Math.atan2(fx, fz);
+        addBox(solid, px, 0.53, pz, 0.18, 0.16, 0.62, color("#182a35"), yaw, 0.05);
+        addBox(solid, px - rightX * 0.02, 0.48, pz - rightZ * 0.02, 0.12, 0.18, 0.24, color("#82919a"), yaw, 0);
+        addBox(glow, px + fx * 0.34, FIRST_PERSON_AIM_Y, pz + fz * 0.34, 0.075, 0.075, 0.1, color("#c7ff45", 0.82), yaw, 1);
+        if (player.fireThisTick) {
+          addPrism(glow, px + fx * 0.48, FIRST_PERSON_AIM_Y - 0.04, pz + fz * 0.48, 0.17, 0.08, 6, color("#edf7f4", 0.88), yaw, 1);
+        }
+      }
+
+      function buildEchoes() {
+        for (var i = 0; i < game.echoRuntime.length; i += 1) {
+          var runtime = game.echoRuntime[i];
+          if (!runtime || !runtime.active) continue;
+          var recording = game.recordings[i];
+          var alpha = 0.22 + i * 0.045;
+          if (game.quality === 2 && !reducedMotion) {
+            var last = null;
+            for (var t = 28; t >= 4; t -= 4) {
+              var old = recording[Math.max(0, game.tick - t)];
+              if (!old || !old.a) continue;
+              if (last) {
+                addBeam(glow, worldX(last.x), worldZ(last.y), worldX(old.x), worldZ(old.y), 0.055, 0.025, 0.018, color("#8ee9ff", 0.025 + (28 - t) * 0.0025), 1);
+              }
+              last = old;
+            }
+          }
+          buildActor(runtime.x, runtime.y, runtime.facingX, runtime.facingY, true, alpha, runtime.dash);
+        }
+      }
+
+      function buildEnemy(enemy, now) {
+        var x = worldX(enemy.x);
+        var z = worldZ(enemy.y);
+        var radius = Math.max(0.22, enemy.radius * SCALE_3D);
+        var motion = reducedMotion ? 0 : game.totalTicks * 0.018 * enemy.orbitDir;
+        var coral = color("#ff6b61");
+        addPrism(solid, x, 0.01, z, radius * 1.02, 0.025, 10, color("#02060b"), 0, 0);
+        if (enemy.slowTicks > 0) addRing(glow, x, 0.05, z, radius * 1.35, 0.06, 16, color("#8ee9ff", 0.7), 1);
+
+        if (enemy.type === "T" || enemy.type === "M") {
+          var towardX = -x;
+          var towardZ = -z;
+          addPrism(solid, x, 0.04, z, radius, 0.52, 3, coral, Math.atan2(towardX, towardZ) + Math.PI / 2, 0.08);
+        } else if (enemy.type === "B") {
+          addBox(solid, x, 0.34, z, radius * 1.55, 0.66, radius * 1.55, color("#6e2c35"), motion * 0.2, 0);
+          addPrism(solid, x, 0.67, z, radius * 0.62, 0.3, 4, coral, -motion, 0.16);
+          addRing(glow, x, 0.08, z, radius * 1.18, 0.055, 16, color("#ff6b61", 0.34), 0.9);
+        } else if (enemy.type === "P") {
+          addPrism(solid, x, 0.1, z, radius, 0.78, 4, color("#b84a4f"), Math.PI / 4 + motion, 0.08);
+          addPrism(glow, x, 0.28, z, radius * 0.38, 0.62, 4, color("#ffddd6", 0.55), -motion * 1.4, 1);
+          addRing(glow, x, 0.42, z, radius * 1.34, 0.04, 18, color("#8ee9ff", 0.5), 1);
+        } else if (enemy.type === "H") {
+          var hx = game.player && game.player.active ? worldX(game.player.x) - x : -x;
+          var hz = game.player && game.player.active ? worldZ(game.player.y) - z : -z;
+          addPrism(solid, x, 0.05, z, radius, 0.46, 3, coral, Math.atan2(hx, hz) + Math.PI / 2, 0.15);
+          addBeam(glow, x - hx * 0.006, z - hz * 0.006, x, z, 0.27, 0.07, 0.05, color("#ff6b61", 0.34), 1);
+        } else if (enemy.type === "X") {
+          addPrism(solid, x, 0.05, z, radius, 0.62, 6, color("#8a343d"), motion, 0.06);
+          addBox(glow, x, 0.49, z, radius * 1.7, 0.08, 0.08, color("#ff6b61", 0.62), motion, 1);
+          addBox(glow, x, 0.49, z, radius * 1.7, 0.08, 0.08, color("#ff6b61", 0.62), motion + Math.PI / 2, 1);
+        } else if (enemy.type === "S") {
+          var bossTint = enemy.charge ? "#ff6b61" : "#dcebf0";
+          addPrism(solid, x, 0.04, z, radius * 1.2, 0.94, 7, color("#293a45"), motion * 0.45, 0.05);
+          addPrism(solid, x, 0.72, z, radius * 0.82, 0.76, 7, color(bossTint), -motion * 0.72, 0.18);
+          addRing(glow, x, 0.58, z, radius * 1.45, 0.08, 28, color(enemy.charge ? "#ff6b61" : "#c7ff45", 0.62), 1);
+          for (var crown = 0; crown < 7; crown += 1) {
+            var angle = motion * 0.7 + crown * Math.PI * 2 / 7;
+            var crownX = x + Math.cos(angle) * radius * 1.15;
+            var crownZ = z + Math.sin(angle) * radius * 1.15;
+            addPrism(glow, crownX, 0.76, crownZ, 0.09, 0.38, 4, color(enemy.charge ? "#ff6b61" : "#c7ff45", 0.58), angle, 1);
+          }
+          if (enemy.charge) addBeam(glow, x, z, 0, 0, 0.23, 0.07, 0.035, color("#ff6b61", 0.48), 1);
+        }
+
+        if (enemy.hp < enemy.maxHp || enemy.type === "S") {
+          var hpRatio = clamp(enemy.hp / enemy.maxHp, 0, 1);
+          var width = Math.max(0.48, radius * 2.2);
+          addBox(solid, x, enemy.type === "S" ? 1.78 : 1.02, z, width, 0.055, 0.075, color("#111923"), 0, 0);
+          addBox(glow, x - width * (1 - hpRatio) / 2, enemy.type === "S" ? 1.79 : 1.03, z - 0.002, width * hpRatio, 0.06, 0.08, color(enemy.type === "S" ? "#c7ff45" : "#ff6b61", 0.76), 0, 0.85);
+        }
+      }
+
+      function buildProjectiles() {
+        for (var i = 0; i < game.friendly.length; i += 1) {
+          var bullet = game.friendly[i];
+          var speed = Math.hypot(bullet.vx, bullet.vy) || 1;
+          var dx = bullet.vx / speed;
+          var dz = bullet.vy / speed;
+          var x = worldX(bullet.x);
+          var z = worldZ(bullet.y);
+          var length = bullet.actor === 0 ? 0.72 : 0.55;
+          addBeam(glow, x - dx * length, z - dz * length, x, z, bullet.actor === 0 ? FIRST_PERSON_AIM_Y : 0.3, bullet.actor === 0 ? 0.1 : 0.065, 0.075, color(bullet.actor === 0 ? "#c7ff45" : "#edf7f4", bullet.actor === 0 ? 0.9 : 0.52), 1);
+        }
+        for (var h = 0; h < game.hostile.length; h += 1) {
+          var hostile = game.hostile[h];
+          var hostileSpeed = Math.hypot(hostile.vx, hostile.vy) || 1;
+          var hdx = hostile.vx / hostileSpeed;
+          var hdz = hostile.vy / hostileSpeed;
+          var hx = worldX(hostile.x);
+          var hz = worldZ(hostile.y);
+          addBeam(glow, hx - hdx * 0.55, hz - hdz * 0.55, hx, hz, 0.28, 0.1, 0.08, color("#ff6b61", 0.78), 1);
+          addPrism(glow, hx, 0.22, hz, 0.12, 0.2, 6, color("#ffd0c9", 0.72), 0, 1);
+        }
+      }
+
+      function buildParticles() {
+        var limit = game.quality === 2 ? 90 : game.quality === 1 ? 52 : 24;
+        var count = Math.min(game.particles.length, limit);
+        for (var i = game.particles.length - count; i < game.particles.length; i += 1) {
+          var particle = game.particles[i];
+          var alpha = clamp(particle.life / particle.maxLife, 0, 1);
+          var size = Math.max(0.035, particle.size * SCALE_3D * 0.9);
+          var rise = reducedMotion ? 0.2 : 0.18 + (1 - alpha) * 0.55;
+          addBox(glow, worldX(particle.x), rise, worldZ(particle.y), size, size * 1.8, size, color(particle.color, alpha * 0.72), 0, 1);
+        }
+      }
+
+      function applyLayout(targetBuffer) {
+        gl.bindBuffer(gl.ARRAY_BUFFER, targetBuffer);
+        gl.enableVertexAttribArray(attributes.position);
+        gl.enableVertexAttribArray(attributes.normal);
+        gl.enableVertexAttribArray(attributes.color);
+        gl.enableVertexAttribArray(attributes.glow);
+        gl.vertexAttribPointer(attributes.position, 3, gl.FLOAT, false, stride, 0);
+        gl.vertexAttribPointer(attributes.normal, 3, gl.FLOAT, false, stride, 3 * 4);
+        gl.vertexAttribPointer(attributes.color, 4, gl.FLOAT, false, stride, 6 * 4);
+        gl.vertexAttribPointer(attributes.glow, 1, gl.FLOAT, false, stride, 10 * 4);
+      }
+
+      function setPass(additive) {
+        if (additive) {
+          gl.enable(gl.BLEND);
+          gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+          gl.depthMask(false);
+        } else {
+          gl.disable(gl.BLEND);
+          gl.depthMask(true);
+        }
+      }
+
+      function ensureStaticGeometry() {
+        if (staticQuality === game.quality && staticSolidVertices > 0) return;
+        staticSolid.length = 0;
+        staticGlow.length = 0;
+        buildStaticEnvironment();
+        applyLayout(staticSolidBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(staticSolid), gl.STATIC_DRAW);
+        staticSolidVertices = staticSolid.length / 11;
+        applyLayout(staticGlowBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(staticGlow), gl.STATIC_DRAW);
+        staticGlowVertices = staticGlow.length / 11;
+        staticQuality = game.quality;
+        api.staticBuilds += 1;
+      }
+
+      function drawCached(targetBuffer, count, additive) {
+        if (!count) return;
+        applyLayout(targetBuffer);
+        setPass(additive);
+        gl.drawArrays(gl.TRIANGLES, 0, count);
+      }
+
+      function expandedCapacity(required) {
+        var capacity = 1024;
+        while (capacity < required) capacity *= 2;
+        return capacity;
+      }
+
+      function upload(target, additive) {
+        if (!target.length) return;
+        var typed = additive ? dynamicGlowData : dynamicSolidData;
+        if (typed.length < target.length) {
+          typed = new Float32Array(expandedCapacity(target.length));
+          if (additive) dynamicGlowData = typed;
+          else dynamicSolidData = typed;
+        }
+        typed.set(target, 0);
+        applyLayout(buffer);
+        if (dynamicGpuCapacity < target.length) {
+          dynamicGpuCapacity = expandedCapacity(target.length);
+          gl.bufferData(gl.ARRAY_BUFFER, dynamicGpuCapacity * 4, gl.DYNAMIC_DRAW);
+          api.dynamicBufferResizes += 1;
+        }
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, typed.subarray(0, target.length));
+        setPass(additive);
+        gl.drawArrays(gl.TRIANGLES, 0, target.length / 11);
+      }
+
+      api.resize = function (width, height) {
+        var safeWidth = Math.max(1, Math.round(Number(width) || 1));
+        var safeHeight = Math.max(1, Math.round(Number(height) || 1));
+        if (surface.width !== safeWidth) surface.width = safeWidth;
+        if (surface.height !== safeHeight) surface.height = safeHeight;
+      };
+
+      api.estimateFramebufferBytes = function (width, height) {
+        var pixels = Math.max(0, Math.round(Number(width) || 0) * Math.round(Number(height) || 0));
+        var depthBytes = Math.ceil(api.depthBits / 8);
+        var multisampleBytes = pixels * (4 + depthBytes) * Math.max(1, api.samples);
+        var resolveBytes = api.samples > 1 ? pixels * 4 : 0;
+        return multisampleBytes + resolveBytes;
+      };
+
+      api.projectArenaPoint = function (x, y, subjectX, subjectY, facingX, facingY, effects, now) {
+        if (!api.ready) return null;
+        var camera = cameraState(
+          Number(now) || 0,
+          Number.isFinite(subjectX) ? subjectX : x,
+          Number.isFinite(subjectY) ? subjectY : y,
+          Number.isFinite(facingX) ? facingX : 0,
+          Number.isFinite(facingY) ? facingY : -1,
+          Boolean(effects),
+          true
+        );
+        var projected = projectPoint(camera.viewProjection, [worldX(x), FIRST_PERSON_AIM_Y, worldZ(y)]);
+        if (!projected) return null;
+        return {
+          x: (projected.x + 1) * surface.width * 0.5,
+          y: (1 - projected.y) * surface.height * 0.5,
+          ndcX: projected.x,
+          ndcY: projected.y,
+          ndcZ: projected.z,
+          visible: projected.w > 0 && projected.x >= -1 && projected.x <= 1 && projected.y >= -1 && projected.y <= 1 && projected.z >= -1 && projected.z <= 1
+        };
+      };
+
+      api.cameraPose = function (subjectX, subjectY, facingX, facingY) {
+        if (!api.ready) return null;
+        var camera = cameraState(0, subjectX, subjectY, facingX, facingY, false, true);
+        return {
+          mode: camera.mode,
+          eye: camera.eye.slice(),
+          center: camera.center.slice(),
+          forward: camera.forward.slice()
+        };
+      };
+
+      api.render = function (now) {
+        if (!api.ready || !gl) return false;
+        if (gl.isContextLost()) {
+          api.ready = false;
+          api.mode = "canvas-2d";
+          api.triangles = 0;
+          return false;
+        }
+        try {
+          ensureStaticGeometry();
+          solid.length = 0;
+          glow.length = 0;
+          buildEnvironmentMotion(now);
+          buildPulses();
+          buildCore(now);
+          buildEchoes();
+          for (var e = 0; e < game.enemies.length; e += 1) buildEnemy(game.enemies[e], now);
+          buildProjectiles();
+          if (game.player && game.player.active) {
+            var flicker = game.player.invuln > 0 && Math.floor(game.player.invuln / 3) % 2 === 0;
+            if (firstPersonActive()) buildFirstPersonRig(game.player);
+            else buildActor(game.player.x, game.player.y, game.player.facingX, game.player.facingY, false, flicker ? 0.45 : 1, game.player.dashTicks > 0);
+            if (game.player.invuln > 0) {
+              addRing(glow, worldX(game.player.x), 0.05, worldZ(game.player.y), 0.55, 0.045, 18, color("#edf7f4", flicker ? 0.16 : 0.32), 1);
+            }
+          }
+          buildParticles();
+
+          var camera = cameraState(
+            now,
+            game.player && game.player.active ? game.player.x : NaN,
+            game.player && game.player.active ? game.player.y : NaN,
+            game.player && game.player.active ? game.player.facingX : 0,
+            game.player && game.player.active ? game.player.facingY : -1,
+            true,
+            false
+          );
+          var eye = camera.eye;
+          var viewProjection = camera.viewProjection;
+
+          gl.viewport(0, 0, surface.width, surface.height);
+          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+          gl.useProgram(program);
+          gl.uniformMatrix4fv(uniforms.viewProjection, false, new Float32Array(viewProjection));
+          gl.uniform3f(uniforms.camera, eye[0], eye[1], eye[2]);
+          gl.uniform3f(uniforms.lightDir, -0.42, 0.88, 0.28);
+          drawCached(staticSolidBuffer, staticSolidVertices, false);
+          upload(solid, false);
+          drawCached(staticGlowBuffer, staticGlowVertices, true);
+          upload(glow, true);
+          gl.depthMask(true);
+          gl.disable(gl.BLEND);
+          api.renderChecks += 1;
+          if (typeof gl.getError === "function" && (api.renderChecks === 1 || api.renderChecks % 120 === 0)) {
+            api.glError = Number(gl.getError()) || 0;
+            if (api.glError !== (gl.NO_ERROR || 0)) throw new Error("WebGL error 0x" + api.glError.toString(16));
+          }
+          api.triangles = (staticSolidVertices + staticGlowVertices + solid.length / 11 + glow.length / 11) / 3;
+          if (game.shake > 0) {
+            game.shake *= 0.82;
+            if (game.shake < 0.3) game.shake = 0;
+          }
+          api.lastError = "";
+          return true;
+        } catch (error) {
+          api.lastError = String(error && error.message || error || "WebGL render failure").slice(0, 120);
+          api.ready = false;
+          api.mode = "canvas-2d";
+          api.triangles = 0;
+          return false;
+        }
+      };
+
+      surface.addEventListener("webglcontextlost", function (event) {
+        event.preventDefault();
+        api.ready = false;
+        api.mode = "canvas-2d";
+        api.triangles = 0;
+      });
+      surface.addEventListener("webglcontextrestored", initialize);
+      initialize();
+      return api;
+    }
+
+    var renderer3d = createRenderer3D(sceneCanvas);
+
     function drawHud() {
       ctx.save();
       ctx.fillStyle = "rgba(3,7,13,0.9)";
@@ -2758,30 +3907,42 @@
       dashButton.style.setProperty("--dash-ready", String(dashRatio));
       dashButton.setAttribute("aria-disabled", dashRatio < 1 ? "true" : "false");
       dashButton.textContent = dashRatio >= 1 ? "DASH" : Math.ceil((game.player ? game.player.dashCooldown : 0) / HZ).toFixed(0);
+      var fireRatio = game.player ? 1 - clamp(game.player.shotCooldown / game.build.fireInterval, 0, 1) : 1;
+      attackButton.style.setProperty("--fire-ready", String(fireRatio));
+      attackButton.setAttribute("aria-disabled", fireRatio < 1 ? "true" : "false");
+      crosshair.classList.toggle("targeted", crosshairHasTarget());
     }
 
     function render(now) {
       var started = performance.now();
       var sx = canvas.width / W;
       var sy = canvas.height / H;
-      ctx.setTransform(sx, 0, 0, sy, 0, 0);
-      drawBackground(now);
-      ctx.save();
-      if (save.settings.shake && !reducedMotion && game.shake > 0) {
-        var shakeX = (game.fxRng() - 0.5) * game.shake;
-        var shakeY = (game.fxRng() - 0.5) * game.shake;
-        ctx.translate(shakeX, shakeY);
-        game.shake *= 0.82;
-        if (game.shake < 0.3) game.shake = 0;
+      var using3D = renderer3d.ready && renderer3d.render(now);
+      crosshair.classList.toggle("fallback", !using3D);
+      if (using3D) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
-      for (var r = 0; r < game.pulses.length; r += 1) drawPulse(game.pulses[r]);
-      drawCore(now);
-      drawEchoes();
-      for (var e = 0; e < game.enemies.length; e += 1) drawEnemy(game.enemies[e]);
-      drawProjectiles();
-      drawPlayer();
-      drawParticles();
-      ctx.restore();
+      ctx.setTransform(sx, 0, 0, sy, 0, 0);
+      if (!using3D) {
+        drawBackground(now);
+        ctx.save();
+        if (save.settings.shake && !reducedMotion && game.shake > 0) {
+          var shakeX = (game.fxRng() - 0.5) * game.shake;
+          var shakeY = (game.fxRng() - 0.5) * game.shake;
+          ctx.translate(shakeX, shakeY);
+          game.shake *= 0.82;
+          if (game.shake < 0.3) game.shake = 0;
+        }
+        for (var r = 0; r < game.pulses.length; r += 1) drawPulse(game.pulses[r]);
+        drawCore(now);
+        drawEchoes();
+        for (var e = 0; e < game.enemies.length; e += 1) drawEnemy(game.enemies[e]);
+        drawProjectiles();
+        drawPlayer();
+        drawParticles();
+        ctx.restore();
+      }
       if (game.mode !== "menu" && game.mode !== "tutorial" && game.mode !== "settings") drawHud();
       var renderDuration = performance.now() - started;
       renderTimes.push(renderDuration);
@@ -2791,8 +3952,10 @@
       }
     }
 
-    function resizeCanvas() {
+    function resizeCanvas(preserveInput) {
+      var keepInput = preserveInput === true;
       resizeQueued = false;
+      resizePreserveInput = false;
       var rect = canvas.getBoundingClientRect();
       cssWidth = Math.max(1, rect.width);
       cssHeight = Math.max(1, rect.height);
@@ -2805,8 +3968,9 @@
         canvas.width = width;
         canvas.height = height;
       }
+      renderer3d.resize(width, height);
       recordDisplayMetrics();
-      clearInput();
+      if (!keepInput) clearInput();
       layoutControls();
       var coarseLandscape = window.innerWidth > window.innerHeight &&
         window.innerHeight <= 560 &&
@@ -2816,10 +3980,15 @@
       }
     }
 
-    function queueResize() {
-      if (resizeQueued) return;
+    function queueResize(preserveInput) {
+      var keepInput = preserveInput === true;
+      if (resizeQueued) {
+        if (!keepInput) resizePreserveInput = false;
+        return;
+      }
       resizeQueued = true;
-      requestAnimationFrame(resizeCanvas);
+      resizePreserveInput = keepInput;
+      requestAnimationFrame(function () { resizeCanvas(resizePreserveInput); });
     }
 
     function updateQuality() {
@@ -2840,13 +4009,13 @@
         game.qualityCooldown = 2;
         game.qualityBadWindows = 0;
         game.qualityGoodWindows = 0;
-        queueResize();
+        queueResize(true);
       } else if (game.qualityGoodWindows >= 6 && game.quality < 2 && game.totalTicks > 1800) {
         game.quality += 1;
         game.qualityCooldown = 2;
         game.qualityBadWindows = 0;
         game.qualityGoodWindows = 0;
-        queueResize();
+        queueResize(true);
       }
     }
 
@@ -2866,10 +4035,10 @@
       lastDebugAt = now;
       debugPanel.hidden = false;
       debugPanel.textContent =
-        "FPS " + fps.toFixed(0) + "  Q" + game.quality +
+        "FPS " + fps.toFixed(0) + "  Q" + game.quality + "  " + renderer3d.mode.toUpperCase() +
         "\nMODE " + game.mode + "  LOOP " + game.loop + " T" + game.tick +
         "\nE " + game.enemies.length + "  P " + (game.friendly.length + game.hostile.length) + "  FX " + game.particles.length +
-        "\np95 U " + percentile(updateTimes, 0.95).toFixed(2) + "ms  R " + percentile(renderTimes, 0.95).toFixed(2) + "ms" +
+        "\nTRI " + Math.round(renderer3d.triangles) + "  p95 U " + percentile(updateTimes, 0.95).toFixed(2) + "ms  R " + percentile(renderTimes, 0.95).toFixed(2) + "ms" +
         "\nSEED " + String(game.seed >>> 0);
     }
 
@@ -2885,6 +4054,7 @@
         fps = 1000 / (frameIntervals.reduce(function (sum, v) { return sum + v; }, 0) / frameIntervals.length);
       }
       if (input.pointerId !== null && now - input.pointerLastAt > 30000) clearPointer("stale-timeout");
+      if (input.lookPointerId !== null && now - input.lookPointerLastAt > 30000) clearLookPointer();
       if (!manualClock && simulationActive) {
         accumulator += Math.min(0.05, interval / 1000);
         var steps = 0;
@@ -2929,7 +4099,9 @@
     }
 
     function controlsVisible(visible) {
+      attackButton.hidden = !visible;
       dashButton.hidden = !visible;
+      crosshair.hidden = !visible;
       gameIcons.hidden = !visible;
       if (!visible) movePad.classList.remove("visible");
     }
@@ -3079,13 +4251,21 @@
     }
 
     function layoutControls() {
+      var moveSide = save.settings.leftHanded ? "右側" : "左側";
+      var lookSide = save.settings.leftHanded ? "左側" : "右側";
       if (save.settings.leftHanded) {
+        attackButton.style.left = "calc(var(--safe-left) + clamp(16px, 4vw, 24px))";
+        attackButton.style.right = "auto";
         dashButton.style.left = "calc(var(--safe-left) + clamp(16px, 4vw, 24px))";
         dashButton.style.right = "auto";
       } else {
+        attackButton.style.right = "calc(var(--safe-right) + clamp(16px, 4vw, 24px))";
+        attackButton.style.left = "auto";
         dashButton.style.right = "calc(var(--safe-right) + clamp(16px, 4vw, 24px))";
         dashButton.style.left = "auto";
       }
+      document.getElementById("tutorialMoveCopy").textContent = moveSide + "をドラッグして移動。" + lookSide + "をドラッグして一人称視点の照準を動かす。";
+      canvas.setAttribute("aria-label", "ECHO SEVENの一人称3D戦闘画面。" + moveSide + "をドラッグして移動、" + lookSide + "をドラッグして照準を動かします。");
       soundButton.textContent = save.settings.sound ? "♪" : "×";
       soundButton.setAttribute("aria-label", save.settings.sound ? "音を消す" : "音を出す");
     }
@@ -3098,10 +4278,19 @@
       moveKnob.style.transform = "translate(0px, 0px)";
     }
 
+    function clearLookPointer() {
+      input.lookPointerId = null;
+    }
+
     function clearInput() {
       clearPointer();
+      clearLookPointer();
+      input.lookDelta = 0;
+      input.fireHeld = false;
+      input.fireQueued = false;
       input.dashQueued = false;
       input.keys = Object.create(null);
+      attackButton.classList.remove("is-pressed");
       dashButton.classList.remove("is-pressed");
     }
 
@@ -3116,29 +4305,45 @@
       };
     }
 
-    function releasePointer(event) {
-      if (event && event.pointerId !== input.pointerId) return;
-      clearPointer();
+    function releaseCanvasPointer(event) {
+      if (!event || event.pointerId === input.pointerId) clearPointer();
+      if (!event || event.pointerId === input.lookPointerId) clearLookPointer();
     }
 
     canvas.addEventListener("pointerdown", function (event) {
-      if (game.mode !== "playing" || input.pointerId !== null) return;
+      if (game.mode !== "playing") return;
       if (event.pointerType === "mouse" && event.button !== 0) return;
       var point = logicalPointer(event);
-      var usable = save.settings.leftHanded ? point.cssX > point.rect.width * 0.38 : point.cssX < point.rect.width * 0.62;
-      if (!usable) return;
+      var moveZone = save.settings.leftHanded
+        ? point.cssX > point.rect.width * 0.52
+        : point.cssX < point.rect.width * 0.48;
       event.preventDefault();
-      input.pointerId = event.pointerId;
-      input.pointerOriginX = event.clientX;
-      input.pointerOriginY = event.clientY;
-      input.pointerLastAt = performance.now();
-      movePad.style.left = point.cssX + "px";
-      movePad.style.top = point.cssY + "px";
-      movePad.classList.add("visible");
+      if (moveZone && input.pointerId === null) {
+        input.pointerId = event.pointerId;
+        input.pointerOriginX = event.clientX;
+        input.pointerOriginY = event.clientY;
+        input.pointerLastAt = performance.now();
+        movePad.style.left = point.cssX + "px";
+        movePad.style.top = point.cssY + "px";
+        movePad.classList.add("visible");
+      } else if (input.lookPointerId === null) {
+        input.lookPointerId = event.pointerId;
+        input.lookLastX = event.clientX;
+        input.lookPointerLastAt = performance.now();
+      } else {
+        return;
+      }
       try { canvas.setPointerCapture(event.pointerId); } catch (ignored) {}
     });
 
     canvas.addEventListener("pointermove", function (event) {
+      if (event.pointerId === input.lookPointerId) {
+        event.preventDefault();
+        input.lookDelta += clamp((event.clientX - input.lookLastX) * 0.008, -0.24, 0.24);
+        input.lookLastX = event.clientX;
+        input.lookPointerLastAt = performance.now();
+        return;
+      }
       if (event.pointerId !== input.pointerId) return;
       event.preventDefault();
       input.pointerLastAt = performance.now();
@@ -3156,11 +4361,31 @@
       moveKnob.style.transform = "translate(" + (n.x * travel) + "px, " + (n.y * travel) + "px)";
     }, { passive: false });
 
-    canvas.addEventListener("pointerup", releasePointer);
-    canvas.addEventListener("pointercancel", releasePointer);
-    canvas.addEventListener("lostpointercapture", releasePointer);
+    canvas.addEventListener("pointerup", releaseCanvasPointer);
+    canvas.addEventListener("pointercancel", releaseCanvasPointer);
+    canvas.addEventListener("lostpointercapture", releaseCanvasPointer);
     canvas.addEventListener("contextmenu", function (event) {
       event.preventDefault();
+    });
+
+    attackButton.addEventListener("pointerdown", function (event) {
+      if (game.mode !== "playing") return;
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      event.preventDefault();
+      input.fireHeld = true;
+      input.fireQueued = true;
+      attackButton.classList.add("is-pressed");
+      try { attackButton.setPointerCapture(event.pointerId); } catch (ignored) {}
+    });
+    function releaseAttack() {
+      input.fireHeld = false;
+      attackButton.classList.remove("is-pressed");
+    }
+    attackButton.addEventListener("pointerup", releaseAttack);
+    attackButton.addEventListener("pointercancel", releaseAttack);
+    attackButton.addEventListener("lostpointercapture", releaseAttack);
+    attackButton.addEventListener("click", function (event) {
+      if (event.detail === 0 && game.mode === "playing") input.fireQueued = true;
     });
 
     dashButton.addEventListener("pointerdown", function (event) {
@@ -3194,7 +4419,12 @@
           if (!event.repeat) input.dashQueued = true;
           event.preventDefault();
         }
-        if (event.code.indexOf("Arrow") === 0 || ["KeyW", "KeyA", "KeyS", "KeyD"].indexOf(event.code) !== -1) {
+        if (event.code === "KeyF") {
+          input.keys.KeyF = true;
+          if (!event.repeat) input.fireQueued = true;
+          event.preventDefault();
+        }
+        if (event.code.indexOf("Arrow") === 0 || ["KeyW", "KeyA", "KeyS", "KeyD", "KeyQ", "KeyE"].indexOf(event.code) !== -1) {
           input.keys[event.code] = true;
           event.preventDefault();
         }
@@ -3211,7 +4441,7 @@
     document.addEventListener("keyup", function (event) {
       if (input.keys[event.code]) {
         delete input.keys[event.code];
-        setMoveFromKeys();
+        if (event.code !== "KeyQ" && event.code !== "KeyE" && event.code !== "KeyF") setMoveFromKeys();
       }
     });
 
@@ -3224,6 +4454,7 @@
       showOverlay("tutorial");
     });
     document.getElementById("tutorialStartButton").addEventListener("click", function () {
+      save.tutorialRulesVersion = RULES_VERSION;
       save.tutorialSeen = true;
       writeSave();
       ensureAudio();
@@ -3288,7 +4519,7 @@
       }
     });
     document.addEventListener("touchmove", function (event) {
-      if (event.target === canvas || event.target === dashButton || canvas.contains(event.target)) event.preventDefault();
+      if (event.target === canvas || event.target === attackButton || event.target === dashButton || canvas.contains(event.target)) event.preventDefault();
     }, { passive: false });
 
     function onReducedMotion(event) {
@@ -3310,7 +4541,9 @@
           x: CORE_X + Math.cos(angle) * (75 + index * 14),
           y: CORE_Y + Math.sin(angle) * (60 + index * 9),
           a: 1,
-          f: tick % 24 === index % 6,
+          f: tick % 24 === index % 6 ? 1 : 0,
+          fx: Math.cos(angle),
+          fy: Math.sin(angle),
           d: tick === 240 + index * 18 || tick === 600 - index * 12 ? 1 : 0
         });
       }
@@ -3332,15 +4565,42 @@
         coreMax: game.coreMax,
         score: game.score,
         kills: game.kills,
+        player: game.player ? {
+          x: game.player.x,
+          y: game.player.y,
+          active: game.player.active,
+          inactiveTicks: game.player.inactiveTicks,
+          facingX: game.player.facingX,
+          facingY: game.player.facingY,
+          shotCooldown: game.player.shotCooldown
+        } : null,
         echoes: game.recordings.length,
         recorderLength: game.recorder.length,
         enemies: game.enemies.map(function (e) { return { id: e.id, type: e.type, hp: e.hp, x: e.x, y: e.y, alive: e.alive, orbitDir: e.orbitDir }; }),
         friendly: game.friendly.length,
+        friendlyProjectiles: game.friendly.slice(0, 8).map(function (bullet) {
+          return { actor: bullet.actor, vx: bullet.vx, vy: bullet.vy, alive: bullet.alive };
+        }),
         hostile: game.hostile.length,
         upgrades: game.chosenUpgrades.slice(),
         rngState: game.rng.state(),
         won: game.mode === "result" && save.lastResult ? save.lastResult.won : null,
-        controlsVisible: !dashButton.hidden && !gameIcons.hidden,
+        controlsVisible: !attackButton.hidden && !dashButton.hidden && !crosshair.hidden && !gameIcons.hidden,
+        quality: game.quality,
+        inputState: {
+          movePointerId: input.pointerId,
+          lookPointerId: input.lookPointerId,
+          fireHeld: input.fireHeld,
+          fireQueued: input.fireQueued,
+          dashQueued: input.dashQueued,
+          lookDelta: input.lookDelta
+        },
+        renderer: renderer3d.ready ? "webgl-3d" : "canvas-2d",
+        triangles: Math.round(renderer3d.triangles),
+        rendererStaticBuilds: renderer3d.staticBuilds,
+        rendererBufferResizes: renderer3d.dynamicBufferResizes,
+        rendererGlError: renderer3d.glError,
+        rendererError: renderer3d.lastError,
         metrics: metrics
       };
     }
@@ -3401,6 +4661,13 @@
         game.schedule = [];
         resetCombatArrays();
         spawnEnemy("P", CORE_X + 180, CORE_Y);
+      } else if (id === "PLAYER_KO") {
+        game.schedule = [];
+        resetCombatArrays();
+        game.transitionTicks = 0;
+        game.mode = "playing";
+        game.player.invuln = 0;
+        damagePlayer(999);
       } else if (id === "BOSS_TELEGRAPH") {
         loadDebugCheckpoint("L7_BOSS_START");
         game.tick = 27;
@@ -3456,6 +4723,70 @@
       return debugSnapshot();
     }
 
+    function mixTraceHash(hash, value) {
+      var numeric = Math.round((Number(value) || 0) * 1000) >>> 0;
+      for (var byte = 0; byte < 4; byte += 1) {
+        hash ^= (numeric >>> (byte * 8)) & 255;
+        hash = Math.imul(hash, 16777619) >>> 0;
+      }
+      return hash >>> 0;
+    }
+
+    function deterministicFullRunTrace(seed) {
+      manualClock = true;
+      startRun(seed === undefined ? 0xE0072026 : seed);
+      var hash = 2166136261 >>> 0;
+      var absoluteTick = 0;
+      var upgradesByLoop = { 2: "amplifier", 4: "plating", 6: "chorus" };
+      for (var loopNumber = 1; loopNumber <= 7; loopNumber += 1) {
+        game.schedule = [];
+        game.transitionTicks = 0;
+        enterDebugPlayingState();
+        game.player.hp = 9999;
+        game.player.maxHp = 9999;
+        for (var loopTick = 0; loopTick < LOOP_TICKS; loopTick += 1) {
+          var angle = absoluteTick * 0.017 + loopNumber * 0.41;
+          input.pointerId = 7000 + loopNumber;
+          input.pointerLastAt = performance.now();
+          input.moveX = Math.cos(angle);
+          input.moveY = Math.sin(angle * 0.83);
+          input.lookDelta = Math.sin(angle * 0.37) * 0.012;
+          input.fireHeld = loopTick % 37 < 8;
+          input.dashQueued = loopTick % 173 === 29;
+          updateFixed();
+          render(absoluteTick * (1000 / HZ));
+          hash = mixTraceHash(hash, game.loop);
+          hash = mixTraceHash(hash, game.tick);
+          hash = mixTraceHash(hash, game.player.x);
+          hash = mixTraceHash(hash, game.player.y);
+          hash = mixTraceHash(hash, game.player.hp);
+          hash = mixTraceHash(hash, game.coreHp);
+          hash = mixTraceHash(hash, game.score);
+          hash = mixTraceHash(hash, game.rng.state());
+          absoluteTick += 1;
+        }
+        if (loopNumber < 7) {
+          if (upgradesByLoop[loopNumber]) applyUpgrade(upgradesByLoop[loopNumber]);
+          startLoop(loopNumber + 1);
+        }
+      }
+      clearInput();
+      return {
+        hash: (hash >>> 0).toString(16).toUpperCase().padStart(8, "0"),
+        totalTicks: game.totalTicks,
+        loop: game.loop,
+        tick: game.tick,
+        mode: game.mode,
+        coreHp: Math.round(game.coreHp * 1000) / 1000,
+        score: game.score,
+        kills: game.kills,
+        recordings: game.recordings.map(function (recording) { return recording.length; }),
+        recorderLength: game.recorder.length,
+        upgrades: game.chosenUpgrades.slice(),
+        rngState: game.rng.state()
+      };
+    }
+
     function assertInvariants() {
       var errors = [];
       if (game.loop < 1 || game.loop > 7) errors.push("loop-range");
@@ -3465,6 +4796,7 @@
         if (game.recordings[i].length !== LOOP_TICKS) errors.push("tape-" + i + "-length");
       }
       if (!Number.isFinite(game.coreHp) || !Number.isFinite(game.score)) errors.push("non-finite");
+      if (game.player && game.player.active && distanceSquared(game.player.x, game.player.y, CORE_X, CORE_Y) < (PLAYER_CORE_CLEARANCE - 0.001) * (PLAYER_CORE_CLEARANCE - 0.001)) errors.push("player-core-penetration");
       if (game.enemies.length > MAX_ENEMIES) errors.push("enemy-cap");
       if (game.friendly.length > MAX_FRIENDLY) errors.push("friendly-cap");
       if (game.hostile.length > MAX_HOSTILE) errors.push("hostile-cap");
@@ -3474,7 +4806,17 @@
 
     if (testMode) {
       window.__E7_TEST__ = {
-        info: function () { return { buildId: BUILD_ID, rulesVersion: RULES_VERSION, saveVersion: SAVE_VERSION, fixedHz: HZ, loopTicks: LOOP_TICKS }; },
+        info: function () {
+          return {
+            buildId: BUILD_ID,
+            rulesVersion: RULES_VERSION,
+            saveVersion: SAVE_VERSION,
+            fixedHz: HZ,
+            loopTicks: LOOP_TICKS,
+            cameraMode: "first-person",
+            attackMode: "manual"
+          };
+        },
         reset: function (options) {
           var seed = options && options.seed !== undefined ? options.seed : 0xE0072026;
           manualClock = true;
@@ -3494,12 +4836,21 @@
         snapshot: function () { return deepCopy(debugSnapshot()); },
         assertInvariants: assertInvariants,
         checkpoints: {
-          list: function () { return ["FRESH_BOOT", "L1_T899", "L2_ECHO_START", "PRISM_ORBIT", "L7_BOSS_START", "BOSS_TELEGRAPH", "BOSS_CLUTCH", "TIE_BREAK", "PERF_WORST"]; },
+          list: function () { return ["FRESH_BOOT", "L1_T899", "L2_ECHO_START", "PRISM_ORBIT", "PLAYER_KO", "L7_BOSS_START", "BOSS_TELEGRAPH", "BOSS_CLUTCH", "TIE_BREAK", "PERF_WORST"]; },
           load: loadDebugCheckpoint
         },
         lifecycle: {
           pause: function (source) { pauseGame("テスト停止", source); return debugSnapshot(); },
-          resize: function () { resizeCanvas(); return debugSnapshot(); }
+          resize: function () { resizeCanvas(); return debugSnapshot(); },
+          adaptiveQualityDrop: function () {
+            frameIntervals.length = 0;
+            for (var i = 0; i < 180; i += 1) frameIntervals.push(33.4);
+            game.qualityCooldown = 0;
+            game.qualityBadWindows = 1;
+            updateQuality();
+            if (resizeQueued) resizeCanvas(resizePreserveInput);
+            return debugSnapshot();
+          }
         },
         input: {
           setTouchMove: function (x, y) {
@@ -3510,6 +4861,27 @@
             input.moveY = move.y;
             return debugSnapshot();
           },
+          setAim: function (x, y) {
+            var aim = normalize(Number(x) || 0, Number(y) || 0);
+            if (game.player && aim.length > 0) {
+              game.player.facingX = aim.x;
+              game.player.facingY = aim.y;
+            }
+            return debugSnapshot();
+          },
+          look: function (delta) {
+            input.lookDelta += Number(delta) || 0;
+            return debugSnapshot();
+          },
+          fireDown: function () {
+            input.fireHeld = true;
+            input.fireQueued = true;
+            return debugSnapshot();
+          },
+          fireUp: function () {
+            input.fireHeld = false;
+            return debugSnapshot();
+          },
           dash: function () { input.dashQueued = true; return debugSnapshot(); },
           release: function () { clearPointer(); return debugSnapshot(); }
         },
@@ -3517,15 +4889,33 @@
           offers: function () { return pickUpgradeOptions().map(function (u) { return u.id; }); },
           choose: function (id) { return applyUpgrade(id); }
         },
+        tapes: {
+          currentFrame: function (tick) {
+            return deepCopy(game.recorder[Math.max(0, Math.floor(Number(tick) || 0))] || null);
+          },
+          recordedFrame: function (loopIndex, tick) {
+            var recording = game.recordings[Math.max(0, Math.floor(Number(loopIndex) || 0))];
+            return deepCopy(recording && recording[Math.max(0, Math.floor(Number(tick) || 0))] || null);
+          }
+        },
         save: {
           exportRaw: function () { return deepCopy(save); },
           importRaw: function (raw) { save = sanitizeSave(raw); return deepCopy(save); },
           clear: function () { save = defaultSave(); writeSave(); }
         },
         metrics: function () { return deepCopy(debugSnapshot().metrics); },
+        renderer: {
+          projectArenaPoint: function (x, y, subjectX, subjectY, facingX, facingY, effects, now) {
+            return deepCopy(renderer3d.projectArenaPoint(x, y, subjectX, subjectY, facingX, facingY, effects, now));
+          },
+          cameraPose: function (subjectX, subjectY, facingX, facingY) {
+            return deepCopy(renderer3d.cameraPose(subjectX, subjectY, facingX, facingY));
+          }
+        },
         diagnostics: {
           report: function () { return buildDeviceReportText(); },
           verdict: function () { return deepCopy(diagnosticVerdict(runMetricSnapshot())); },
+          goldenTrace: function (seed) { return deepCopy(deterministicFullRunTrace(seed)); },
           sampleFrames: function (values) {
             if (Array.isArray(values)) values.forEach(recordRunFrame);
             updateDeviceReport();
