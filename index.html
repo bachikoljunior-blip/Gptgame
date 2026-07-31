@@ -336,6 +336,92 @@
       letter-spacing: 0.08em;
     }
 
+    .device-report {
+      margin: 0 0 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(5, 13, 22, 0.74);
+      font-family: ui-sans-serif, system-ui, sans-serif;
+    }
+
+    .device-report summary {
+      display: flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 12px;
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 850;
+      cursor: pointer;
+      list-style-position: inside;
+    }
+
+    .device-report summary strong {
+      color: var(--lime);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+    }
+
+    .device-report[data-verdict="warn"] summary strong {
+      color: var(--coral);
+    }
+
+    .diagnostic-body {
+      padding: 0 12px 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .diagnostic-summary {
+      margin: 10px 0;
+      color: #b9c6ca;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .diagnostic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1px;
+      margin: 0 0 10px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--line);
+    }
+
+    .diagnostic-grid div {
+      min-width: 0;
+      padding: 9px;
+      background: #08131f;
+    }
+
+    .diagnostic-grid dt {
+      color: var(--steel);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .diagnostic-grid dd {
+      margin: 4px 0 0;
+      overflow-wrap: anywhere;
+      color: var(--white);
+      font-family: ui-monospace, monospace;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .copy-status {
+      min-height: 18px;
+      margin: 6px 0 0;
+      color: var(--steel);
+      font-size: 11px;
+      text-align: center;
+    }
+
     .tutorial-grid {
       display: grid;
       gap: 10px;
@@ -693,7 +779,23 @@
           <div class="stat"><strong id="resultCore">0%</strong><span>CORE</span></div>
         </div>
         <p class="eyebrow" id="resultSeed" style="color:var(--steel)">RUN 00000000</p>
-        <button class="primary" id="newRunButton" type="button">NEW SIGNAL</button>
+        <details class="device-report" id="deviceReport" data-verdict="pending">
+          <summary><span>端末診断</span><strong id="diagnosticVerdict">計測中</strong></summary>
+          <div class="diagnostic-body">
+            <p class="diagnostic-summary" id="diagnosticSummary">この端末でのフレーム安定性と操作状況をローカル計測します。</p>
+            <dl class="diagnostic-grid">
+              <div><dt>FRAME P95 / MAX</dt><dd id="diagnosticFrame">—</dd></div>
+              <div><dt>UPDATE / RENDER P95</dt><dd id="diagnosticLogic">—</dd></div>
+              <div><dt>PEAK ENTITIES</dt><dd id="diagnosticEntities">—</dd></div>
+              <div><dt>QUALITY / DPR</dt><dd id="diagnosticQuality">—</dd></div>
+              <div><dt>TOUCH / PAUSE</dt><dd id="diagnosticInput">—</dd></div>
+              <div><dt>AUDIO VOICES</dt><dd id="diagnosticAudio">—</dd></div>
+            </dl>
+            <button class="secondary" id="copyReportButton" type="button">診断結果をコピー</button>
+            <p class="copy-status" id="copyReportStatus" aria-live="polite"></p>
+          </div>
+        </details>
+        <button class="primary" id="newRunButton" type="button" data-initial-focus>NEW SIGNAL</button>
         <div class="button-row" style="margin-top:10px">
           <button class="secondary" id="replayButton" type="button">同じ配置</button>
           <button class="secondary" id="resultHomeButton" type="button">タイトル</button>
@@ -719,7 +821,7 @@
     var LOOP_TICKS = 900;
     var SAVE_VERSION = 2;
     var RULES_VERSION = 1;
-    var BUILD_ID = "2026.07.31-c";
+    var BUILD_ID = "2026.07.31-d";
     var SAVE_KEY = "echoSeven.save.v2";
     var CORE_X = 240;
     var CORE_Y = 410;
@@ -782,6 +884,7 @@
     var updateTimes = [];
     var renderTimes = [];
     var fps = 60;
+    var runMetrics = null;
 
     function clamp(v, min, max) {
       return v < min ? min : v > max ? max : v;
@@ -816,6 +919,248 @@
       if (!values.length) return 0;
       var copy = values.slice().sort(function (a, b) { return a - b; });
       return copy[Math.min(copy.length - 1, Math.floor(copy.length * ratio))];
+    }
+
+    function createRunMetrics() {
+      var dpr = Math.max(0.1, effectiveDpr || 1);
+      return {
+        startedAt: performance.now(),
+        frameIntervals: [],
+        updateTimes: [],
+        renderTimes: [],
+        sampledFrames: 0,
+        frameMax: 0,
+        slowFrames: 0,
+        suspendedFrameGaps: 0,
+        droppedStepWindows: 0,
+        qualityStart: game ? game.quality : 2,
+        qualityFloor: game ? game.quality : 2,
+        qualityDrops: 0,
+        maxEnemies: 0,
+        maxFriendly: 0,
+        maxHostile: 0,
+        maxProjectiles: 0,
+        maxParticles: 0,
+        maxAudioVoices: 0,
+        audioResumeFailuresStart: audio ? audio.resumeFailures : 0,
+        dprMin: dpr,
+        dprMax: dpr,
+        backingPixelsMax: canvas.width * canvas.height,
+        concurrentDash: false,
+        pauses: 0,
+        backgroundPauses: 0,
+        rotationPauses: 0
+      };
+    }
+
+    function pushRunSample(target, value) {
+      if (!target || !Number.isFinite(value) || value < 0) return;
+      target.push(value);
+      if (target.length > 15000) target.shift();
+    }
+
+    function recordRunFrame(interval) {
+      if (!runMetrics || !Number.isFinite(interval) || interval <= 0) return;
+      if (interval > 1000) {
+        runMetrics.suspendedFrameGaps += 1;
+        return;
+      }
+      pushRunSample(runMetrics.frameIntervals, interval);
+      runMetrics.sampledFrames += 1;
+      runMetrics.frameMax = Math.max(runMetrics.frameMax, interval);
+      if (interval > 34) runMetrics.slowFrames += 1;
+    }
+
+    function recordDisplayMetrics() {
+      if (!runMetrics) return;
+      runMetrics.dprMin = Math.min(runMetrics.dprMin, effectiveDpr);
+      runMetrics.dprMax = Math.max(runMetrics.dprMax, effectiveDpr);
+      runMetrics.backingPixelsMax = Math.max(runMetrics.backingPixelsMax, canvas.width * canvas.height);
+    }
+
+    function runMetricSnapshot() {
+      var metrics = runMetrics || createRunMetrics();
+      var currentEnemies = game && game.enemies ? game.enemies.length : 0;
+      var currentFriendly = game && game.friendly ? game.friendly.length : 0;
+      var currentHostile = game && game.hostile ? game.hostile.length : 0;
+      var currentParticles = game && game.particles ? game.particles.length : 0;
+      return {
+        sampledFrames: metrics.sampledFrames,
+        frameP95: percentile(metrics.frameIntervals, 0.95),
+        frameMax: metrics.frameMax,
+        slowFrames: metrics.slowFrames,
+        suspendedFrameGaps: metrics.suspendedFrameGaps,
+        droppedStepWindows: metrics.droppedStepWindows,
+        updateP95: percentile(metrics.updateTimes, 0.95),
+        renderP95: percentile(metrics.renderTimes, 0.95),
+        maxEnemies: Math.max(metrics.maxEnemies, game ? game.maxEnemies : 0, currentEnemies),
+        maxFriendly: Math.max(metrics.maxFriendly, currentFriendly),
+        maxHostile: Math.max(metrics.maxHostile, currentHostile),
+        maxProjectiles: Math.max(
+          metrics.maxProjectiles,
+          game ? game.maxProjectiles : 0,
+          currentFriendly + currentHostile
+        ),
+        maxParticles: Math.max(metrics.maxParticles, game ? game.maxParticles : 0, currentParticles),
+        qualityStart: metrics.qualityStart,
+        qualityFloor: metrics.qualityFloor,
+        qualityDrops: metrics.qualityDrops,
+        effectiveDpr: effectiveDpr,
+        dprMin: metrics.dprMin,
+        dprMax: metrics.dprMax,
+        backingPixels: canvas.width * canvas.height,
+        backingPixelsMax: metrics.backingPixelsMax,
+        concurrentDash: metrics.concurrentDash,
+        pauses: metrics.pauses,
+        backgroundPauses: metrics.backgroundPauses,
+        rotationPauses: metrics.rotationPauses,
+        maxAudioVoices: Math.max(metrics.maxAudioVoices, audio ? audio.voices : 0),
+        audioVoicesRemaining: audio ? audio.voices : 0,
+        audioResumeFailures: audio ? Math.max(0, audio.resumeFailures - metrics.audioResumeFailuresStart) : 0,
+        viewportWidth: Math.round(cssWidth),
+        viewportHeight: Math.round(cssHeight),
+        deviceDpr: Number(window.devicePixelRatio || 1),
+        elapsedSeconds: Math.max(0, (performance.now() - metrics.startedAt) / 1000)
+      };
+    }
+
+    function diagnosticVerdict(metrics) {
+      if (metrics.sampledFrames < 120) {
+        return {
+          id: "pending",
+          label: "計測不足",
+          message: "実機フレームを120件以上集めると、30FPS基準で自動判定できます。"
+        };
+      }
+      if (metrics.frameP95 <= 25 && metrics.droppedStepWindows === 0 && metrics.qualityFloor >= 1) {
+        return {
+          id: "good",
+          label: "良好",
+          message: "フレーム時間の95%が25ms以内で、30FPS基準を余裕をもって満たしました。"
+        };
+      }
+      if (metrics.frameP95 <= 34 && metrics.droppedStepWindows <= 2) {
+        return {
+          id: "stable",
+          label: "30FPS圏内",
+          message: "フレーム時間の95%が30FPS基準内です。端末に合わせた画質調整も記録されています。"
+        };
+      }
+      return {
+        id: "warn",
+        label: "要確認",
+        message: "30FPS基準を外れる停滞を検出しました。診断結果をコピーすると再現条件を共有できます。"
+      };
+    }
+
+    function metricMs(value) {
+      return value > 0 ? value.toFixed(1) + "ms" : "—";
+    }
+
+    function updateDeviceReport() {
+      var metrics = runMetricSnapshot();
+      var verdict = diagnosticVerdict(metrics);
+      var report = document.getElementById("deviceReport");
+      report.dataset.verdict = verdict.id;
+      if (verdict.id === "warn") report.open = true;
+      document.getElementById("diagnosticVerdict").textContent = verdict.label;
+      document.getElementById("diagnosticSummary").textContent = verdict.message;
+      document.getElementById("diagnosticFrame").textContent =
+        metricMs(metrics.frameP95) + " / " + metricMs(metrics.frameMax) +
+        " · " + metrics.sampledFrames + " samples";
+      document.getElementById("diagnosticLogic").textContent =
+        metricMs(metrics.updateP95) + " / " + metricMs(metrics.renderP95);
+      document.getElementById("diagnosticEntities").textContent =
+        "E" + metrics.maxEnemies + " · P" + metrics.maxProjectiles + " · FX" + metrics.maxParticles;
+      document.getElementById("diagnosticQuality").textContent =
+        "Q" + metrics.qualityStart + "→Q" + metrics.qualityFloor +
+        " · DPR " + metrics.dprMin.toFixed(2) + "–" + metrics.dprMax.toFixed(2);
+      document.getElementById("diagnosticInput").textContent =
+        "同時DASH " + (metrics.concurrentDash ? "確認" : "未確認") +
+        " · 停止 " + metrics.pauses + "回";
+      document.getElementById("diagnosticAudio").textContent =
+        "最大 " + metrics.maxAudioVoices + " · 残り " + metrics.audioVoicesRemaining +
+        " · 復帰失敗 " + metrics.audioResumeFailures;
+      return metrics;
+    }
+
+    function buildDeviceReportText() {
+      var metrics = runMetricSnapshot();
+      var verdict = diagnosticVerdict(metrics);
+      var seed = game ? game.seed >>> 0 : 0;
+      var result = save.lastResult && save.lastResult.seed === seed
+        ? (save.lastResult.won ? "WIN" : "LOSS")
+        : String(game ? game.mode : "unknown").toUpperCase();
+      var userAgent = String(navigator.userAgent || "unknown").replace(/\s+/g, " ").slice(0, 180);
+      return [
+        "ECHO//SEVEN DEVICE REPORT",
+        "build: " + BUILD_ID,
+        "result: " + result + " / loop " + (game ? game.loop : 0),
+        "seed: " + seed.toString(16).toUpperCase().padStart(8, "0"),
+        "verdict: " + verdict.label,
+        "viewport: " + metrics.viewportWidth + "x" + metrics.viewportHeight +
+          " / device DPR " + metrics.deviceDpr.toFixed(2) +
+          " / effective " + metrics.dprMin.toFixed(2) + "-" + metrics.dprMax.toFixed(2),
+        "frame: p95 " + metricMs(metrics.frameP95) +
+          " / max " + metricMs(metrics.frameMax) +
+          " / samples " + metrics.sampledFrames +
+          " / slow " + metrics.slowFrames +
+          " / suspended gaps " + metrics.suspendedFrameGaps +
+          " / step drops " + metrics.droppedStepWindows,
+        "work: update p95 " + metricMs(metrics.updateP95) +
+          " / render p95 " + metricMs(metrics.renderP95),
+        "peaks: enemies " + metrics.maxEnemies +
+          " / friendly " + metrics.maxFriendly +
+          " / hostile " + metrics.maxHostile +
+          " / particles " + metrics.maxParticles,
+        "quality: Q" + metrics.qualityStart + "->Q" + metrics.qualityFloor +
+          " / drops " + metrics.qualityDrops +
+          " / backing pixels " + metrics.backingPixelsMax,
+        "input: simultaneous drag+DASH " + (metrics.concurrentDash ? "yes" : "no") +
+          " / pauses " + metrics.pauses +
+          " / background " + metrics.backgroundPauses +
+          " / rotation " + metrics.rotationPauses,
+        "audio: peak voices " + metrics.maxAudioVoices +
+          " / remaining " + metrics.audioVoicesRemaining +
+          " / resume failures " + metrics.audioResumeFailures,
+        "agent: " + userAgent
+      ].join("\n");
+    }
+
+    function fallbackCopyReport(text) {
+      try {
+        var area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        area.setSelectionRange(0, text.length);
+        var copied = document.execCommand("copy");
+        document.body.removeChild(area);
+        return copied;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function copyDeviceReport() {
+      var text = buildDeviceReportText();
+      var status = document.getElementById("copyReportStatus");
+      function finish(copied) {
+        status.textContent = copied ? "コピーしました" : "コピーできませんでした";
+        announce(status.textContent);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          finish(true);
+        }).catch(function () {
+          finish(fallbackCopyReport(text));
+        });
+      } else {
+        finish(fallbackCopyReport(text));
+      }
     }
 
     function mulberry32(seed) {
@@ -943,6 +1288,7 @@
       var oscillator = audio.context.createOscillator();
       var gain = audio.context.createGain();
       audio.voices += 1;
+      if (runMetrics) runMetrics.maxAudioVoices = Math.max(runMetrics.maxAudioVoices, audio.voices);
       audio.nodesCreated += 2;
       oscillator.type = type || "sine";
       oscillator.frequency.setValueAtTime(frequency, now);
@@ -1463,6 +1809,7 @@
       }
 
       if (input.dashQueued && player.dashCooldown <= 0 && player.dashTicks <= 0) {
+        if (runMetrics && input.pointerId !== null && move.length > 0.15) runMetrics.concurrentDash = true;
         player.dashDirX = move.length > 0.15 ? move.x : player.facingX;
         player.dashDirY = move.length > 0.15 ? move.y : player.facingY;
         player.dashTicks = 10;
@@ -1871,6 +2218,13 @@
       game.maxEnemies = Math.max(game.maxEnemies, game.enemies.length);
       game.maxProjectiles = Math.max(game.maxProjectiles, game.friendly.length + game.hostile.length);
       game.maxParticles = Math.max(game.maxParticles, game.particles.length);
+      if (runMetrics) {
+        runMetrics.maxEnemies = Math.max(runMetrics.maxEnemies, game.enemies.length);
+        runMetrics.maxFriendly = Math.max(runMetrics.maxFriendly, game.friendly.length);
+        runMetrics.maxHostile = Math.max(runMetrics.maxHostile, game.hostile.length);
+        runMetrics.maxProjectiles = Math.max(runMetrics.maxProjectiles, game.friendly.length + game.hostile.length);
+        runMetrics.maxParticles = Math.max(runMetrics.maxParticles, game.particles.length);
+      }
       game.totalTicks += 1;
 
       if (game.coreHp <= 0) {
@@ -2003,6 +2357,10 @@
       game.qualityBadWindows = 0;
       game.qualityGoodWindows = 0;
       game.qualityCooldown = 0;
+      runMetrics = createRunMetrics();
+      recordDisplayMetrics();
+      document.getElementById("copyReportStatus").textContent = "";
+      document.getElementById("deviceReport").open = false;
       save.lastSeed = game.seed;
       writeSave();
       ensureAudio();
@@ -2425,8 +2783,12 @@
       drawParticles();
       ctx.restore();
       if (game.mode !== "menu" && game.mode !== "tutorial" && game.mode !== "settings") drawHud();
-      renderTimes.push(performance.now() - started);
+      var renderDuration = performance.now() - started;
+      renderTimes.push(renderDuration);
       if (renderTimes.length > 300) renderTimes.shift();
+      if (runMetrics && game.runStartAt > 0 && game.mode !== "menu" && game.mode !== "tutorial" && game.mode !== "settings") {
+        pushRunSample(runMetrics.renderTimes, renderDuration);
+      }
     }
 
     function resizeCanvas() {
@@ -2443,13 +2805,14 @@
         canvas.width = width;
         canvas.height = height;
       }
+      recordDisplayMetrics();
       clearInput();
       layoutControls();
       var coarseLandscape = window.innerWidth > window.innerHeight &&
         window.innerHeight <= 560 &&
         matchMedia("(pointer: coarse)").matches;
       if (coarseLandscape && (game.mode === "playing" || game.mode === "countdown" || game.mode === "rewind")) {
-        pauseGame("縦向きに戻してから再開してください。");
+        pauseGame("縦向きに戻してから再開してください。", "rotation");
       }
     }
 
@@ -2470,6 +2833,10 @@
       game.qualityGoodWindows = p95 < 18 ? game.qualityGoodWindows + 1 : 0;
       if (game.qualityBadWindows >= 2 && game.quality > 0) {
         game.quality -= 1;
+        if (runMetrics) {
+          runMetrics.qualityDrops += 1;
+          runMetrics.qualityFloor = Math.min(runMetrics.qualityFloor, game.quality);
+        }
         game.qualityCooldown = 2;
         game.qualityBadWindows = 0;
         game.qualityGoodWindows = 0;
@@ -2487,8 +2854,10 @@
       var started = performance.now();
       if (game.mode === "playing") updatePlaying();
       else if (game.mode === "countdown" || game.mode === "rewind") updateTransition();
-      updateTimes.push(performance.now() - started);
+      var updateDuration = performance.now() - started;
+      updateTimes.push(updateDuration);
       if (updateTimes.length > 300) updateTimes.shift();
+      if (runMetrics) pushRunSample(runMetrics.updateTimes, updateDuration);
     }
 
     var lastDebugAt = 0;
@@ -2506,8 +2875,10 @@
 
     function animationFrame(now) {
       var simulationActive = game.mode === "playing" || game.mode === "countdown" || game.mode === "rewind";
-      var interval = Math.min(100, Math.max(0, now - lastFrameAt));
+      var rawInterval = Math.max(0, now - lastFrameAt);
+      var interval = Math.min(100, rawInterval);
       lastFrameAt = now;
+      if (simulationActive) recordRunFrame(rawInterval);
       if (interval > 0) {
         frameIntervals.push(interval);
         if (frameIntervals.length > 300) frameIntervals.shift();
@@ -2522,7 +2893,10 @@
           accumulator -= STEP;
           steps += 1;
         }
-        if (steps === 3 && accumulator >= STEP) accumulator = 0;
+        if (steps === 3 && accumulator >= STEP) {
+          accumulator = 0;
+          if (runMetrics) runMetrics.droppedStepWindows += 1;
+        }
       } else {
         accumulator = 0;
       }
@@ -2550,7 +2924,7 @@
       overlay.hidden = false;
       overlay.inert = false;
       shell.dataset.mode = name;
-      var focusTarget = overlay.querySelector("button, input");
+      var focusTarget = overlay.querySelector("[data-initial-focus]") || overlay.querySelector("button, input");
       if (focusTarget) setTimeout(function () { focusTarget.focus(); }, 0);
     }
 
@@ -2658,13 +3032,22 @@
       document.getElementById("resultKills").textContent = roundDisplay(game.kills);
       document.getElementById("resultCore").textContent = Math.max(0, Math.round(game.coreHp / game.coreMax * 100)) + "%";
       document.getElementById("resultSeed").textContent = "RUN " + (game.seed >>> 0).toString(16).toUpperCase().padStart(8, "0");
+      updateDeviceReport();
       updateMenuStats();
       showOverlay("result");
+      setTimeout(function () {
+        if (game.mode === "result") updateDeviceReport();
+      }, 900);
       announce(won ? "ゲームクリア" : "ゲームオーバー");
     }
 
-    function pauseGame(reason) {
+    function pauseGame(reason, source) {
       if (game.mode !== "playing" && game.mode !== "countdown" && game.mode !== "rewind") return;
+      if (runMetrics) {
+        runMetrics.pauses += 1;
+        if (source === "background") runMetrics.backgroundPauses += 1;
+        if (source === "rotation") runMetrics.rotationPauses += 1;
+      }
       game.previousMode = game.mode;
       game.mode = "paused";
       clearInput();
@@ -2854,6 +3237,7 @@
     document.getElementById("newRunButton").addEventListener("click", function () { startRun(); });
     document.getElementById("replayButton").addEventListener("click", function () { startRun(game.seed); });
     document.getElementById("resultHomeButton").addEventListener("click", showMenu);
+    document.getElementById("copyReportButton").addEventListener("click", copyDeviceReport);
 
     soundButton.addEventListener("click", function () {
       save.settings.sound = !save.settings.sound;
@@ -2887,11 +3271,11 @@
     if (window.visualViewport) window.visualViewport.addEventListener("resize", queueResize);
     window.addEventListener("blur", function () {
       clearInput();
-      if (game.mode === "playing" || game.mode === "countdown" || game.mode === "rewind") pauseGame("画面を離れたため自動停止しました。");
+      if (game.mode === "playing" || game.mode === "countdown" || game.mode === "rewind") pauseGame("画面を離れたため自動停止しました。", "background");
     });
     window.addEventListener("pagehide", function () {
       clearInput();
-      if (game.mode === "playing" || game.mode === "countdown" || game.mode === "rewind") pauseGame("画面を離れたため自動停止しました。");
+      if (game.mode === "playing" || game.mode === "countdown" || game.mode === "rewind") pauseGame("画面を離れたため自動停止しました。", "background");
       else checkpointRun();
       if (navigator.vibrate) {
         try { navigator.vibrate(0); } catch (ignored) {}
@@ -2900,7 +3284,7 @@
     document.addEventListener("visibilitychange", function () {
       if (document.hidden) {
         clearInput();
-        if (game.mode === "playing" || game.mode === "countdown" || game.mode === "rewind") pauseGame("画面を離れたため自動停止しました。");
+        if (game.mode === "playing" || game.mode === "countdown" || game.mode === "rewind") pauseGame("画面を離れたため自動停止しました。", "background");
       }
     });
     document.addEventListener("touchmove", function (event) {
@@ -2934,6 +3318,8 @@
     }
 
     function debugSnapshot() {
+      var metrics = runMetricSnapshot();
+      metrics.fps = fps;
       return {
         buildId: BUILD_ID,
         rulesVersion: RULES_VERSION,
@@ -2955,16 +3341,7 @@
         rngState: game.rng.state(),
         won: game.mode === "result" && save.lastResult ? save.lastResult.won : null,
         controlsVisible: !dashButton.hidden && !gameIcons.hidden,
-        metrics: {
-          fps: fps,
-          updateP95: percentile(updateTimes, 0.95),
-          renderP95: percentile(renderTimes, 0.95),
-          maxEnemies: game.maxEnemies,
-          maxProjectiles: game.maxProjectiles,
-          maxParticles: game.maxParticles,
-          effectiveDpr: effectiveDpr,
-          backingPixels: canvas.width * canvas.height
-        }
+        metrics: metrics
       };
     }
 
@@ -3121,8 +3498,20 @@
           load: loadDebugCheckpoint
         },
         lifecycle: {
-          pause: function () { pauseGame("テスト停止"); return debugSnapshot(); },
+          pause: function (source) { pauseGame("テスト停止", source); return debugSnapshot(); },
           resize: function () { resizeCanvas(); return debugSnapshot(); }
+        },
+        input: {
+          setTouchMove: function (x, y) {
+            var move = normalize(Number(x) || 0, Number(y) || 0);
+            input.pointerId = 9001;
+            input.pointerLastAt = performance.now();
+            input.moveX = move.x;
+            input.moveY = move.y;
+            return debugSnapshot();
+          },
+          dash: function () { input.dashQueued = true; return debugSnapshot(); },
+          release: function () { clearPointer(); return debugSnapshot(); }
         },
         upgrades: {
           offers: function () { return pickUpgradeOptions().map(function (u) { return u.id; }); },
@@ -3133,7 +3522,16 @@
           importRaw: function (raw) { save = sanitizeSave(raw); return deepCopy(save); },
           clear: function () { save = defaultSave(); writeSave(); }
         },
-        metrics: function () { return deepCopy(debugSnapshot().metrics); }
+        metrics: function () { return deepCopy(debugSnapshot().metrics); },
+        diagnostics: {
+          report: function () { return buildDeviceReportText(); },
+          verdict: function () { return deepCopy(diagnosticVerdict(runMetricSnapshot())); },
+          sampleFrames: function (values) {
+            if (Array.isArray(values)) values.forEach(recordRunFrame);
+            updateDeviceReport();
+            return deepCopy(diagnosticVerdict(runMetricSnapshot()));
+          }
+        }
       };
       window.ECHO7_DEBUG = window.__E7_TEST__;
     }
