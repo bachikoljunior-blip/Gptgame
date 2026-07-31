@@ -13,9 +13,10 @@ Create the most compelling realistically achievable mobile-first game for the pu
 - Game direction selected: `ECHO//SEVEN`, a portrait action roguelite built around seven 15-second time loops.
 - Each loop records the current player's movement and attacks. Earlier recordings replay as allied echoes, turning route planning into the primary strategy.
 - Selected visual direction: midnight navy, icy white, acid-lime player/action highlights, coral danger indicators.
-- Release candidate build `2026.07.31-c` exists in public/echo-seven.html and is prepared for repository-root index.html.
+- Release build `2026.07.31-c` is published as repository-root index.html on main.
 - Implemented: mobile controls, exact 900-tick loops, six replaying echoes, five ordinary enemy types, seeded wave schedules, three upgrade drafts, final boss and interrupt mechanic, score/best results, settings, procedural audio, haptics, reduced motion, pause/resume, versioned save parsing, adaptive effects, and guarded debug checkpoints.
 - Three independent reviews (game logic, mobile UX, quality/release) completed. All confirmed Critical/High findings were fixed; no Critical defects were found.
+- GitHub Pages is live and verified at https://bachikoljunior-blip.github.io/Gptgame/.
 
 ## Completed work
 
@@ -26,6 +27,7 @@ Create the most compelling realistically achievable mobile-first game for the pu
 - Added Node-based static/runtime checks that execute the inline game in a controlled browser-API harness.
 - Passed 16 automated tests covering self-containment and syntax, fixed-step rules, loop recording, echo creation, boss spawn/clutch/tie behavior, seeded determinism, telegraph accuracy, rotation pause, keyboard activation, mobile HUD layout, idle rendering, stress entities, save sanitization, and upgrade validation.
 - Fixed review findings: deterministic enemy sequencing on replay, boss telegraph/spawn alignment, loss priority on simultaneous core/boss destruction, removal of dead bosses before result rendering, DASHBURST split-child handling, unknown upgrade rejection, rotation pause, pause-menu keyboard behavior, HUD/control overlap, DASH contrast, phone-size HUD typography, and inactive-screen render throttling.
+- Published index.html, tests, package metadata, README, Pages workflow, and this project memory to main. Initial release workflow head: `29e0ab03a41c9f9f40115fdc2eb2accc2ebb8984`; workflow path-filter refinement: `57772a37dc700939b9aabfdd9f584886eee95202`.
 
 ## Rejected or retained alternatives
 
@@ -75,7 +77,7 @@ Create the most compelling realistically achievable mobile-first game for the pu
 ## Known bugs
 
 - No confirmed release-blocking game bug remains.
-- The cloud browser blocked the local-only preview URL, so actual rendered interaction still needs verification from the published GitHub Pages URL. This is a verification gap, not a confirmed game bug.
+- A real iOS/Android device has not yet been exercised; current mobile guarantees come from responsive math, browser-platform handling, automated checkpoints, and a desktop cloud-browser playtest.
 
 ## Technical debt
 
@@ -118,6 +120,9 @@ Create the most compelling realistically achievable mobile-first game for the pu
 - 2026-07-31: expanded regression gate passed 16/16 tests in approximately 0.31 seconds on Node 22-compatible APIs.
 - 2026-07-31: source scan found no external URL, fetch/XHR/WebSocket/sendBeacon, Cookie access, TODO, or FIXME marker in the game HTML.
 - Browser rendering test on the local URL was unavailable due environment URL policy; source and runtime-harness tests continued.
+- 2026-07-31: published Pages URL loaded `ECHO//SEVEN` build `2026.07.31-c` with no external src/href elements.
+- 2026-07-31: public-page interaction passed title → first-run tutorial → countdown/play → DASH → pause → Enter on restart. DASH entered its 3-second cooldown, pause froze the state, and keyboard restart returned to LOOP 01 countdown.
+- 2026-07-31: no warning/error entry originated from the GitHub Pages game origin during the live interaction. Browser-extension diagnostics were excluded as unrelated environment noise.
 
 ## Performance history
 
@@ -129,11 +134,10 @@ Create the most compelling realistically achievable mobile-first game for the pu
 
 ## Highest-impact next task
 
-Publish the tested release candidate and project records to main, then verify the GitHub Actions run and public Pages URL through actual interaction.
+Run a real-phone playtest and tune balance using recorded frame/entity metrics; prioritize any device-specific control or readability defect discovered there.
 
 ## Future tasks
 
-1. Publish the root game and GitHub Pages workflow to Gptgame.
-2. Monitor the workflow and verify the final Pages URL.
-3. Run live interaction and performance validation on the public build.
-4. Tune balance and address any observed mobile-device defects in a later iteration.
+1. Run the full seven-loop flow on iPhone Safari and Android Chrome, including simultaneous drag+DASH, rotation, backgrounding, sound, win, loss, and restart.
+2. Record final-boss p95 frame time, peak entities, DPR, and post-run audio voice cleanup on a real phone.
+3. Tune wave/boss balance and address any observed device-specific defects in a later iteration.
