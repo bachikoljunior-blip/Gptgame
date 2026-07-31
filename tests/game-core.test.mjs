@@ -187,6 +187,9 @@ test("single HTML is self-contained and syntactically valid", () => {
   assert.match(html, /viewport-fit=cover/);
   assert.match(html, /touch-action:\s*none/);
   assert.match(html, /prefers-reduced-motion/);
+  assert.match(html, /id="deviceReport"/);
+  assert.match(html, /id="copyReportButton"/);
+  assert.match(html, /ECHO\/\/SEVEN DEVICE REPORT/);
   scripts.forEach((script, index) => {
     assert.doesNotThrow(() => new vm.Script(script, { filename: "syntax-" + index + ".js" }));
   });
@@ -198,7 +201,7 @@ test("runtime exposes deterministic fixed-step contract only in test mode", () =
   assert.deepEqual(
     JSON.parse(JSON.stringify(api.info())),
     {
-      buildId: "2026.07.31-c",
+      buildId: "2026.07.31-d",
       rulesVersion: 1,
       saveVersion: 2,
       fixedHz: 60,
@@ -340,6 +343,53 @@ test("performance checkpoint approaches configured entity caps", () => {
   assert.ok(state.friendly >= 64);
   assert.ok(state.hostile >= 40);
   assert.equal(api.assertInvariants().ok, true);
+});
+
+test("device report captures stress peaks without network telemetry", () => {
+  const { api } = createHarness();
+  api.checkpoints.load("PERF_WORST");
+  const metrics = api.metrics();
+  assert.ok(metrics.maxEnemies >= 64);
+  assert.ok(metrics.maxFriendly >= 64);
+  assert.ok(metrics.maxHostile >= 40);
+  assert.ok(metrics.maxParticles >= 60);
+  assert.equal(metrics.sampledFrames, 0);
+  const report = api.diagnostics.report();
+  assert.match(report, /build: 2026\.07\.31-d/);
+  assert.match(report, /peaks: enemies 64/);
+  assert.doesNotMatch(report, /https?:\/\//);
+});
+
+test("diagnostic verdict distinguishes smooth and stalled frame samples", () => {
+  const { api } = createHarness();
+  api.reset({ seed: 77 });
+  api.diagnostics.sampleFrames([1500]);
+  assert.equal(api.metrics().suspendedFrameGaps, 1);
+  assert.equal(api.metrics().sampledFrames, 0);
+  const good = api.diagnostics.sampleFrames(Array(180).fill(16.7));
+  assert.equal(good.id, "good");
+  const warned = api.diagnostics.sampleFrames(Array(180).fill(50));
+  assert.equal(warned.id, "warn");
+});
+
+test("simultaneous touch movement and DASH is recorded in the run report", () => {
+  const { api } = createHarness();
+  api.reset({ seed: 88 });
+  api.input.setTouchMove(1, 0.2);
+  api.input.dash();
+  api.stepTicks(1);
+  assert.equal(api.metrics().concurrentDash, true);
+  api.input.release();
+});
+
+test("background lifecycle pauses are counted separately", () => {
+  const { api } = createHarness();
+  api.checkpoints.load("L1_T899");
+  const paused = api.lifecycle.pause("background");
+  assert.equal(paused.mode, "paused");
+  assert.equal(paused.metrics.pauses, 1);
+  assert.equal(paused.metrics.backgroundPauses, 1);
+  assert.equal(paused.metrics.rotationPauses, 0);
 });
 
 test("save sanitizer survives malformed values and clamps progress", () => {
