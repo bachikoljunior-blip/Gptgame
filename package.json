@@ -10,7 +10,8 @@
     "test:continuity": "node scripts/verify-continuity.mjs",
     "gate:floor": "node scripts/verify-floor.mjs",
     "release:prepare": "node scripts/prepare-release.mjs index.html _site/index.html",
-    "release:verify": "node scripts/verify-public-revision.mjs"
+    "release:verify": "node scripts/verify-public-revision.mjs",
+    "check:kit": "node .kit/tools/bootstrap.mjs --target=. --check"
   },
   "engines": {
     "node": ">=20"
