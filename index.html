@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#05090f">
   <meta name="color-scheme" content="dark">
-  <meta name="artifact-revision" content="93298f8c72fa670affcd7ab40e1b66ac5f60f561783ef0cdfe0dc9f70955eb8a">
+  <meta name="artifact-revision" content="d9e7db13cef617a4604beead48082479e64a27c2413446ebbbca695d36dcf923">
   <title>ECHO//SEVEN</title>
   <style>
     :root {
@@ -786,17 +786,59 @@
       z-index: 14;
       left: 50%;
       top: 42%;
+      display: grid;
+      gap: 5px;
+      width: min(82%, 420px);
       min-width: 70%;
       padding: 14px 18px;
       translate: -50% -50%;
       border-block: 1px solid var(--lime);
       color: var(--white);
-      background: rgba(5, 13, 22, 0.9);
+      background: rgba(2, 8, 14, 0.97);
       text-align: center;
       font-weight: 900;
       letter-spacing: 0.12em;
       pointer-events: none;
-      animation: sliceIn 520ms both;
+      animation: sliceIn 260ms both;
+    }
+
+    #loopBanner[hidden] {
+      display: none;
+    }
+
+    #loopBanner[data-phase="recorded"] {
+      border-color: var(--cyan);
+    }
+
+    #loopBanner[data-phase="replay"] {
+      box-shadow: 0 0 28px rgba(199, 255, 69, 0.12);
+    }
+
+    .loop-banner-label,
+    .loop-banner-detail {
+      display: block;
+      font-family: ui-monospace, "SFMono-Regular", monospace;
+    }
+
+    .loop-banner-label {
+      color: var(--cyan);
+      font-size: 12px;
+      letter-spacing: 0.18em;
+    }
+
+    .loop-banner-primary {
+      display: block;
+      color: var(--lime);
+      font-size: clamp(18px, 5.5vw, 26px);
+      line-height: 1.05;
+      letter-spacing: 0.07em;
+      text-shadow: 0 0 14px rgba(199, 255, 69, 0.32);
+    }
+
+    .loop-banner-detail {
+      color: #c7d4d8;
+      font-size: 12px;
+      letter-spacing: 0.035em;
     }
 
     #loopBanner strong {
@@ -935,7 +977,7 @@
     <div id="crosshair" aria-hidden="true" hidden></div>
     <button id="attackButton" type="button" aria-label="手動射撃。押したまま左右に滑らせると照準" hidden>FIRE</button>
     <button id="dashButton" type="button" aria-label="ダッシュ。押したまま左右に滑らせると照準" hidden>DASH</button>
-    <div id="loopBanner" hidden></div>
+    <div id="loopBanner" aria-live="polite" aria-atomic="true" hidden></div>
     <div id="screenFlash" aria-hidden="true"></div>
     <pre id="debugPanel" hidden></pre>
 
@@ -1074,7 +1116,7 @@
     var LOOP_TICKS = 900;
     var SAVE_VERSION = 2;
     var RULES_VERSION = 2;
-    var BUILD_ID = "2026.08.01-h";
+    var BUILD_ID = "2026.08.01-i";
     var SAVE_KEY = "echoSeven.save.v2";
     var RUN_CHECKPOINT_KEY = "echoSeven.runCheckpoint";
     var RUN_CHECKPOINT_VERSION = 2;
@@ -2723,7 +2765,12 @@
         game.mode = "rewind";
         shell.dataset.mode = "rewind";
         game.transitionTicks = reducedMotion ? 20 : 72;
-        showBanner("LOOP " + String(completed).padStart(2, "0") + " <strong>RECORDED</strong>");
+        showTimelineBanner(
+          "TIMELINE CAPTURED",
+          "LOOP " + String(completed).padStart(2, "0") + " RECORDED",
+          "ECHO " + String(game.recordings.length).padStart(2, "0") + " ARMED · NEXT LOOP " + String(next).padStart(2, "0"),
+          "recorded"
+        );
         playSound("loop");
       }
     }
@@ -2757,7 +2804,17 @@
       game.transitionTicks = 45;
       controlsVisible(false);
       hideAllOverlays();
-      showBanner("<strong>LOOP " + String(loopNumber).padStart(2, "0") + "</strong> / 07");
+      var replayCount = game.recordings.length;
+      if (replayCount > 0) {
+        showTimelineBanner(
+          "ECHO REPLAY",
+          "LOOP " + String(loopNumber).padStart(2, "0") + " / 07",
+          replayCount + " RECORDED PATH" + (replayCount === 1 ? "" : "S") + " ACTIVE",
+          "replay"
+        );
+      } else {
+        showTimelineBanner("LIVE RECORDING", "LOOP 01 / 07", "YOUR ACTIONS WILL RETURN", "live");
+      }
       checkpointRun();
     }
 
@@ -4686,7 +4743,17 @@
     }
 
     function showBanner(html) {
+      loopBanner.dataset.phase = "status";
       loopBanner.innerHTML = html;
+      loopBanner.hidden = false;
+    }
+
+    function showTimelineBanner(label, primary, detail, phase) {
+      loopBanner.dataset.phase = phase;
+      loopBanner.innerHTML =
+        '<span class="loop-banner-label">' + label + '</span>' +
+        '<strong class="loop-banner-primary">' + primary + '</strong>' +
+        '<span class="loop-banner-detail">' + detail + '</span>';
       loopBanner.hidden = false;
     }
 
