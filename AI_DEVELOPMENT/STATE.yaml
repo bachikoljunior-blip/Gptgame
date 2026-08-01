@@ -29,13 +29,13 @@ objective:
     - "Preserve two-thumb FIRE/DASH drag aiming and all existing game behavior."
     - "Merge verified work into main and verify the GitHub Pages release."
   acceptance_evidence:
-    latest_main_baseline: "complete_verified: origin/main f44c2739a7116018cd0de12f2a1dcb55b771f0a6 is merged build g; Quality, ordered Pages deployment, exact public artifact verification, and the public 47/47 harness passed"
+    latest_main_baseline: "complete_verified: origin/main ea0b99b38aa0fd35edaa415ec5b66c139d86bf82 contains merged build g plus the monotonic rollback-gate repair; Quality, ordered Pages deployment, exact public artifact verification, and the public 47/47 harness passed"
     benchmark_selection: "complete_verified: four references selected only for active elements, with official/review evidence, explicit exclusions, anti-copy limits, and observable criteria in AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md"
     benchmark_direct_comparison: "prepared_not_executed: no current-build/reference matched footage, blind review, expert review, or physical-device pass has been performed"
     readability: "complete_unverified: build g public artifact 47d85a25 repairs the measured title overflow; cloud Chrome showed the full title inside the card and overlay client/scroll width 560/560, but exact 320/375 captures and physical-device review remain"
     visual_richness: "complete_unverified: cloud Chrome rendered public build-g menu and LOOP 01 Canvas fallback and previously covered tutorial/pause/settings with clear hierarchy; target-size, later-loop, boss, result, reduced-mode, WebGL, and reference-matched captures remain"
-    regression_suite: "complete_verified for the repaired gate locally: build-g source, current build-g rollback, and independently fetched public artifact passed 47/47; the prior checkpoint Pages run 30692907767 failed because its rollback-version classifier treated g as pre-f, and the remote repair remains prepared_not_applied"
-    public_release: "complete_verified: PR #15 merged as f44c2739a7116018cd0de12f2a1dcb55b771f0a6; Quality run 30692571474 and ordered Pages run 30692571472 succeeded after dynamic run 30692571149; public artifact 47d85a25 passed 47/47 and browser primary-journey/error checks"
+    regression_suite: "complete_verified: build-g source, current build-g rollback, PR #17 Quality/Pages, main Quality/Pages, and independently fetched public artifact each passed 47/47; the prior checkpoint failure 30692907767 was repaired by monotonic build thresholds"
+    public_release: "complete_verified: PR #17 merged as ea0b99b38aa0fd35edaa415ec5b66c139d86bf82; Quality run 30693147860 and ordered Pages run 30693147854 succeeded after dynamic run 30693147533; public artifact 47d85a25 passed 47/47 and browser restore/title/error checks"
 
 reference_benchmark:
   path: "AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md"
@@ -53,17 +53,16 @@ reference_benchmark:
 execution:
   selected_rigor: "STRICT"
   rationale: "The benchmark and release-integrity changes will merge to main and publish through GitHub Pages; public delivery is STRICT."
-  active_work: "Build g artifact 47d85a25 remains publicly verified. State-only merge 6fa286a exposed that rollback test applicability used equality with build f/g instead of monotonic build thresholds; the local repair passes source, current build-g rollback, and public artifact 47/47 and needs remote delivery."
+  active_work: "Build g artifact 47d85a25 and the monotonic rollback-gate repair are merged and publicly verified. The remaining objective work is exact target-size/physical-phone and reference-matched visual review, not a pending product or release repair."
   last_verified_checkpoint:
-    revision: "f44c2739a7116018cd0de12f2a1dcb55b771f0a6"
+    revision: "ea0b99b38aa0fd35edaa415ec5b66c139d86bf82"
     product_revision: "47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec"
     branch: "origin/main"
     build_id: "2026.08.01-g"
-    tests: "complete_verified: local source/candidate 47/47; build-f rollback 46 applicable + 1 not_applicable; PR runs 30692518418/30692518386, main Quality/Pages runs 30692571474/30692571472, and independently fetched public artifact 47/47 passed"
-    deployment: "complete_verified: Pages run 30692571472 waited for dynamic run 30692571149, deployed and verified artifact 47d85a25, executed the public harness, and completed without rollback"
-    public_surface: "complete_verified: cache-busted fetch returned artifact 47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec/build g and passed 47/47; cloud Chrome showed 560/560 overlay width, entered LOOP 01, and reported no game-origin warning/error"
-  modified_but_unverified:
-    - "prepared_not_applied: tests/game-core.test.mjs on agent/rollback-build-g-gate uses build-at-least thresholds so current/future verified rollback builds retain all applicable visual criteria."
+    tests: "complete_verified: local source/current build-g rollback 47/47; PR #17 Quality 30693098586 and Pages 30693098590; main Quality 30693147860 and Pages 30693147854; independently fetched public artifact 47/47"
+    deployment: "complete_verified: Pages run 30693147854 waited for dynamic run 30693147533, assembled and executed build-g rollback at 47/47, deployed and verified artifact 47d85a25, executed the public harness, and completed without rollback"
+    public_surface: "complete_verified: cache-busted fetch returned artifact 47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec/build g and passed 47/47; cloud Chrome restored a paused run, returned to the title with 560/560 overlay width, showed the complete title, and reported no game-origin warning/error"
+  modified_but_unverified: []
   current_blockers:
     - "External verification blocker for objective completion: no physical iPhone/Android and no supported exact 320×568 or 375×667 cloud-browser viewport control is available."
   current_uncertainty:
@@ -74,6 +73,7 @@ execution:
     - "The connected GitHub tool set can create and merge PRs but exposes no branch-protection or ruleset mutation API; local gh is absent."
     - "GitHub's legacy branch-based Pages publisher cannot be disabled with the exposed connector; the smallest available defense is to run the tested custom deployment after every main push."
   review_findings:
+    - "PR #17 runs 30693098586/30693098590 and main runs 30693147860/30693147854/30693147533 verified the monotonic rollback applicability repair; the main Pages path now executes current build g at 47/47 before publishing."
     - "Main Pages run 30692907767 passed continuity, floor, source 47/47, and rollback assembly, then failed its rollback execution: declared build g made verifyingPreVisualRollback true because the predicate was declaredBuildId !== build-f. The failing HUD assertion required the pre-f Canvas font even though g correctly contains the f-and-later HUD."
     - "The focused repair uses lexically ordered fixed-format build IDs for f-and-later and g-and-later applicability. Local source, rollback assembled from f44c273, and independently fetched public g each passed 47/47, directly falsifying the failed path."
     - "Post-delivery cloud Chrome found overlay client/scroll width 560/560 and displayed the complete title inside the panel. The h1 scroll box retained a 2 px decorative pseudo-element extent, but the visible title and overlay did not overflow; this did not falsify the acceptance criterion."
@@ -83,10 +83,10 @@ execution:
     - "Level C run-history comparison found that merely triggering the custom deploy on every main push was insufficient because the legacy publisher has sometimes completed after the custom workflow; the deploy now discovers and waits for that same-SHA legacy run before publishing."
     - "The content-addressed identifier complements PR #10 by making raw and tested deployments carry the same verifiable HTML identity; no comparison may rely only on workflow ordering."
     - "Combined execution found that treating every ROLLBACK_ARTIFACT as pre-visual weakened current build-f criteria and failed the HUD assertion; the retained build-aware rule applies all current criteria to build f and only skips the feature-specific visual check for older build e."
-  exact_next_action: "Commit and deliver agent/rollback-build-g-gate through a tested PR, merge only passing checks, wait for the main Pages workflow to execute build-g rollback and public verification successfully, then checkpoint the final remote state; afterward resume exact target-size/physical-phone benchmark captures."
+  exact_next_action: "Resume exact 320×568 and 375×667 or physical-phone captures for title, tutorial, LOOP 01/02, targeted crosshair, boss, result, settings, pause, reduced mode, and WebGL where available; compare matched frames against the recorded element-specific criteria and update the benchmark gaps."
 
 floor:
-  last_check: "complete_unverified: F1 reconciled main 6fa286a, failed run 30692907767, and public artifact 47d85a25; F2 repair checkpoint current; F3 source/build-g rollback/public each 47/47; F4 accurate; F5 Level C failure-path reproduction and threshold repair complete_verified; F6 checkpoint candidate never uploaded and independent public g remained 47/47; F7 partial evidence mapped while objective remains open; F8 target-size/phone limits recorded; F9 F6/revert active but this pre-upload rollback-test failure correctly blocked deployment, F2/F3/F5 protected-merge enforcement absent"
+  last_check: "complete_verified for the delivered repair: F1 reconciled main ea0b99b and public artifact 47d85a25; F2 checkpoint current; F3 source/current rollback/PR/main/public each 47/47; F4 accurate; F5 Level C failure-path reproduction, negative probe, and remote threshold repair verified; F6 main run 30693147854 and independent public/browser verification passed; F7 partial evidence mapped while objective remains open; F8 target-size/phone limits recorded; F9 F6/revert active, F2/F3/F5 required-merge enforcement absent"
   independence_level_used: "C"
   review_outcome: "complete_verified"
   reviewed_changes_digest: "32c203c7eabf62f2990d0535e60a325fb61313e3bafb8504a2239941483d2297"
@@ -98,20 +98,20 @@ floor:
   waivers: []
   enforcement:
     f2_state_update_check:
-      status: "complete_unverified"
-      mechanism: "scripts/verify-floor.mjs rejected synthetic state omission; PR #15 and main Quality execution passed. Required-merge enforcement remains unavailable."
+      status: "complete_verified"
+      mechanism: "scripts/verify-floor.mjs rejected synthetic state omission; PR #17 and main Quality execution passed. Required-merge enforcement remains unavailable."
     f3_execution_check:
-      status: "complete_unverified"
-      mechanism: "Build-g source, rollback assembled from f44c273, and independently fetched public artifact passed 47/47 after monotonic applicability repair. Main run 30692907767 is the observed failing input that the repair targets. Required-merge enforcement remains unavailable."
+      status: "complete_verified"
+      mechanism: "Build-g source, current rollback, PR #17, main, and independently fetched public artifact passed 47/47 after the monotonic applicability repair. Main run 30692907767 is the observed failing input repaired by successful main run 30693147854. Required-merge enforcement remains unavailable."
     f5_review_record_check:
-      status: "complete_unverified"
-      mechanism: "Level C traced run 30692907767 to equality-based rollback applicability, reproduced the exact current build-g rollback path, and verified the monotonic threshold repair at 47/47; governed digest 32c203c7eabf62f2990d0535e60a325fb61313e3bafb8504a2239941483d2297 recorded. Required-merge enforcement remains unavailable."
+      status: "complete_verified"
+      mechanism: "Level C traced run 30692907767 to equality-based rollback applicability, reproduced the exact current build-g rollback path, and verified the monotonic threshold repair locally and remotely at 47/47; governed digest 32c203c7eabf62f2990d0535e60a325fb61313e3bafb8504a2239941483d2297 recorded. Required-merge enforcement remains unavailable."
     f6_public_revision_check:
       status: "complete_verified"
-      mechanism: "Run 30692571472 waited for same-SHA dynamic run 30692571149, deployed and verified artifact 47d85a25, and passed the public 47/47 harness without rollback; an independent fetch and cloud-browser primary journey confirmed the same artifact."
+      mechanism: "Run 30693147854 waited for same-SHA dynamic run 30693147533, executed current build-g rollback at 47/47, deployed and verified artifact 47d85a25, and passed the public 47/47 harness without rollback; an independent fetch and cloud-browser restore/title journey confirmed the same artifact."
     revert_mechanism:
       status: "complete_verified"
-      mechanism: "Legacy restoration passed run 30685438086 and content-addressed restoration passed run 30687824398. Build-g run 30692571472 assembled and executed verified build-f rollback at 46 applicable + 1 not_applicable before publishing g; no rollback fired."
+      mechanism: "Legacy restoration passed run 30685438086 and content-addressed restoration passed run 30687824398. Repaired build-g run 30693147854 assembled and executed verified current rollback at 47/47 before publishing g; no rollback fired."
     last_observed_failing:
       - "F2: synthetic index.html-only commit rejected."
       - "F3: GAME_HTML=/dev/null rejected with 44 failures."
@@ -155,20 +155,20 @@ migration:
     accidental_publication_or_regression: "complete_verified: build g intentionally replaced build f after PR/main/public checks; no gameplay behavior changed and the full suite passed"
 
 recovery:
-  last_known_good_revision_or_artifact: "f44c2739a7116018cd0de12f2a1dcb55b771f0a6 / 47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec"
-  rollback_or_recovery_method: "The Pages workflow will assemble verified build g at f44c273 into self-verifying artifact 47d85a25 for the next delivery. Prior automatic restoration passed run 30687824398; normal build-g run 30692571472 executed the retained build-f rollback and published g without rollback. Revert source changes only through a reviewed PR."
+  last_known_good_revision_or_artifact: "ea0b99b38aa0fd35edaa415ec5b66c139d86bf82 / 47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec"
+  rollback_or_recovery_method: "The Pages workflow assembles verified build g at ea0b99b into self-verifying artifact 47d85a25. Prior automatic restoration passed run 30687824398; repaired build-g run 30693147854 executed the retained current rollback at 47/47 and published g without rollback. Revert source changes only through a reviewed PR."
 
 remote:
   repository: "bachikoljunior-blip/Gptgame"
-  working_branch: "agent/rollback-build-g-gate"
-  pull_request: "prepared_not_applied: rollback applicability repair is local and no PR exists yet; #15 and #16 are merged"
-  main_revision: "6fa286a6fd598794616b2cd45acf6929b52fe05d (state-only checkpoint; verified product revision remains f44c273)"
+  working_branch: "agent/rollback-build-g-checkpoint"
+  pull_request: "complete_verified repair delivery: #17 merged as ea0b99b38aa0fd35edaa415ec5b66c139d86bf82; the containing commit is a state-only final checkpoint and may advance main without product changes"
+  main_revision: "ea0b99b38aa0fd35edaa415ec5b66c139d86bf82 (last verified operational revision; the containing state-only checkpoint may advance main without product changes)"
   deployed_revision: "complete_verified: artifact 47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec, build 2026.08.01-g"
   verified_public_revision: "complete_verified: artifact 47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec passed 47/47 plus cloud-browser primary-journey/error checks"
   public_url: "https://bachikoljunior-blip.github.io/Gptgame/"
-  status: "failed for checkpoint Pages run 30692907767 before upload; complete_verified for unchanged public artifact 47d85a25 after independent 47/47 recheck; repair prepared_not_applied"
+  status: "complete_verified: rollback-gate repair merged, all PR/main workflows passed, and unchanged public artifact 47d85a25 passed independent 47/47 plus cloud-browser checks"
   open_pull_requests: []
   repository_permissions: "complete_verified: connected GitHub app reports admin/push permissions"
 
-updated_at: "2026-08-01T18:04:30+09:00"
-reconciliation_status: "complete_verified: main checkpoint failure root-caused, public build g/artifact 47d85a25 remained verified, and the local rollback-version repair passed the exact failed path"
+updated_at: "2026-08-01T18:13:24+09:00"
+reconciliation_status: "complete_verified: main ea0b99b repaired the checkpoint failure, all remote gates passed, and public build g/artifact 47d85a25 passed independent harness and browser verification"
