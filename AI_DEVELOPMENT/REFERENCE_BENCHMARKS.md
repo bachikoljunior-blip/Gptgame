@@ -22,7 +22,7 @@ When the concept changes:
 
 ## Current concept
 
-Repository evidence baseline: main `b35e25da0a9953430cd8bf9acd8678e834a372b4`, public artifact `47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec`, product build `2026.08.01-g`. The current target-viewport candidate is build `2026.08.01-h`, artifact `93298f8c72fa670affcd7ab40e1b66ac5f60f561783ef0cdfe0dc9f70955eb8a`.
+Repository evidence baseline: main `29d13e31e56145639cf425c43d30b040ceb5c0c7`, public artifact `93298f8c72fa670affcd7ab40e1b66ac5f60f561783ef0cdfe0dc9f70955eb8a`, product build `2026.08.01-h`.
 
 ECHO//SEVEN is a portrait, mobile-first, first-person 3D action roguelite for a self-contained browser runtime. A run has seven 15-second loops. Movement, aim, manual shots, and DASH events from each loop are replayed by allied echoes in later loops. The player defends a core, chooses one of three upgrades after loops 2, 4, and 6, and fights SEPTAGON with six echoes in loop 7.
 
@@ -123,7 +123,7 @@ Pass criteria:
 - browser scrolling, zooming, selection, callouts, and stuck pointers do not interrupt play;
 - a new player can begin, move, aim, fire, DASH, understand the next echo, and pause without outside instructions.
 
-Evidence required: DOM/CSS assertions, production pointer tests, 320/375/480-width captures, and first-run observation. Automated layout/input checks and current-candidate 320×568/375×667 Chromium captures are `complete_verified`; 480-width capture, physical touch, and first-run observation are `prepared_not_executed`.
+Evidence required: DOM/CSS assertions, production pointer tests, 320/375/480-width captures, and first-run observation. Automated layout/input checks and build-h 320×568/375×667 Chromium captures are `complete_verified`; 480-width capture, physical touch, and first-run observation are `prepared_not_executed`.
 
 ### 6. Visuals, animation, and transitions
 
@@ -137,7 +137,7 @@ Pass criteria:
 - high and reduced quality modes preserve gameplay information even when decorative density, DPR, or particles fall;
 - Canvas fallback communicates the same mandatory states even when it cannot match WebGL richness.
 
-Evidence required: matched captures from menu, loop 1, loop 2, boss charge, victory/defeat, reduced quality, and Canvas fallback. The current-candidate target-size capture matrix is `complete_verified`; direct reference footage, motion comparison, and physical-device review are `prepared_not_executed`, so the visual pass is not benchmark-complete.
+Evidence required: matched captures from menu, loop 1, loop 2, boss charge, victory/defeat, reduced quality, and Canvas fallback. The build-h target-size capture matrix is `complete_verified`; direct reference footage, motion comparison, and physical-device review are `prepared_not_executed`, so the visual pass is not benchmark-complete.
 
 ### 7. Audio and haptics
 
@@ -178,7 +178,7 @@ Evidence required: automated stress/golden/recovery tests, on-device diagnostic 
 | UI/touch | Safe-area-aware controls, 48–118 px buttons, left-handed mirroring, labeled YOU/CORE/time/ECHO HUD, and exact 320×568/375×667 menu/tutorial/settings/pause/upgrade/result evidence with no document-width overflow, undersized buttons, or button overlap | Build h repairs the exact 320×568 tutorial's focus-induced initial scroll. A few secondary labels remain 10–12 px; physical first-run, thumb reach, and touch-feel tests remain absent. |
 | Visuals | Original palette, geometric silhouettes, WebGL/Canvas fallback, adaptive effects, and a 40-capture target-size matrix covering menu, loops, combat, target state, boss, result, reduced motion, and fallback without page, renderer, or invariant errors | Static captures cannot establish transition timing, echo causality in motion, or parity on a physical phone; blind, expert, and direct matched-reference review remain absent. |
 | Audio | Procedural, local-only, gesture-safe cues with a 14-voice cap | Cue vocabulary is sparse and lacks dedicated boss/defeat/ambient identity; phone recording is absent. |
-| Performance/stability | 48 current-candidate tests and 47 current-public tests covering artifact tamper rejection, responsive-layout regressions, explicit caps, adaptive DPR/quality, exact reload restoration, content-addressed identity, automatic restoration, and probe-free delivery | No physical iPhone/Android seven-loop diagnostic run; local headless and public automation do not substitute for that measurement. |
+| Performance/stability | 48 source, assembled-candidate, and current-public tests covering artifact tamper rejection, responsive-layout regressions, explicit caps, adaptive DPR/quality, exact reload restoration, content-addressed identity, automatic restoration, and probe-free delivery | No physical iPhone/Android seven-loop diagnostic run; local headless and public automation do not substitute for that measurement. |
 
 No numeric “overall score” may hide a blocking failure. An element passes only when its applicable hard gates pass and its evidence status is accurate.
 
@@ -188,9 +188,10 @@ Two browser methods are kept distinct. The first was live public GitHub Pages in
 
 - `complete_verified`: the earlier public build-f cloud pass exposed a 414 px title client width with a 511 px scroll width and a 560/584 px menu-overlay client/scroll width. Build g repaired that overflow; its public artifact `47d85a25…` passed 47/47 and cloud Chrome showed the full title at 560/560 px.
 - `complete_verified`: exact target-size reproduction on build g found a separate tutorial defect at 320×568: initial autofocus scrolled the long overlay to its bottom, hiding the title and first instruction. Build h resets the overlay to the top and focuses with `preventScroll`; the exact repaired capture opens on `TACTICAL BRIEF`, the title, and step 1, while a separate bottom-scroll capture shows steps 2–3 and both actions.
-- `complete_verified`: candidate build h/artifact `93298f8c…` produced 40 captures across both target sizes. The matrix covers menu, tutorial top/bottom, settings, LOOP 01/02, combat, targeted crosshair, boss charge, result, pause, upgrade, reduced motion, WebGL, and Canvas fallback. It recorded zero document/shell horizontal overflows, undersized buttons, button overlaps, page errors, renderer errors, or invariant failures.
+- `complete_verified`: build h/artifact `93298f8c…` produced 40 captures across both target sizes. The matrix covers menu, tutorial top/bottom, settings, LOOP 01/02, combat, targeted crosshair, boss charge, result, pause, upgrade, reduced motion, WebGL, and Canvas fallback. It recorded zero document/shell horizontal overflows, undersized buttons, button overlaps, page errors, renderer errors, or invariant failures.
 - `complete_verified`: the targeted crosshair carried its `targeted` state at both sizes; boss-charge threat treatment and the primary HUD/actions remained visible in WebGL, reduced-motion WebGL, and Canvas. Against the Call of Duty: Mobile/Gunfire Mobile touch-HUD criterion, ECHO//SEVEN retains only two large labeled combat actions plus two utility buttons rather than adopting their denser compositions.
 - `complete_verified`: against the SUPERHOT separation criterion, the captures preserve ECHO//SEVEN's original navy field, coral threats, lime target state, and geometric silhouettes across both renderers; no reference palette, asset, or recognizable composition was imported.
+- `complete_verified`: PR #19, main Quality run `30695280123`, ordered Pages run `30695280118`, and legacy same-SHA run `30695279819` succeeded. A cache-busted public artifact passed 48/48; live cloud Chrome returned artifact `93298f8c…`, focused `tutorialTitle`, retained `scrollTop=0`, kept the heading visible, and measured tutorial overlay width 560/560 px.
 - `complete_unverified`: LOOP 01/02 stills and the echo-count HUD show distinct states, but they cannot prove the Lemnis Gate-derived causal-readability criterion. Loop-transition footage and a fresh-viewer explanation check remain necessary.
 - `prepared_not_executed`: physical iPhone/Android rendering, real touch reach/feel, recorded phone audio, full loop-transition footage, fresh-viewer review, blind/expert review, and direct matched-reference gameplay comparison.
 
