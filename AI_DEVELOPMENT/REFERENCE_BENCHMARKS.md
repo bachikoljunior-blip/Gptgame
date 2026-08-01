@@ -22,7 +22,7 @@ When the concept changes:
 
 ## Current concept
 
-Repository evidence baseline: main and current public revision `0efbceaa583b4ce51c432445d906c8b76f68b0b4`, product build `2026.08.01-f`.
+Repository evidence baseline: state checkpoint main `547ba6662b82939f4dca9f5d4d9b409163519250`, current public operational revision `0efbceaa583b4ce51c432445d906c8b76f68b0b4`, product build `2026.08.01-f`.
 
 ECHO//SEVEN is a portrait, mobile-first, first-person 3D action roguelite for a self-contained browser runtime. A run has seven 15-second loops. Movement, aim, manual shots, and DASH events from each loop are replayed by allied echoes in later loops. The player defends a core, chooses one of three upgrades after loops 2, 4, and 6, and fights SEPTAGON with six echoes in loop 7.
 
