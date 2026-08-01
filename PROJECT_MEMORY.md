@@ -15,7 +15,7 @@ Create the most compelling realistically achievable mobile-first game for the pu
 - Game direction selected: `ECHO//SEVEN`, a portrait 3D action roguelite built around seven 15-second time loops.
 - Each loop records the current player's movement, aim direction, manual shots, and DASH events. Earlier recordings replay as allied echoes, turning route and firing plans into the primary strategy.
 - Selected visual direction: midnight navy, icy white, acid-lime player/action highlights, coral danger indicators.
-- Current source and release candidate is build `2026.08.01-g`, implemented in repository-root index.html.
+- Current source and release candidate is build `2026.08.01-i`, implemented in repository-root index.html.
 - The arena is true perspective 3D: custom WebGL 2 and WebGL 1 shaders, depth-tested lit meshes, fog, glow passes, 3D actors/enemies/core/boss/projectiles, perimeter walls, and a player-anchored first-person camera. Canvas 2D remains a deterministic failure fallback and HUD/input layer.
 - Implemented: dual-zone mobile movement/look controls, two-thumb FIRE/DASH drag aiming, viewport-normalized look sensitivity, responsive curved movement input, explicit FIRE and DASH actions, a high-contrast target-responsive crosshair, labeled YOU/CORE/time/ECHO HUD, three-phase title briefing, layered panel treatment, richer 3D light gates/lane markers/beacons, enriched Canvas fallback, exact 900-tick loops, aim-preserving echoes, five ordinary enemy types, seeded wave schedules, three upgrade drafts, final boss and interrupt mechanic, score/best results, settings, procedural audio, haptics, reduced motion, pause/resume, versioned save parsing, safe same-tab run restoration, adaptive effects, guarded debug checkpoints, WebGL context recovery, static VBO caching, dynamic buffer reuse, and combined framebuffer diagnostics.
 - Build `2026.08.01-c` received an independent 10/10 re-audit across all seven axes with no reproducible Critical/High/Medium issue.
@@ -23,6 +23,7 @@ Create the most compelling realistically achievable mobile-first game for the pu
 
 ## Completed work
 
+- Added an explicit record-to-replay handoff: each ordinary loop boundary names the sealed loop, newly armed echo, next loop, and active replay-path count so the time-loop cause and effect is visible without relying on the echo counter alone.
 - Repaired a real-browser title-screen defect found after build `2026.08.01-f`: the 64px viewport-based title exceeded its 414px content box by 97px and created horizontal overlay scrolling. Build `2026.08.01-g` caps the title against the phone-width range, removes the conflicting small-height override, and keeps overlay scrolling vertical-only.
 
 - Compared three independently generated visual directions.

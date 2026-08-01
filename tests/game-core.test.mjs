@@ -24,6 +24,8 @@ const verifyingPreTitleOverflowRepairRollback = verifyingRollbackArtifact
   && !buildAtLeast("2026.08.01-g");
 const verifyingPreOverlayReadingRepairRollback = verifyingRollbackArtifact
   && !buildAtLeast("2026.08.01-h");
+const verifyingPreLoopHandoffRepairRollback = verifyingRollbackArtifact
+  && !buildAtLeast("2026.08.01-i");
 
 class FakeClassList {
   #values = new Set();
@@ -389,6 +391,46 @@ test("overlay focus preserves top-to-bottom reading order on short screens", {
   assert.match(html, /function showOverlay\(name\)[\s\S]*?overlay\.scrollTop = 0;/);
   assert.match(html, /focusTarget\.focus\(\{ preventScroll: true \}\);/);
   assert.match(html, /catch \(ignored\) \{ focusTarget\.focus\(\); \}[\s\S]*?overlay\.scrollTop = 0;/);
+});
+
+test("loop handoff identifies the recorded path and the echoes replaying next", {
+  skip: verifyingPreLoopHandoffRepairRollback
+    ? "loop handoff criteria are not applicable to the pre-repair rollback"
+    : false,
+}, () => {
+  assert.ok(buildAtLeast("2026.08.01-i"), "loop handoff criteria require build i or later");
+  assert.match(html, /id="loopBanner" aria-live="polite" aria-atomic="true"/);
+  const { api, elements } = createHarness();
+  const banner = elements.get("loopBanner");
+  api.checkpoints.load("L1_T899");
+
+  const recorded = api.stepTicks(1);
+  assert.equal(recorded.mode, "rewind");
+  assert.equal(banner.dataset.phase, "recorded");
+  assert.match(banner.innerHTML, /LOOP 01 RECORDED/);
+  assert.match(banner.innerHTML, /ECHO 01 ARMED · NEXT LOOP 02/);
+
+  const replay = api.stepTicks(72);
+  assert.equal(replay.mode, "countdown");
+  assert.equal(replay.loop, 2);
+  assert.equal(banner.dataset.phase, "replay");
+  assert.match(banner.innerHTML, /ECHO REPLAY/);
+  assert.match(banner.innerHTML, /1 RECORDED PATH ACTIVE/);
+
+  const pluralHarness = createHarness();
+  pluralHarness.api.checkpoints.load("L7_BOSS_START");
+  const pluralBanner = pluralHarness.elements.get("loopBanner");
+  assert.equal(pluralBanner.dataset.phase, "replay");
+  assert.match(pluralBanner.innerHTML, /6 RECORDED PATHS ACTIVE/);
+
+  const reducedHarness = createHarness({ reducedMotion: true });
+  reducedHarness.api.checkpoints.load("L1_T899");
+  reducedHarness.api.stepTicks(1);
+  const reducedReplay = reducedHarness.api.stepTicks(20);
+  const reducedBanner = reducedHarness.elements.get("loopBanner");
+  assert.equal(reducedReplay.mode, "countdown");
+  assert.equal(reducedReplay.loop, 2);
+  assert.equal(reducedBanner.dataset.phase, "replay");
 });
 
 test("runtime exposes deterministic fixed-step contract only in test mode", () => {
