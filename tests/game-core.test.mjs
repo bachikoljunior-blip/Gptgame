@@ -17,7 +17,8 @@ const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
 );
 const verifyingRollbackArtifact = process.env.ROLLBACK_ARTIFACT === "1";
 const declaredBuildId = html.match(/var BUILD_ID = "([^"]+)";/)?.[1] ?? "";
-const usesLegacyVisualCriteria = verifyingRollbackArtifact && declaredBuildId !== "2026.08.01-f";
+const verifyingPreVisualRollback = verifyingRollbackArtifact
+  && declaredBuildId !== "2026.08.01-f";
 
 class FakeClassList {
   #values = new Set();
@@ -327,7 +328,7 @@ test("single HTML is self-contained and syntactically valid", () => {
   assert.match(html, /FIRE \+ AIM/);
   assert.match(html, /FIREやDASHを押したまま左右へ滑らせても照準/);
   assert.match(declaredBuildId, /^\d{4}\.\d{2}\.\d{2}-[a-z]$/);
-  if (!usesLegacyVisualCriteria) {
+  if (!verifyingPreVisualRollback) {
     assert.match(html, /class="mission-strip"/);
     assert.match(html, /<strong>15 SEC<\/strong>/);
     assert.match(html, /<strong>REPEAT ×7<\/strong>/);
@@ -348,7 +349,7 @@ test("artifact revision rejects content tampering", () => {
 });
 
 test("visual hierarchy keeps loop data legible and enriches both render paths", {
-  skip: usesLegacyVisualCriteria ? "current visual acceptance is not applicable to the older verified release" : false,
+  skip: verifyingPreVisualRollback ? "current visual acceptance is not applicable to the pre-refresh rollback" : false,
 }, () => {
   assert.equal(declaredBuildId, "2026.08.01-f");
   assert.match(html, /#menuTitle::after\s*\{[\s\S]*?content:\s*"07"/);
@@ -846,14 +847,14 @@ test("pause-menu buttons retain native keyboard activation", () => {
 test("mobile HUD reserves a non-overlapping control rail and readable type", () => {
   assert.match(html, /top:\s*calc\(var\(--safe-top\) \+ max\(146px, 30vw\)\)/);
   assert.match(html, /radial-gradient\(circle, #07111d 0 61%, transparent 62%\)/);
-  assert.match(html, usesLegacyVisualCriteria
+  assert.match(html, verifyingPreVisualRollback
     ? /ctx\.font = "800 24px ui-monospace, monospace"/
     : /ctx\.font = "900 30px ui-monospace, monospace"/);
-  assert.match(html, usesLegacyVisualCriteria
+  assert.match(html, verifyingPreVisualRollback
     ? /ctx\.font = "700 18px ui-monospace, monospace"/
     : /ctx\.font = "800 16px ui-monospace, monospace"/);
   for (const width of [320, 375, 390, 430, 480, 600]) {
-    const bossHudBottom = (usesLegacyVisualCriteria ? 130 : 142) * (width / 480);
+    const bossHudBottom = (verifyingPreVisualRollback ? 130 : 142) * (width / 480);
     const controlRailTop = Math.max(146, width * 0.3);
     assert.ok(controlRailTop > bossHudBottom, `${width}px HUD overlaps controls`);
   }

@@ -29,18 +29,18 @@ objective:
     - "Preserve two-thumb FIRE/DASH drag aiming and all existing game behavior."
     - "Merge verified work into main and verify the GitHub Pages release."
   acceptance_evidence:
-    latest_main_baseline: "complete_verified: state checkpoint main 4a61bbe8e6210336bf3445e468a2a3d2e4ab1333 records visual PR #8 product 045d2533325bbd3672767daa38566f9647fdb894, whose source, remote workflow, and independently fetched public artifact passed 45/45"
+    latest_main_baseline: "complete_verified: main 0efbceaa583b4ce51c432445d906c8b76f68b0b4 preserves visual build 2026.08.01-f, passed remote quality and ordered Pages workflows, and a cache-busted public fetch returned its exact git revision"
     benchmark_selection: "complete_verified: four references selected only for active elements, with official/review evidence, explicit exclusions, anti-copy limits, and observable criteria in AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md"
     benchmark_direct_comparison: "prepared_not_executed: no current-build/reference matched footage, blind review, expert review, or physical-device pass has been performed"
     readability: "complete_unverified: labeled HUD, higher-contrast crosshair, readable sans-serif body copy, and three-phase title hierarchy are implemented; automated checks passed, matched captures and physical-device review remain"
     visual_richness: "complete_unverified: layered panels, arena light gates/lane markers/beacons, dynamic scan ring, and enriched Canvas fallback are implemented; automated checks passed, benchmark capture review remains"
-    regression_suite: "complete_verified for the rebased candidate: source, release candidate, and current build-f rollback each passed 46/46 including artifact-tamper, visual-quality, reduced-motion, 9,344-triangle stress, and 6,300-tick determinism checks; legacy build-e rollback passed 45 applicable checks with one explicit not_applicable"
-    public_release: "complete_unverified: cache-busted fetch currently returns build 2026.08.01-f with git-revision 045d253, but the competing dynamic Pages path previously overwrote a verified artifact and the content-addressed replacement has not completed its remote failure/recovery probe"
+    regression_suite: "complete_verified for the PR #10-integrated candidate: source, release candidate, and current build-f rollback each passed 46/46 including artifact-tamper, visual-quality, reduced-motion, 9,344-triangle stress, and 6,300-tick determinism checks; legacy build-e rollback passed 45 applicable checks with one explicit not_applicable"
+    public_release: "complete_unverified: PR #10's ordered all-main-push deployment currently serves build f at exact revision 0efbcea; the content-addressed replacement and its deliberate failure/recovery probe remain unverified remotely"
 
 reference_benchmark:
   path: "AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md"
   status: "complete_verified"
-  concept_baseline: "ECHO//SEVEN build 2026.08.01-f at product revision 045d253, recorded by state checkpoint main 4a61bbe; portrait mobile-first first-person seven-loop action roguelite"
+  concept_baseline: "ECHO//SEVEN build 2026.08.01-f at main/public revision 0efbcea; portrait mobile-first first-person seven-loop action roguelite"
   selected_references:
     - "Lemnis Gate: loop causality and persistent prior actions"
     - "SUPERHOT: visual hierarchy and time-state communication"
@@ -53,38 +53,41 @@ reference_benchmark:
 execution:
   selected_rigor: "STRICT"
   rationale: "The benchmark and release-integrity changes will merge to main and publish through GitHub Pages; public delivery is STRICT."
-  active_work: "The benchmark system and content-addressed public artifact verification are reconciled and locally verified on build 2026.08.01-f; remote PR, deliberate F6 failure, automatic recovery, and normal delivery remain."
+  active_work: "PR #10's active all-main-push/legacy-wait ordering is integrated and locally verified with the benchmark system and content-addressed artifact identity; update PR #11, then prove deliberate F6 recovery and normal delivery."
   last_verified_checkpoint:
-    revision: "4a61bbe8e6210336bf3445e468a2a3d2e4ab1333"
-    product_revision: "045d2533325bbd3672767daa38566f9647fdb894"
+    revision: "0efbceaa583b4ce51c432445d906c8b76f68b0b4"
+    product_revision: "0efbceaa583b4ce51c432445d906c8b76f68b0b4"
     branch: "origin/main"
     build_id: "2026.08.01-f"
-    tests: "complete_verified: main quality run 30686475107 and independently fetched public artifact passed 45/45; rebased benchmark/release candidate passed 46/46 locally"
-    deployment: "complete_verified for the observed current release: custom Pages run 30686475034 succeeded"
-    public_surface: "complete_verified for the observation: a cache-busted fetch returned git-revision 045d2533325bbd3672767daa38566f9647fdb894 and build 2026.08.01-f; content-addressed durability is not yet verified"
+    tests: "complete_verified: current main quality/ordered Pages runs passed; integrated source, candidate, and current rollback passed 46/46, legacy rollback passed 45 applicable + 1 not_applicable, and workflow-order assertions passed"
+    deployment: "complete_verified for current main: ordered Pages run 30687172562 succeeded after dynamic run 30687173235"
+    public_surface: "complete_verified for current observation: a cache-busted fetch returned git-revision 0efbceaa583b4ce51c432445d906c8b76f68b0b4 and build 2026.08.01-f"
   modified_but_unverified:
-    - "On agent/reference-benchmarks-artifact-revision: canonical reference benchmark, loader/continuity enforcement, content-addressed artifact identity, Pages verification, rollback preparation, tamper regression, rollback-applicability repair, and one-time remote F6 probe passed local combined execution and Level C falsification; remote delivery remains."
+    - "PR #11 branch merge preserves PR #10's all-main-push legacy-publisher wait and adds canonical reference benchmarks, content-addressed artifact identity, rollback conversion, tamper regression, and a one-time remote F6 probe. Combined execution and Level C review passed; remote branch update remains."
   current_blockers: []
   current_uncertainty:
     - "No physical iPhone or Android visual pass is available in this Work run."
     - "Local Playwright exists but its browser binary is absent; a Chromium download previously failed because the external CDN certificate was not yet valid in the environment."
     - "Reference selection used official descriptions/materials and review aggregates; no reference game was played in this run."
     - "The connected GitHub tool set can create and merge PRs but exposes no branch-protection or ruleset mutation API; local gh is absent."
+    - "GitHub's legacy branch-based Pages publisher cannot be disabled with the exposed connector; the smallest available defense is to run the tested custom deployment after every main push."
   review_findings:
-    - "The concurrent visual review found that a feature-specific visual test would incorrectly reject the older rollback build; rollback-aware applicability and pre-upload rollback execution were added and preserved."
-    - "Reconciliation found that a dynamic Pages run can publish raw index.html after the custom verified deployment. A content-addressed identifier embedded identically in raw and assembled artifacts removes the commit-marker race without weakening verification."
-    - "Combined execution found that setting ROLLBACK_ARTIFACT alone weakened current build-f visual criteria and caused a HUD assertion failure. Criteria now depend on the artifact's declared build: current rollback passes 46/46, while legacy build e passes 45 applicable checks plus one explicit not_applicable."
-  exact_next_action: "Deliver the reviewed content-addressed candidate with the one-time F6 mismatch probe, verify the remote rejection and automatic restoration, remove the probe through a second verified PR, then verify the normal public artifact and checkpoint the result."
+    - "Post-delivery reconciliation found that the state-only merge 4a61bbe still triggered GitHub's legacy Pages publisher and temporarily replaced the revision-stamped artifact with raw index.html; rerunning custom deployment job 91333277431 restored 045d253 and the public 45/45 result."
+    - "Level C run-history comparison found that merely triggering the custom deploy on every main push was insufficient because the legacy publisher has sometimes completed after the custom workflow; the deploy now discovers and waits for that same-SHA legacy run before publishing."
+    - "The content-addressed identifier complements PR #10 by making raw and tested deployments carry the same verifiable HTML identity; no comparison may rely only on workflow ordering."
+    - "Combined execution found that treating every ROLLBACK_ARTIFACT as pre-visual weakened current build-f criteria and failed the HUD assertion; the retained build-aware rule applies all current criteria to build f and only skips the feature-specific visual check for older build e."
+  exact_next_action: "Update PR #11 with the verified merge of main 0efbcea, require both PR workflows, merge at a fixed head, verify the deliberate F6 rejection and automatic restoration, remove the probe through a second PR, then verify normal content-addressed public delivery and checkpoint it."
 
 floor:
-  last_check: "complete_unverified: F1 reconciled to state checkpoint main 4a61bbe and public product 045d253/build f; F2 state current and negative input rejected; F3 source/candidate/current rollback 46/46 and legacy rollback 45 applicable + 1 not_applicable, with empty/tampered input rejected; F4 accurate; F5 Level C complete_verified and invalid record rejected; F6 local valid/all-zero probes passed but remote replacement pending; F7 benchmark traceability recorded and direct comparison pending; F8 recorded; F9 F6/revert remote probe pending"
+  last_check: "complete_unverified: F1 reconciled to main/public 0efbcea and PR #11; F2 merged state current and negative input rejected; F3 source/candidate/current rollback 46/46 plus legacy rollback 45 applicable + 1 not_applicable, with empty/tampered input rejected; F4 accurate; F5 combined Level C complete_verified; F6 current commit-marker release verified and content-addressed remote probe pending; F7 benchmark traceability recorded and direct comparison pending; F8 recorded; F9 ordered deployment active while content/revert probe remains pending"
   independence_level_used: "C"
   review_outcome: "complete_verified"
-  reviewed_changes_digest: "0b80540e707f3d2b031539c284f5cae1d89cb2be122ec2321ed6bc6f3604116c"
+  reviewed_changes_digest: "985704af83ff4a04c1f6ba07daf3a72243d5716fa8489bcf69de5f5e1f67e19f"
   skips:
     - "F8 | F5 STRICT prefers Level A/B | Level C used because no separately permitted independent reviewer is available in this run; negative gate and recovery-artifact tests strengthen the substitute; revisit if A/B becomes available."
     - "F8 | F6 real-browser interaction | Playwright browser binary is absent and its CDN download failed on certificate validity; use a cache-busted public fetch plus the full deterministic harness and revisit on a physical or available browser."
     - "F8 | F9 required merge checks | gh is absent, the connected GitHub tools expose no branch-protection/ruleset mutation, and unauthenticated protection API returned 401; checks can block deployment but are not verified required for merge; revisit when capability appears."
+    - "F8 | Disable legacy branch-based Pages publisher | The connected tools expose Actions runs and repository writes but no Pages source-setting mutation; use an all-main-push tested custom deployment and revisit direct disablement when capability appears."
   waivers: []
   enforcement:
     f2_state_update_check:
@@ -92,13 +95,13 @@ floor:
       mechanism: "scripts/verify-floor.mjs rejects every governed commit lacking STATE.yaml; the combined synthetic bad input failed locally and CI wiring passed on prior PRs, but combined PR execution and required-merge enforcement remain unavailable."
     f3_execution_check:
       status: "complete_unverified"
-      mechanism: "The rebased source, content-addressed release candidate, and current build-f rollback each passed 46/46; the converted legacy build-e rollback passed 45 applicable checks plus one explicit not_applicable. Empty HTML and content tampering were rejected. Remote execution remains pending."
+      mechanism: "After merging PR #10, the content-addressed source, release candidate, and current build-f rollback each passed 46/46; legacy build e passed 45 applicable checks plus one not_applicable. Empty HTML, content tampering, and malformed workflow assumptions were rejected; remote execution remains pending."
     f5_review_record_check:
       status: "complete_unverified"
-      mechanism: "scripts/verify-floor.mjs rejected prepared_not_executed review input and validates Level A/B/C, complete_verified outcome, and governed-tree SHA-256 0b80540e707f3d2b031539c284f5cae1d89cb2be122ec2321ed6bc6f3604116c; Level C found and repaired current/legacy rollback criterion coupling. Remote execution remains pending."
+      mechanism: "scripts/verify-floor.mjs rejects invalid review records and validates Level C outcome against governed-tree SHA-256 985704af83ff4a04c1f6ba07daf3a72243d5716fa8489bcf69de5f5e1f67e19f; combined review preserved #10 ordering and added independent content identity. Remote execution remains pending."
     f6_public_revision_check:
       status: "complete_unverified"
-      mechanism: "The current public artifact exposes exact commit 045d253 and build f, but dynamic run 30685827875 previously replaced a verified custom artifact. A SHA-256 content-addressed marker identical in raw and Actions deployments plus a one-time all-zero remote probe are being integrated; remote rejection/restoration and normal verification are pending."
+      mechanism: "PR #10 ordered deployment run 30687172562 and a cache-busted fetch verify current commit marker 0efbcea. SHA-256 content identity plus a one-time all-zero remote probe are being merged on top; rejection/restoration and normal verification are pending."
     revert_mechanism:
       status: "complete_verified for legacy mechanism; complete_unverified for replacement"
       mechanism: "Automatic restoration passed run 30685438086 under the legacy commit marker. The current verified build-f source converts to the same self-verifying artifact as the candidate and passes 46/46; legacy build e converts and passes 45 applicable checks plus one not_applicable. Remote replacement execution remains pending."
@@ -112,6 +115,7 @@ floor:
       - "F6 durability defect: dynamic Pages run 30685827875 later replaced the Actions artifact with raw source containing __GIT_REVISION__; three independent cache-busted fetches reproduced it."
       - "Content-addressed local probes before rebase: a tampered HTML artifact and all-zero expected SHA-256 were rejected; the then-valid build e candidate passed 44/44."
       - "Combined rollback probe: build f initially skipped its own visual criterion and failed the legacy HUD assertion; build-aware applicability repaired it, after which current rollback passed 46/46 and legacy build e passed 45 applicable checks plus one not_applicable."
+      - "F6 delivery race: legacy Pages run 30686659153 published raw index.html after state-only main commit 4a61bbe, exposing __GIT_REVISION__; custom workflow run 30686475034 attempt 2 restored and verified 045d253, followed by an independent public 45/45 check."
     unenforced_items:
       - "F2/F3/F5 are not verified required merge checks because branch-protection capability is not exposed; they are configured to block Pages deployment."
       - "F6 and automatic rollback are not verified for the new content-addressed mechanism until its remote candidate, deliberate mismatch, restoration, and normal public run pass."
@@ -135,27 +139,27 @@ migration:
     loader_discovery: "complete_verified"
     fresh_run_resumption: "complete_verified"
     rollback_recovery: "complete_verified for legacy marker: run 30685438086; replacement probe pending"
-    normal_delivery: "complete_unverified: current run 30686475034 and cache-busted public observation match 045d253, but content-addressed durability probe is pending"
-    product_regression: "complete_verified for current main source: 45/45"
+    normal_delivery: "complete_unverified: ordered run 30687172562 and a cache-busted public observation match 0efbcea, but content-addressed durability probe is pending"
+    product_regression: "complete_verified for the integrated candidate: 46/46"
     non_conflicting_instructions_preserved: "complete_verified"
     modules_inactive: "complete_verified"
     accidental_publication_or_regression: "complete_verified: concurrent visual build f preserved and its behavior suite passed"
 
 recovery:
-  last_known_good_revision_or_artifact: "045d2533325bbd3672767daa38566f9647fdb894"
-  rollback_or_recovery_method: "The Pages workflow assembles verified public build f at 045d253 as the rollback source until a newer public artifact is recorded. Revert operating changes only through a reviewed PR."
+  last_known_good_revision_or_artifact: "0efbceaa583b4ce51c432445d906c8b76f68b0b4"
+  rollback_or_recovery_method: "The Pages workflow assembles current verified public build f at 0efbcea as the rollback source. Automatic restoration passed run 30685438086, and PR #10 now orders every main-push tested deployment after the same-SHA legacy publisher. Revert source changes only through a reviewed PR."
 
 remote:
   repository: "bachikoljunior-blip/Gptgame"
   working_branch: "agent/reference-benchmarks-artifact-revision"
-  pull_request: "prepared_not_applied: task branch and PR not yet created; #5-#9 remain merged"
-  main_revision: "4a61bbe8e6210336bf3445e468a2a3d2e4ab1333 (state checkpoint; deployed product remains 045d253)"
-  deployed_revision: "complete_verified for current observation: git-revision 045d2533325bbd3672767daa38566f9647fdb894, build 2026.08.01-f"
-  verified_public_revision: "complete_verified for current cache-busted fetch and checkpoint evidence: 045d2533325bbd3672767daa38566f9647fdb894"
+  pull_request: "complete_unverified: https://github.com/bachikoljunior-blip/Gptgame/pull/11 is draft at head 328f66d; verified main-merge update and checks remain"
+  main_revision: "0efbceaa583b4ce51c432445d906c8b76f68b0b4"
+  deployed_revision: "complete_verified for current observation: git-revision 0efbceaa583b4ce51c432445d906c8b76f68b0b4, build 2026.08.01-f"
+  verified_public_revision: "complete_verified for current cache-busted fetch: 0efbceaa583b4ce51c432445d906c8b76f68b0b4"
   public_url: "https://bachikoljunior-blip.github.io/Gptgame/"
   status: "complete_unverified: current surface is valid; content-addressed durability and recovery probe pending"
   open_pull_requests: []
   repository_permissions: "complete_verified: connected GitHub app reports admin/push permissions"
 
-updated_at: "2026-08-01T15:06:00+09:00"
-reconciliation_status: "complete_verified: main state checkpoint 4a61bbe and public product 045d253/build f incorporated; known Pages race remains explicitly open"
+updated_at: "2026-08-01T15:36:00+09:00"
+reconciliation_status: "complete_verified: main/public 0efbcea and draft PR #11 incorporated; combined local verification passed"
