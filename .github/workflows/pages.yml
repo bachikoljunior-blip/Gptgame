@@ -65,6 +65,11 @@ jobs:
       - name: Assemble verified rollback site
         id: rollback
         run: node scripts/prepare-rollback.mjs AI_DEVELOPMENT/STATE.yaml _rollback/index.html
+      - name: Execute verified rollback site
+        env:
+          ROLLBACK_ARTIFACT: "1"
+          GAME_HTML: _rollback/index.html
+        run: npm test
       - name: Upload tested candidate
         uses: actions/upload-pages-artifact@v3
         with:
@@ -113,6 +118,8 @@ jobs:
         if: ${{ failure() && steps.rollback.outcome == 'success' }}
         env:
           PUBLIC_OUTPUT_FILE: /tmp/gptgame-rollback-index.html
+          ROLLBACK_ARTIFACT: "1"
+          GAME_HTML: /tmp/gptgame-rollback-index.html
         run: |
           node scripts/verify-public-revision.mjs "${{ steps.rollback.outputs.page_url }}" "${{ needs.test.outputs.rollback_revision }}"
-          GAME_HTML=/tmp/gptgame-rollback-index.html npm test
+          npm test

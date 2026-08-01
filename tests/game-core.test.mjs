@@ -14,6 +14,8 @@ const html = fs.readFileSync(htmlPath, "utf8");
 const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)].map(
   (match) => match[1],
 );
+const verifyingRollbackArtifact = process.env.ROLLBACK_ARTIFACT === "1";
+const declaredBuildId = html.match(/var BUILD_ID = "([^"]+)";/)?.[1] ?? "";
 
 class FakeClassList {
   #values = new Set();
@@ -266,11 +268,11 @@ function createHarness(options = {}) {
       for (const handler of documentListeners.get(event.type) ?? []) handler(event);
     },
   };
-  const media = {
-    matches: false,
+  const media = (query = "") => ({
+    matches: Boolean(options.reducedMotion && String(query).includes("prefers-reduced-motion")),
     addEventListener() {},
     addListener() {},
-  };
+  });
   const context = {
     console,
     performance,
@@ -281,7 +283,7 @@ function createHarness(options = {}) {
     navigator: { vibrate() {}, maxTouchPoints: 1 },
     localStorage: options.localStorage ?? makeStorage(),
     sessionStorage: options.sessionStorage ?? makeStorage(),
-    matchMedia: () => media,
+    matchMedia: media,
     requestAnimationFrame: () => 1,
     cancelAnimationFrame() {},
     setTimeout: (fn) => {
@@ -321,6 +323,12 @@ test("single HTML is self-contained and syntactically valid", () => {
   assert.match(html, /id="crosshair"/);
   assert.match(html, /FIRE \+ AIM/);
   assert.match(html, /FIREやDASHを押したまま左右へ滑らせても照準/);
+  assert.match(declaredBuildId, /^\d{4}\.\d{2}\.\d{2}-[a-z]$/);
+  if (!verifyingRollbackArtifact) {
+    assert.match(html, /class="mission-strip"/);
+    assert.match(html, /<strong>15 SEC<\/strong>/);
+    assert.match(html, /<strong>REPEAT ×7<\/strong>/);
+  }
   assert.match(html, /getContext\("webgl2"/);
   assert.match(html, /attribute vec3 aPosition/);
   assert.match(html, /uniform mat4 uViewProjection/);
@@ -330,13 +338,27 @@ test("single HTML is self-contained and syntactically valid", () => {
   });
 });
 
+test("visual hierarchy keeps loop data legible and enriches both render paths", {
+  skip: verifyingRollbackArtifact ? "current visual acceptance is not applicable to the last verified release" : false,
+}, () => {
+  assert.equal(declaredBuildId, "2026.08.01-f");
+  assert.match(html, /#menuTitle::after\s*\{[\s\S]*?content:\s*"07"/);
+  assert.match(html, /grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(html, /ctx\.font = "900 30px ui-monospace, monospace"/);
+  assert.match(html, /ctx\.fillText\("YOU " \+ hpValue/);
+  assert.match(html, /ctx\.fillText\("ECHO", 330, 91\)/);
+  assert.match(html, /var gatePositions = quality === 2 \? \[-8\.4, 10\.2\] : \[10\.2\]/);
+  assert.match(html, /var scanY = reducedMotion \? 244 : 108 \+ \(now \* 0\.035\)/);
+  assert.match(html, /addRing\(glow, 0, 0\.03, 0, 6\.15/);
+});
+
 test("runtime exposes deterministic fixed-step contract only in test mode", () => {
   const { api } = createHarness();
   assert.ok(api);
   assert.deepEqual(
     JSON.parse(JSON.stringify(api.info())),
     {
-      buildId: "2026.08.01-e",
+      buildId: declaredBuildId,
       rulesVersion: 2,
       saveVersion: 2,
       fixedHz: 60,
@@ -376,6 +398,19 @@ test("WebGL path builds finite 3D geometry inside the stress budget", () => {
   assert.equal(next.rendererStaticBuilds, staticBuilds);
   assert.equal(webgl.calls.buffers.length - bufferUploads, 0, "dynamic GPU capacity should be reused");
   assert.equal(webgl.calls.subBuffers.length - subBufferUploads, 2, "only dynamic solid/glow ranges should update per frame");
+
+  api.lifecycle.adaptiveQualityDrop();
+  const qualityOne = api.stepTicks(1);
+  api.lifecycle.adaptiveQualityDrop();
+  const qualityZero = api.stepTicks(1);
+  assert.equal(qualityOne.quality, 1);
+  assert.equal(qualityZero.quality, 0);
+  assert.ok(qualityZero.triangles < state.triangles, "quality floor should shed decorative geometry");
+  assert.ok(qualityZero.triangles < 12000);
+
+  const reduced = createHarness({ webgl: true, reducedMotion: true }).api.checkpoints.load("PERF_WORST");
+  assert.equal(reduced.renderer, "webgl-3d");
+  assert.ok(reduced.triangles < state.triangles, "reduced motion should omit dynamic scan geometry");
 });
 
 test("3D camera, crosshair plane, and manual bullets agree in all cardinal directions", () => {
@@ -802,10 +837,14 @@ test("pause-menu buttons retain native keyboard activation", () => {
 test("mobile HUD reserves a non-overlapping control rail and readable type", () => {
   assert.match(html, /top:\s*calc\(var\(--safe-top\) \+ max\(146px, 30vw\)\)/);
   assert.match(html, /radial-gradient\(circle, #07111d 0 61%, transparent 62%\)/);
-  assert.match(html, /ctx\.font = "800 24px ui-monospace, monospace"/);
-  assert.match(html, /ctx\.font = "700 18px ui-monospace, monospace"/);
+  assert.match(html, verifyingRollbackArtifact
+    ? /ctx\.font = "800 24px ui-monospace, monospace"/
+    : /ctx\.font = "900 30px ui-monospace, monospace"/);
+  assert.match(html, verifyingRollbackArtifact
+    ? /ctx\.font = "700 18px ui-monospace, monospace"/
+    : /ctx\.font = "800 16px ui-monospace, monospace"/);
   for (const width of [320, 375, 390, 430, 480, 600]) {
-    const bossHudBottom = 130 * (width / 480);
+    const bossHudBottom = (verifyingRollbackArtifact ? 130 : 142) * (width / 480);
     const controlRailTop = Math.max(146, width * 0.3);
     assert.ok(controlRailTop > bossHudBottom, `${width}px HUD overlaps controls`);
   }
@@ -839,7 +878,7 @@ test("device report captures stress peaks without network telemetry", () => {
   assert.ok(metrics.framebufferBytes > metrics.backingPixels * 4);
   assert.equal(metrics.sampledFrames, 0);
   const report = api.diagnostics.report();
-  assert.match(report, /build: 2026\.08\.01-e/);
+  assert.ok(report.includes("build: " + declaredBuildId));
   assert.match(report, /peaks: enemies 64/);
   assert.match(report, /framebuffer [0-9.]+ MiB est\./);
   assert.match(report, /samples 4 \/ depth 24bit/);
