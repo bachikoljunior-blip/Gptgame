@@ -17,10 +17,11 @@ const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
 );
 const verifyingRollbackArtifact = process.env.ROLLBACK_ARTIFACT === "1";
 const declaredBuildId = html.match(/var BUILD_ID = "([^"]+)";/)?.[1] ?? "";
+const buildAtLeast = (minimum) => declaredBuildId >= minimum;
 const verifyingPreVisualRollback = verifyingRollbackArtifact
-  && declaredBuildId !== "2026.08.01-f";
+  && !buildAtLeast("2026.08.01-f");
 const verifyingPreTitleOverflowRepairRollback = verifyingRollbackArtifact
-  && declaredBuildId !== "2026.08.01-g";
+  && !buildAtLeast("2026.08.01-g");
 
 class FakeClassList {
   #values = new Set();
@@ -353,10 +354,7 @@ test("artifact revision rejects content tampering", () => {
 test("visual hierarchy keeps loop data legible and enriches both render paths", {
   skip: verifyingPreVisualRollback ? "current visual acceptance is not applicable to the pre-refresh rollback" : false,
 }, () => {
-  assert.ok(
-    ["2026.08.01-f", "2026.08.01-g"].includes(declaredBuildId),
-    "visual hierarchy criteria require build f or later",
-  );
+  assert.ok(buildAtLeast("2026.08.01-f"), "visual hierarchy criteria require build f or later");
   assert.match(html, /#menuTitle::after\s*\{[\s\S]*?content:\s*"07"/);
   assert.match(html, /grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
   assert.match(html, /ctx\.font = "900 30px ui-monospace, monospace"/);
@@ -372,7 +370,7 @@ test("title hierarchy fits narrow overlays without horizontal scrolling", {
     ? "title overflow repair is not applicable to the pre-repair rollback"
     : false,
 }, () => {
-  assert.equal(declaredBuildId, "2026.08.01-g");
+  assert.ok(buildAtLeast("2026.08.01-g"), "title overflow criteria require build g or later");
   assert.match(html, /\.overlay\s*\{[\s\S]*?overflow-x:\s*hidden;[\s\S]*?overflow-y:\s*auto;/);
   assert.match(html, /h1\s*\{[\s\S]*?font-size:\s*clamp\(28px, 9vw, 50px\);/);
   assert.match(html, /h1\s*\{[\s\S]*?letter-spacing:\s*clamp\(0\.075em, 0\.35vw, 0\.11em\);/);
