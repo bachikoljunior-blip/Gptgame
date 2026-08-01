@@ -5,6 +5,7 @@ import test from "node:test";
 import vm from "node:vm";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
+import { verifyArtifactRevision } from "../scripts/artifact-revision.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const htmlPath = process.env.GAME_HTML
@@ -16,6 +17,7 @@ const scripts = [...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
 );
 const verifyingRollbackArtifact = process.env.ROLLBACK_ARTIFACT === "1";
 const declaredBuildId = html.match(/var BUILD_ID = "([^"]+)";/)?.[1] ?? "";
+const usesLegacyVisualCriteria = verifyingRollbackArtifact && declaredBuildId !== "2026.08.01-f";
 
 class FakeClassList {
   #values = new Set();
@@ -307,6 +309,7 @@ function createHarness(options = {}) {
 }
 
 test("single HTML is self-contained and syntactically valid", () => {
+  assert.doesNotThrow(() => verifyArtifactRevision(html));
   assert.equal(scripts.length, 1);
   assert.doesNotMatch(html, /<script[^>]+\bsrc\s*=/i);
   assert.doesNotMatch(html, /<link[^>]+\bhref\s*=\s*["']https?:/i);
@@ -324,7 +327,7 @@ test("single HTML is self-contained and syntactically valid", () => {
   assert.match(html, /FIRE \+ AIM/);
   assert.match(html, /FIREやDASHを押したまま左右へ滑らせても照準/);
   assert.match(declaredBuildId, /^\d{4}\.\d{2}\.\d{2}-[a-z]$/);
-  if (!verifyingRollbackArtifact) {
+  if (!usesLegacyVisualCriteria) {
     assert.match(html, /class="mission-strip"/);
     assert.match(html, /<strong>15 SEC<\/strong>/);
     assert.match(html, /<strong>REPEAT ×7<\/strong>/);
@@ -338,8 +341,14 @@ test("single HTML is self-contained and syntactically valid", () => {
   });
 });
 
+test("artifact revision rejects content tampering", () => {
+  const tampered = html.replace("<title>ECHO//SEVEN</title>", "<title>ECHO//SEVEN altered</title>");
+  assert.notEqual(tampered, html);
+  assert.throws(() => verifyArtifactRevision(tampered), /embedded artifact revision does not match/);
+});
+
 test("visual hierarchy keeps loop data legible and enriches both render paths", {
-  skip: verifyingRollbackArtifact ? "current visual acceptance is not applicable to the last verified release" : false,
+  skip: usesLegacyVisualCriteria ? "current visual acceptance is not applicable to the older verified release" : false,
 }, () => {
   assert.equal(declaredBuildId, "2026.08.01-f");
   assert.match(html, /#menuTitle::after\s*\{[\s\S]*?content:\s*"07"/);
@@ -837,14 +846,14 @@ test("pause-menu buttons retain native keyboard activation", () => {
 test("mobile HUD reserves a non-overlapping control rail and readable type", () => {
   assert.match(html, /top:\s*calc\(var\(--safe-top\) \+ max\(146px, 30vw\)\)/);
   assert.match(html, /radial-gradient\(circle, #07111d 0 61%, transparent 62%\)/);
-  assert.match(html, verifyingRollbackArtifact
+  assert.match(html, usesLegacyVisualCriteria
     ? /ctx\.font = "800 24px ui-monospace, monospace"/
     : /ctx\.font = "900 30px ui-monospace, monospace"/);
-  assert.match(html, verifyingRollbackArtifact
+  assert.match(html, usesLegacyVisualCriteria
     ? /ctx\.font = "700 18px ui-monospace, monospace"/
     : /ctx\.font = "800 16px ui-monospace, monospace"/);
   for (const width of [320, 375, 390, 430, 480, 600]) {
-    const bossHudBottom = (verifyingRollbackArtifact ? 130 : 142) * (width / 480);
+    const bossHudBottom = (usesLegacyVisualCriteria ? 130 : 142) * (width / 480);
     const controlRailTop = Math.max(146, width * 0.3);
     assert.ok(controlRailTop > bossHudBottom, `${width}px HUD overlaps controls`);
   }

@@ -9,6 +9,7 @@ const required = [
   "AGENTS.md",
   "AI_DEVELOPMENT/PROTOCOL.md",
   "AI_DEVELOPMENT/STATE.yaml",
+  "AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md",
   "AI_DEVELOPMENT/ARCHIVE/PRE_MIGRATION_2026-08-01.yaml",
 ];
 
@@ -20,6 +21,7 @@ const start = read("START_HERE.md");
 const loader = read("AGENTS.md");
 const protocol = read("AI_DEVELOPMENT/PROTOCOL.md");
 const state = read("AI_DEVELOPMENT/STATE.yaml");
+const benchmarks = read("AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md");
 
 assert.match(start, /Protocol:.*2\.2/s);
 assert.match(start, /AI_DEVELOPMENT\/STATE\.yaml/);
@@ -66,6 +68,12 @@ for (const field of [
   assert.match(state, new RegExp("\\b" + field + ":"), "STATE.yaml is missing " + field);
 }
 assert.match(state, /objective:[\s\S]*?id: "visual-readability-richness-2026-08-01"/);
+assert.match(state, /reference_benchmark:[\s\S]*?path: "AI_DEVELOPMENT\/REFERENCE_BENCHMARKS\.md"/);
+for (const title of ["Lemnis Gate", "SUPERHOT", "Gunfire Reborn", "Call of Duty: Mobile"]) {
+  assert.match(benchmarks, new RegExp(title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "benchmark file is missing " + title);
+}
+assert.match(benchmarks, /prepared_not_executed/);
+assert.match(benchmarks, /Elements intentionally excluded/i);
 assert.match(state, /logical_session:[\s\S]*?active: true/);
 assert.match(state, /exact_next_action: "[^"]+"/);
 assert.match(state, /modules_activated: \[\]/);

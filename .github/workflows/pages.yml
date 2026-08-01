@@ -35,6 +35,7 @@ concurrency:
 jobs:
   test:
     outputs:
+      candidate_revision: ${{ steps.candidate.outputs.revision }}
       rollback_revision: ${{ steps.rollback.outputs.revision }}
     runs-on: ubuntu-latest
     steps:
@@ -59,9 +60,10 @@ jobs:
         with:
           enablement: true
       - name: Assemble static site
+        id: candidate
         run: |
           mkdir -p _site
-          REVISION_ID="${GITHUB_SHA}" node scripts/prepare-release.mjs index.html _site/index.html
+          node scripts/prepare-release.mjs index.html _site/index.html
       - name: Assemble verified rollback site
         id: rollback
         run: node scripts/prepare-rollback.mjs AI_DEVELOPMENT/STATE.yaml _rollback/index.html
@@ -102,9 +104,9 @@ jobs:
         env:
           PUBLIC_OUTPUT_FILE: /tmp/gptgame-public-index.html
         run: |
-          EXPECTED_REVISION="${GITHUB_SHA}"
+          EXPECTED_REVISION="${{ needs.test.outputs.candidate_revision }}"
           if test -f AI_DEVELOPMENT/F9_DEPLOY_PROBE; then
-            EXPECTED_REVISION="0000000000000000000000000000000000000000"
+            EXPECTED_REVISION="0000000000000000000000000000000000000000000000000000000000000000"
           fi
           node scripts/verify-public-revision.mjs "${{ steps.deployment.outputs.page_url }}" "${EXPECTED_REVISION}"
           GAME_HTML=/tmp/gptgame-public-index.html npm test

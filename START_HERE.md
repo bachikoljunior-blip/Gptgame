@@ -6,6 +6,7 @@ Canonical locations:
 
 - governing rules and mandatory floor: `AI_DEVELOPMENT/PROTOCOL.md`
 - active continuation state: `AI_DEVELOPMENT/STATE.yaml`
+- active concept and element benchmarks: `AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md`
 - optional on-demand modules: `AI_DEVELOPMENT/MODULES/`
 - retained product history and evidence: `PROJECT_MEMORY.md`
 
@@ -27,7 +28,7 @@ Current enforcement: read `floor.enforcement` in `AI_DEVELOPMENT/STATE.yaml`; un
 
 ## Resume procedure
 
-1. Read the active objective, execution, floor, recovery, and remote blocks in `AI_DEVELOPMENT/STATE.yaml`.
+1. Read the active objective, execution, reference-benchmark, floor, recovery, and remote blocks in `AI_DEVELOPMENT/STATE.yaml`; load `AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md` when selecting, implementing, or judging user-visible quality.
 2. Fetch/reconcile `origin/main`, current PR/checks, and the Pages-served revision when relevant.
 3. Correct material state drift before proceeding.
 4. Resume `execution.exact_next_action`; do not restart or replace the objective without a newer user instruction.

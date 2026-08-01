@@ -11,6 +11,7 @@ const statePath = path.resolve(root, process.env.STATE_FILE || stateRelative);
 const governedFiles = [
   "AGENTS.md",
   "START_HERE.md",
+  "AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md",
   "AI_DEVELOPMENT/PROTOCOL.md",
   "AI_DEVELOPMENT/F9_DEPLOY_PROBE",
   "index.html",
