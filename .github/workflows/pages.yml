@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - index.html
-      - package.json
-      - tests/**
-      - scripts/**
-      - AI_DEVELOPMENT/F9_DEPLOY_PROBE
-      - .github/workflows/pages.yml
   pull_request:
     branches:
       - main
@@ -24,6 +17,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -95,6 +89,48 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Wait for branch-based Pages publisher
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pollMs = 3000;
+            const discoveryDeadline = Date.now() + 30000;
+            const completionDeadline = Date.now() + 120000;
+            let legacyRun;
+
+            while (!legacyRun && Date.now() < discoveryDeadline) {
+              const response = await github.rest.actions.listWorkflowRunsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                head_sha: context.sha,
+                per_page: 100,
+              });
+              legacyRun = response.data.workflow_runs.find(
+                (run) => run.name === "pages build and deployment",
+              );
+              if (!legacyRun) await new Promise((resolve) => setTimeout(resolve, pollMs));
+            }
+
+            if (!legacyRun) {
+              core.notice("No branch-based Pages publisher found; continuing with the tested deployment.");
+              return;
+            }
+
+            while (legacyRun.status !== "completed") {
+              if (Date.now() >= completionDeadline) {
+                throw new Error(`Timed out waiting for legacy Pages run ${legacyRun.id}`);
+              }
+              core.info(`Waiting for legacy Pages run ${legacyRun.id}: ${legacyRun.status}`);
+              await new Promise((resolve) => setTimeout(resolve, pollMs));
+              const response = await github.rest.actions.getWorkflowRun({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: legacyRun.id,
+              });
+              legacyRun = response.data;
+            }
+
+            core.info(`Legacy Pages run ${legacyRun.id} completed with ${legacyRun.conclusion}.`);
       - name: Deploy candidate to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
