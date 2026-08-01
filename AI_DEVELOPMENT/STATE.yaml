@@ -36,7 +36,7 @@ objective:
 execution:
   selected_rigor: "STRICT"
   rationale: "The product change will merge to main and publish through GitHub Pages; delivery is therefore STRICT even though the visual implementation itself is bounded."
-  active_work: "Migrate the verified legacy continuity record and delivery policy to Adaptive 2.2 before resuming the visual objective."
+  active_work: "Complete the verified Adaptive 2.2 activation by removing the one-time F6 probe and proving a normal revision-stamped Pages deployment before resuming the visual objective."
   last_verified_checkpoint:
     revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
     branch: "origin/main"
@@ -45,19 +45,19 @@ execution:
     deployment: "complete_verified: Pages workflow run 30684019052 succeeded"
     public_surface: "complete_verified: served index.html SHA-256 6828ad8de381264d48b3e195d7c7e40f4937fe6b72dd8d4ba43192bf7ff582b5 matched repository index.html"
   modified_but_unverified:
-    - "Adaptive 2.2 canonical files and gates are in PR #5. Quality run 30685270311 passed; Pages PR run 30685270293 correctly blocked but exposed a shallow-checkout defect in rollback preparation. The fetch-depth repair is prepared locally and awaits remote execution."
+    - "One-time AI_DEVELOPMENT/F9_DEPLOY_PROBE removal and the corresponding canonical-state update on agent/adaptive-2-2-activate; local verification pending, remote normal deployment pending."
   current_blockers: []
   current_uncertainty:
     - "No physical iPhone or Android visual pass is available in this Work run."
     - "Local Playwright exists but its browser binary is absent; a Chromium download failed because the external CDN certificate was not yet valid in the environment."
     - "The connected GitHub tool set can create and merge PRs but exposes no branch-protection or ruleset mutation API; local gh is absent."
-  exact_next_action: "Push the full-history checkout repair to PR #5, require both PR workflows to pass, then merge and observe the one-time F6 mismatch plus automatic rollback before removing the probe and completing a verified normal deployment."
+  exact_next_action: "Verify and deliver the probe-removal PR, confirm a successful normal Pages deployment serves its exact main revision and passes 44/44, then resume the visual-readability implementation."
 
 floor:
-  last_check: "complete_unverified: F1 reconciled; F2 state current; F3 source/candidate/rollback artifacts executed and remote source tests passed; F4 accurate; F5 Level C passed remotely; F6 remote pending; F7 migration criteria pending; F8 recorded; F9 PR workflow failure repaired locally and remote recheck pending"
+  last_check: "complete_unverified: F1 reconciled; F2 state current; F3 source/candidate/rollback executed; F4 accurate; F5 Level C passed; F6 controlled remote mismatch and automatic restoration complete_verified; F7 migration normal-delivery criterion pending; F8 recorded; F9 F6 and revert active, F2/F3/F5 deployment-blocking but not protected-merge required"
   independence_level_used: "C"
   review_outcome: "complete_verified"
-  reviewed_changes_digest: "688fc4a538c0d20ac97cf8e96307a40fcb2e1288547eaf33cf9f3f530c6bda65"
+  reviewed_changes_digest: "8e715809d9ac3ddc4b99197adf5066b5c92f0f513279e0f910b101e22b227cbb"
   skips:
     - "F8 | F5 STRICT prefers Level A/B | Level C used because no separately permitted independent reviewer is available in this run; negative gate and recovery-artifact tests strengthen the substitute; revisit if A/B becomes available."
     - "F8 | F6 real-browser interaction | Playwright browser binary is absent and its CDN download failed on certificate validity; the served artifact will be fetched and run through the full deterministic harness; revisit on a physical or available browser."
@@ -74,33 +74,42 @@ floor:
       status: "complete_unverified"
       mechanism: "scripts/verify-floor.mjs validates Level A/B/C, complete_verified outcome, and governed-tree SHA-256; deliberate invalid review failed; remote execution pending."
     f6_public_revision_check:
-      status: "prepared_not_applied"
-      mechanism: "Post-deploy public HTML commit-meta comparison plus full served-artifact harness; fake revision failed locally; remote candidate/rollback execution pending."
+      status: "complete_verified"
+      mechanism: "Pages post-deploy public HTML commit-meta comparison plus full served-artifact harness. Main run 30685438086 rejected the deliberate all-zero expectation, then the public surface was independently re-fetched and verified at e7199d1 with 44/44 tests."
     revert_mechanism:
-      status: "prepared_not_applied"
-      mechanism: "Pages workflow holds the last verified public revision as a separate artifact and redeploys plus verifies it after candidate verification failure; local rollback artifact passed 44/44, remote rollback probe pending."
+      status: "complete_verified"
+      mechanism: "Pages workflow holds the last verified public revision as a separate artifact and redeploys plus verifies it after candidate verification failure. Run 30685438086 restored e7199d1 automatically; the workflow check and an independent public fetch both passed 44/44."
     last_observed_failing:
       - "F2: synthetic index.html-only commit rejected."
       - "F3: GAME_HTML=/dev/null rejected with 44 failures."
       - "F5: prepared_not_executed review record rejected."
       - "F6: all-zero expected public revision rejected."
       - "Remote workflow wiring: Pages PR run 30685270293 failed while preparing rollback because checkout depth 1 omitted verified revision e7199d1; full-history checkout repair prepared."
+      - "F6 remote: main run 30685438086 rejected the deliberately impossible revision, then automatically restored and verified e7199d1; independent public recheck passed 44/44."
     unenforced_items:
       - "F2/F3/F5 are not verified required merge checks because branch-protection capability is not exposed; they are configured to block Pages deployment."
-      - "F6 and automatic rollback are prepared_not_applied until the controlled remote probe completes."
+      - "Normal no-probe deployment still needs one successful remote observation before the migration is complete_verified."
     unattended_allowed: false
 
 migration:
   source: "Legacy AGENTS.md delivery policy plus PROJECT_MEMORY.md product/continuity record"
   status: "complete_unverified"
   pre_migration_checkpoint: "AI_DEVELOPMENT/ARCHIVE/PRE_MIGRATION_2026-08-01.yaml"
-  legacy_authority_scope: "Legacy records remain evidence; conflicting operating mechanics are superseded by Adaptive 2.2 only after loader validation."
+  legacy_authority_scope: "Legacy records remain evidence; conflicting operating mechanics are superseded by the validated Adaptive 2.2 loader now on main."
   modules_installed: "complete_verified: nine separate Layer 3 files pass shape and non-activation checks"
   modules_activated: []
   review_findings:
     - "Level C found that the deploy job lacked checkout/setup for its verifier; repaired and syntax/execution checked."
     - "Level C found that an unattended Pages failure had no automatic restoration; added a separate verified rollback artifact, failure-triggered redeploy, and post-rollback runtime check."
     - "Remote PR run 30685270293 falsified the rollback-source assumption under actions/checkout depth 1; repaired the test job to fetch full history before rollback assembly."
+    - "Main run 30685438086 deliberately failed F6, automatically redeployed e7199d1, and passed both its restoration harness and an independent public 44/44 recheck."
+  validation:
+    canonical_files: "complete_verified"
+    loader_discovery: "complete_verified"
+    fresh_run_resumption: "complete_verified"
+    rollback_recovery: "complete_verified: run 30685438086"
+    normal_delivery: "complete_unverified"
+    product_regression: "complete_verified: restored public artifact passed 44/44"
 
 recovery:
   last_known_good_revision_or_artifact: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
@@ -109,15 +118,14 @@ recovery:
 remote:
   repository: "bachikoljunior-blip/Gptgame"
   working_branch: "agent/adaptive-2-2-migration"
-  pull_request: "complete_unverified: https://github.com/bachikoljunior-blip/Gptgame/pull/5; Quality passed, Pages repair pending"
-  main_revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
+  pull_request: "complete_verified: https://github.com/bachikoljunior-blip/Gptgame/pull/5 merged as 18fbaab3b4a55fad3139c5555872a42f52c38dd2"
+  main_revision: "18fbaab3b4a55fad3139c5555872a42f52c38dd2"
   deployed_revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
   verified_public_revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21 (content hash match; source did not yet embed commit revision)"
   public_url: "https://bachikoljunior-blip.github.io/Gptgame/"
   status: "complete_verified"
-  open_pull_requests:
-    - "#5 Migrate project operations to Adaptive 2.2"
+  open_pull_requests: []
   repository_permissions: "complete_verified: connected GitHub app reports admin/push permissions"
 
-updated_at: "2026-08-01T14:13:00+09:00"
+updated_at: "2026-08-01T14:20:00+09:00"
 reconciliation_status: "complete_verified"
