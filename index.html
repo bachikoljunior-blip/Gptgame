@@ -38,7 +38,8 @@
       background:
         radial-gradient(circle at 50% 46%, #0d2134 0, #050b13 36%, #02050a 78%);
       color: var(--white);
-      font-family: ui-monospace, "SFMono-Regular", "Roboto Mono", Consolas, monospace;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-variant-numeric: tabular-nums;
       -webkit-text-size-adjust: 100%;
     }
 
@@ -112,6 +113,18 @@
       user-select: none;
       -webkit-user-select: none;
       -webkit-touch-callout: none;
+    }
+
+    #gameShell::before {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(142, 233, 255, 0.09), transparent 3.5%, transparent 96.5%, rgba(199, 255, 69, 0.08)),
+        repeating-linear-gradient(180deg, rgba(237, 247, 244, 0.018) 0 1px, transparent 1px 5px);
+      opacity: 0.62;
     }
 
     #gameShell::after {
@@ -281,12 +294,16 @@
       z-index: 10;
       left: 50%;
       top: 50%;
-      width: 42px;
-      height: 42px;
+      width: 46px;
+      height: 46px;
       translate: -50% -50%;
-      border: 1px solid rgba(237, 247, 244, 0.68);
+      border: 2px solid rgba(237, 247, 244, 0.74);
       border-radius: 50%;
-      box-shadow: 0 0 12px rgba(3, 7, 13, 0.9), inset 0 0 8px rgba(3, 7, 13, 0.7);
+      background: radial-gradient(circle, var(--crosshair-color) 0 2px, transparent 2.5px);
+      box-shadow:
+        0 0 0 1px rgba(3, 7, 13, 0.92),
+        0 0 16px rgba(3, 7, 13, 0.95),
+        inset 0 0 10px rgba(3, 7, 13, 0.78);
       pointer-events: none;
       transition: border-color 70ms linear, box-shadow 70ms linear, opacity 90ms linear;
     }
@@ -302,21 +319,24 @@
     }
 
     #crosshair::before {
-      width: 52px;
+      width: 58px;
       height: 2px;
-      background: linear-gradient(to right, var(--crosshair-color) 0 18%, transparent 18% 82%, var(--crosshair-color) 82% 100%);
+      background: linear-gradient(to right, var(--crosshair-color) 0 20%, transparent 20% 80%, var(--crosshair-color) 80% 100%);
     }
 
     #crosshair::after {
       width: 2px;
-      height: 52px;
-      background: linear-gradient(to bottom, var(--crosshair-color) 0 18%, transparent 18% 82%, var(--crosshair-color) 82% 100%);
+      height: 58px;
+      background: linear-gradient(to bottom, var(--crosshair-color) 0 20%, transparent 20% 80%, var(--crosshair-color) 80% 100%);
     }
 
     #crosshair.targeted {
       --crosshair-color: var(--lime);
       border-color: var(--lime);
-      box-shadow: 0 0 16px rgba(199, 255, 69, 0.62), inset 0 0 8px rgba(3, 7, 13, 0.7);
+      box-shadow:
+        0 0 0 1px rgba(3, 7, 13, 0.92),
+        0 0 22px rgba(199, 255, 69, 0.72),
+        inset 0 0 10px rgba(3, 7, 13, 0.78);
     }
 
     #crosshair.fallback {
@@ -337,26 +357,56 @@
         max(22px, calc(var(--safe-right) + 18px))
         max(24px, calc(var(--safe-bottom) + 18px))
         max(22px, calc(var(--safe-left) + 18px));
-      background: rgba(3, 7, 13, 0.86);
+      background:
+        radial-gradient(circle at 50% 20%, rgba(22, 54, 76, 0.42), transparent 38%),
+        linear-gradient(180deg, rgba(3, 7, 13, 0.72), rgba(3, 7, 13, 0.9)),
+        rgba(3, 7, 13, 0.84);
       backdrop-filter: blur(12px);
       overflow: auto;
       -webkit-overflow-scrolling: touch;
     }
 
     .panel {
+      position: relative;
+      isolation: isolate;
       width: min(100%, 480px);
       margin-inline: auto;
       padding: clamp(20px, 5vw, 32px);
-      border: 1px solid rgba(130, 145, 154, 0.55);
+      border: 1px solid rgba(142, 233, 255, 0.42);
       border-radius: 16px;
       background:
-        linear-gradient(145deg, rgba(13, 30, 47, 0.98), rgba(5, 12, 21, 0.98));
-      box-shadow: 0 18px 70px rgba(0, 0, 0, 0.42);
+        linear-gradient(145deg, rgba(13, 30, 47, 0.97), rgba(5, 12, 21, 0.985));
+      box-shadow:
+        inset 0 0 0 1px rgba(237, 247, 244, 0.035),
+        inset 0 20px 60px rgba(142, 233, 255, 0.035),
+        0 22px 80px rgba(0, 0, 0, 0.52),
+        0 0 42px rgba(142, 233, 255, 0.055);
+    }
+
+    .panel::before {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      border-radius: inherit;
+      content: "";
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, var(--lime), var(--cyan) 52%, transparent 86%) 0 0 / 76% 2px no-repeat,
+        linear-gradient(135deg, rgba(142, 233, 255, 0.06) 0 18%, transparent 18% 82%, rgba(199, 255, 69, 0.035) 82% 100%),
+        repeating-linear-gradient(90deg, transparent 0 31px, rgba(237, 247, 244, 0.018) 31px 32px);
+    }
+
+    .panel > * {
+      position: relative;
+      z-index: 1;
     }
 
     .eyebrow {
       margin: 0 0 8px;
+      padding-left: 10px;
+      border-left: 3px solid currentColor;
       color: var(--lime);
+      font-family: ui-monospace, "SFMono-Regular", "Roboto Mono", Consolas, monospace;
       font-size: 12px;
       font-weight: 800;
       letter-spacing: 0.22em;
@@ -379,6 +429,23 @@
       white-space: nowrap;
     }
 
+    #menuTitle {
+      position: relative;
+      text-shadow: 0 0 26px rgba(142, 233, 255, 0.18);
+    }
+
+    #menuTitle::after {
+      position: absolute;
+      z-index: -1;
+      right: -0.02em;
+      top: -0.46em;
+      content: "07";
+      color: rgba(142, 233, 255, 0.055);
+      font-size: 2.25em;
+      letter-spacing: -0.08em;
+      pointer-events: none;
+    }
+
     h2 {
       margin-bottom: 10px;
       font-family: "Arial Narrow", ui-sans-serif, sans-serif;
@@ -388,7 +455,7 @@
 
     .lead {
       margin-bottom: 22px;
-      color: #c5d0d4;
+      color: #d2dcdf;
       font-family: ui-sans-serif, system-ui, sans-serif;
       font-size: clamp(16px, 4vw, 19px);
       line-height: 1.65;
@@ -396,7 +463,55 @@
 
     .tagline {
       color: var(--white);
-      font-weight: 760;
+      font-weight: 820;
+    }
+
+    .mission-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      margin: 0 0 18px;
+      overflow: hidden;
+      border: 1px solid rgba(142, 233, 255, 0.32);
+      border-radius: 10px;
+      background: rgba(142, 233, 255, 0.22);
+    }
+
+    .mission-step {
+      min-width: 0;
+      padding: 10px 8px 9px;
+      background:
+        linear-gradient(180deg, rgba(12, 31, 48, 0.96), rgba(6, 16, 27, 0.97));
+      text-align: center;
+    }
+
+    .mission-index {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--cyan);
+      font-family: ui-monospace, "SFMono-Regular", monospace;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+    }
+
+    .mission-step strong {
+      display: block;
+      overflow: hidden;
+      color: var(--white);
+      font-family: ui-monospace, "SFMono-Regular", monospace;
+      font-size: clamp(12px, 3vw, 14px);
+      letter-spacing: 0.05em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mission-step small {
+      display: block;
+      margin-top: 4px;
+      color: #aebdc2;
+      font-size: clamp(10px, 2.7vw, 12px);
+      line-height: 1.25;
     }
 
     .primary {
@@ -408,6 +523,7 @@
       color: #07111d;
       font-weight: 950;
       letter-spacing: 0.1em;
+      box-shadow: 0 0 0 1px rgba(3, 7, 13, 0.72), 0 10px 30px rgba(199, 255, 69, 0.16);
     }
 
     .secondary {
@@ -418,6 +534,7 @@
       color: var(--white);
       background: rgba(7, 17, 29, 0.78);
       font-weight: 800;
+      box-shadow: inset 0 0 0 1px rgba(237, 247, 244, 0.025);
     }
 
     .button-row {
@@ -439,14 +556,16 @@
 
     .stat {
       padding: 12px 8px;
-      background: #08131f;
+      background: linear-gradient(180deg, #0a1928, #07111d);
       text-align: center;
     }
 
     .stat strong {
       display: block;
       color: var(--lime);
+      font-family: ui-monospace, "SFMono-Regular", monospace;
       font-size: clamp(17px, 4.5vw, 22px);
+      text-shadow: 0 0 16px rgba(199, 255, 69, 0.2);
     }
 
     .stat span {
@@ -775,6 +894,14 @@
       .stat-strip {
         margin: 12px 0;
       }
+
+      .mission-strip {
+        margin-bottom: 12px;
+      }
+
+      .mission-step {
+        padding-inline: 5px;
+      }
     }
 
     @media (orientation: landscape) and (max-height: 560px) and (pointer: coarse) {
@@ -820,6 +947,11 @@
         <p class="eyebrow">FIRST-PERSON TIME-LOOP ACTION</p>
         <h1 id="menuTitle">ECHO//<span style="color:var(--lime)">SEVEN</span></h1>
         <p class="lead"><span class="tagline">7回の時間。6人の過去。1つのコア。</span><br>あなたの動きは次の周回で味方になる。</p>
+        <div class="mission-strip" aria-label="時間ループの流れ">
+          <div class="mission-step"><span class="mission-index">PHASE 01</span><strong>15 SEC</strong><small>動く・狙う</small></div>
+          <div class="mission-step"><span class="mission-index">PHASE 02</span><strong>RECORD</strong><small>過去を生成</small></div>
+          <div class="mission-step"><span class="mission-index">PHASE 07</span><strong>REPEAT ×7</strong><small>コアを守る</small></div>
+        </div>
         <div class="stat-strip" aria-label="これまでの記録">
           <div class="stat"><strong id="bestScore">0</strong><span>BEST SCORE</span></div>
           <div class="stat"><strong id="bestLoop">—</strong><span>BEST LOOP</span></div>
@@ -945,7 +1077,7 @@
     var LOOP_TICKS = 900;
     var SAVE_VERSION = 2;
     var RULES_VERSION = 2;
-    var BUILD_ID = "2026.08.01-e";
+    var BUILD_ID = "2026.08.01-f";
     var SAVE_KEY = "echoSeven.save.v2";
     var RUN_CHECKPOINT_KEY = "echoSeven.runCheckpoint";
     var RUN_CHECKPOINT_VERSION = 2;
@@ -2998,12 +3130,54 @@
       }
       ctx.stroke();
 
+      ctx.strokeStyle = "rgba(142,233,255,0.2)";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(12.5, 100.5, W - 25, H - 116);
+      ctx.fillStyle = "rgba(142,233,255,0.1)";
+      for (var side = 0; side < 2; side += 1) {
+        var edgeX = side === 0 ? 13 : W - 21;
+        for (var tower = 0; tower < 7; tower += 1) {
+          var towerHeight = 18 + ((tower * 17 + side * 11) % 34);
+          var towerY = 122 + tower * 91;
+          ctx.fillRect(edgeX, towerY, 8, towerHeight);
+          ctx.fillStyle = tower % 3 === 2 ? "rgba(199,255,69,0.24)" : "rgba(142,233,255,0.2)";
+          ctx.fillRect(edgeX + 2, towerY + 3, 4, 3);
+          ctx.fillStyle = "rgba(142,233,255,0.1)";
+        }
+      }
+
+      ctx.strokeStyle = "rgba(142,233,255,0.2)";
+      ctx.lineWidth = 2;
+      for (var marker = 0; marker < 5; marker += 1) {
+        var markerY = 176 + marker * 116;
+        ctx.beginPath();
+        ctx.moveTo(142, markerY - 10);
+        ctx.lineTo(160, markerY);
+        ctx.lineTo(142, markerY + 10);
+        ctx.moveTo(W - 142, markerY - 10);
+        ctx.lineTo(W - 160, markerY);
+        ctx.lineTo(W - 142, markerY + 10);
+        ctx.stroke();
+      }
+
+      var scanY = reducedMotion ? 244 : 108 + (now * 0.035) % (H - 128);
+      ctx.fillStyle = "rgba(142,233,255,0.12)";
+      ctx.fillRect(14, scanY, W - 28, 2);
+
       ctx.save();
       ctx.translate(CORE_X, CORE_Y);
       ctx.strokeStyle = "rgba(130,145,154,0.16)";
       for (var r = 78; r <= 300; r += 55) {
         ctx.beginPath();
         ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = "rgba(142,233,255,0.13)";
+      for (var spoke = 0; spoke < 8; spoke += 1) {
+        var spokeAngle = spoke * Math.PI / 4;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(spokeAngle) * 72, Math.sin(spokeAngle) * 72);
+        ctx.lineTo(Math.cos(spokeAngle) * 128, Math.sin(spokeAngle) * 128);
         ctx.stroke();
       }
       ctx.rotate(reducedMotion ? 0 : now * 0.00004);
@@ -3748,13 +3922,47 @@
             var th = 0.35 + ((tower * 7) % 5) * 0.16;
             addBox(staticSolid, side * (8.25 + (tower % 3) * 0.22), th / 2 - 0.03, tz, 0.34, th, 0.72, color("#0b1a29"), 0, 0);
           }
+
+          var gatePositions = quality === 2 ? [-8.4, 10.2] : [10.2];
+          for (var gate = 0; gate < gatePositions.length; gate += 1) {
+            var gateZ = gatePositions[gate];
+            var gateColor = gate % 2 === 0 ? "#8ee9ff" : "#c7ff45";
+            addBox(staticSolid, -6.65, 0.78, gateZ, 0.3, 1.56, 0.42, color("#132638"), 0, 0);
+            addBox(staticSolid, 6.65, 0.78, gateZ, 0.3, 1.56, 0.42, color("#132638"), 0, 0);
+            addBeam(staticSolid, -6.65, gateZ, 6.65, gateZ, 1.55, 0.13, 0.16, color("#132638"), 0);
+            addBox(staticGlow, -6.65, 0.86, gateZ - 0.22, 0.055, 1.18, 0.055, color(gateColor, 0.46), 0, 0.9);
+            addBox(staticGlow, 6.65, 0.86, gateZ - 0.22, 0.055, 1.18, 0.055, color(gateColor, 0.46), 0, 0.9);
+            addBeam(staticGlow, -6.38, gateZ, 6.38, gateZ, 1.53, 0.035, 0.04, color(gateColor, 0.38), 0.9);
+          }
+
+          for (var lane = 0; lane < 2; lane += 1) {
+            var laneX = lane === 0 ? -4.05 : 4.05;
+            var laneDirection = lane === 0 ? 1 : -1;
+            for (var marker = 0; marker < 6; marker += 1) {
+              var markerZ = -9.2 + marker * 4.05;
+              var markerColor = marker % 3 === 2 ? "#c7ff45" : "#8ee9ff";
+              addBeam(staticGlow, laneX - laneDirection * 0.42, markerZ - 0.3, laneX, markerZ, 0.025, 0.034, 0.018, color(markerColor, 0.22), 0.65);
+              addBeam(staticGlow, laneX, markerZ, laneX - laneDirection * 0.42, markerZ + 0.3, 0.025, 0.034, 0.018, color(markerColor, 0.22), 0.65);
+            }
+          }
         }
       }
 
       function buildEnvironmentMotion(now) {
+        if (game.quality > 0) {
+          var beaconLift = reducedMotion ? 0 : Math.sin(now * 0.0024) * 0.08;
+          var beaconAlpha = reducedMotion ? 0.28 : 0.26 + Math.sin(now * 0.0031) * 0.08;
+          var beaconPoints = [[-7.42, -10.65], [7.42, -10.65], [-7.42, 12.15], [7.42, 12.15]];
+          for (var beacon = 0; beacon < beaconPoints.length; beacon += 1) {
+            var beaconColor = beacon < 2 ? "#8ee9ff" : "#c7ff45";
+            addBox(glow, beaconPoints[beacon][0], 0.72 + beaconLift, beaconPoints[beacon][1], 0.055, 1.34, 0.055, color(beaconColor, beaconAlpha), 0, 1);
+            addPrism(glow, beaconPoints[beacon][0], 1.43 + beaconLift, beaconPoints[beacon][1], 0.11, 0.12, 4, color(beaconColor, beaconAlpha + 0.16), Math.PI / 4, 1);
+          }
+        }
         if (game.quality !== 2 || reducedMotion) return;
         var scan = now * 0.00018;
         addBeam(glow, Math.cos(scan) * 7.1, Math.sin(scan) * 7.1, -Math.cos(scan) * 7.1, -Math.sin(scan) * 7.1, 0.026, 0.024, 0.015, color("#8ee9ff", 0.12), 1);
+        addRing(glow, 0, 0.03, 0, 6.15 + Math.sin(now * 0.0012) * 0.18, 0.025, 36, color("#c7ff45", 0.1), 0.8);
       }
 
       function buildCore(now) {
@@ -4156,85 +4364,116 @@
 
     function drawHud() {
       ctx.save();
-      ctx.fillStyle = "rgba(3,7,13,0.9)";
-      ctx.fillRect(0, 0, W, 96);
-      ctx.strokeStyle = "rgba(130,145,154,0.38)";
+      ctx.fillStyle = "rgba(3,7,13,0.94)";
+      ctx.fillRect(0, 0, W, 110);
+      ctx.fillStyle = "#c7ff45";
+      ctx.fillRect(0, 0, 150, 3);
+      ctx.fillStyle = "#8ee9ff";
+      ctx.fillRect(150, 0, 214, 3);
+      ctx.fillStyle = "#ff6b61";
+      ctx.fillRect(364, 0, W - 364, 3);
+      ctx.strokeStyle = "rgba(142,233,255,0.34)";
       ctx.beginPath();
-      ctx.moveTo(0, 95.5);
-      ctx.lineTo(W, 95.5);
+      ctx.moveTo(0, 109.5);
+      ctx.lineTo(W, 109.5);
       ctx.stroke();
 
       ctx.textBaseline = "middle";
-      ctx.font = "700 18px ui-monospace, monospace";
-      ctx.fillStyle = "#82919a";
-      ctx.fillText("SIGNAL", 18, 21);
-      ctx.textAlign = "center";
-      ctx.fillText("LOOP " + String(game.loop).padStart(2, "0") + " / 07", W / 2, 18);
-
       var hpRatio = game.player ? clamp(game.player.hp / game.player.maxHp, 0, 1) : 1;
-      ctx.textAlign = "left";
-      ctx.fillStyle = "#172633";
-      ctx.fillRect(18, 34, 82, 8);
-      ctx.fillStyle = hpRatio > 0.3 ? "#edf7f4" : "#ff6b61";
-      ctx.fillRect(18, 34, 82 * hpRatio, 8);
-
+      var hpValue = game.player ? Math.max(0, Math.ceil(game.player.hp)) : 0;
       var coreRatio = clamp(game.coreHp / game.coreMax, 0, 1);
-      ctx.fillStyle = "#172633";
-      ctx.fillRect(W - 101, 34, 83, 8);
-      ctx.fillStyle = coreRatio > 0.3 ? "#c7ff45" : "#ff6b61";
-      ctx.fillRect(W - 101, 34, 83 * coreRatio, 8);
-      ctx.textAlign = "right";
-      ctx.fillStyle = "#edf7f4";
-      ctx.fillText("CORE " + Math.max(0, Math.ceil(game.coreHp)) + (game.coreShield > 0 ? "+" + Math.ceil(game.coreShield) : ""), W - 18, 21);
+      var coreValue = Math.max(0, Math.ceil(game.coreHp)) + (game.coreShield > 0 ? "+" + Math.ceil(game.coreShield) : "");
 
-      var barX = 122;
-      var barY = 36;
-      var barW = 236;
+      ctx.fillStyle = "rgba(8,24,38,0.94)";
+      ctx.fillRect(12, 10, 104, 45);
+      ctx.fillRect(W - 116, 10, 104, 45);
+      ctx.fillRect(122, 10, 236, 61);
+      ctx.strokeStyle = "rgba(130,145,154,0.32)";
+      ctx.strokeRect(12.5, 10.5, 103, 44);
+      ctx.strokeRect(W - 115.5, 10.5, 103, 44);
+      ctx.strokeRect(122.5, 10.5, 235, 60);
+
+      ctx.font = "800 15px ui-monospace, monospace";
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#edf7f4";
+      ctx.fillText("YOU " + hpValue, 18, 23);
+      ctx.textAlign = "right";
+      ctx.fillText("CORE " + coreValue, W - 18, 23);
+
+      ctx.fillStyle = "#172633";
+      ctx.fillRect(18, 37, 92, 10);
+      ctx.fillStyle = hpRatio > 0.3 ? "#edf7f4" : "#ff6b61";
+      ctx.fillRect(18, 37, 92 * hpRatio, 10);
+      ctx.fillStyle = "#172633";
+      ctx.fillRect(W - 110, 37, 92, 10);
+      ctx.fillStyle = coreRatio > 0.3 ? "#c7ff45" : "#ff6b61";
+      ctx.fillRect(W - 110, 37, 92 * coreRatio, 10);
+
+      ctx.textAlign = "center";
+      ctx.font = "800 15px ui-monospace, monospace";
+      ctx.fillStyle = "#b8c6cb";
+      ctx.fillText("LOOP " + String(game.loop).padStart(2, "0") + " / 07", W / 2, 22);
+
+      var barX = 130;
+      var barY = 35;
+      var barW = 220;
       var segmentGap = 2;
       var segmentW = (barW - segmentGap * 14) / 15;
       var elapsed = game.tick / LOOP_TICKS * 15;
       for (var s = 0; s < 15; s += 1) {
-        ctx.fillStyle = s < elapsed ? "#c7ff45" : "#263747";
-        ctx.fillRect(barX + s * (segmentW + segmentGap), barY, segmentW, 8);
+        ctx.fillStyle = s < elapsed ? (s >= 12 ? "#ffbf69" : "#c7ff45") : "#263747";
+        ctx.fillRect(barX + s * (segmentW + segmentGap), barY, segmentW, 9);
       }
       ctx.fillStyle = "#edf7f4";
-      ctx.font = "800 24px ui-monospace, monospace";
+      ctx.font = "900 30px ui-monospace, monospace";
       ctx.textAlign = "center";
       var secondsLeft = Math.max(0, (LOOP_TICKS - game.tick) / HZ);
-      ctx.fillText(secondsLeft.toFixed(1), W / 2, 60);
+      ctx.fillText(secondsLeft.toFixed(1), W / 2 - 5, 59);
+      ctx.font = "800 11px ui-monospace, monospace";
+      ctx.fillStyle = "#8ee9ff";
+      ctx.textAlign = "left";
+      ctx.fillText("SEC", W / 2 + 42, 62);
 
-      ctx.font = "700 18px ui-monospace, monospace";
-      ctx.fillStyle = "#82919a";
-      var nodesStart = W - 123;
+      ctx.fillStyle = "rgba(8,24,38,0.88)";
+      ctx.fillRect(12, 78, W - 24, 25);
+      ctx.strokeStyle = "rgba(130,145,154,0.28)";
+      ctx.strokeRect(12.5, 78.5, W - 25, 24);
+
+      ctx.font = "800 16px ui-monospace, monospace";
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#edf7f4";
+      ctx.fillText("SCORE " + roundDisplay(game.score) + (game.chain > 1 ? " ×" + game.chain : ""), 18, 91);
+
+      ctx.font = "800 13px ui-monospace, monospace";
+      ctx.fillStyle = "#8ee9ff";
+      ctx.fillText("ECHO", 330, 91);
+      var nodesStart = 382;
       for (var e = 0; e < 6; e += 1) {
         ctx.beginPath();
-        ctx.arc(nodesStart + e * 21, 79, 4, 0, Math.PI * 2);
+        ctx.arc(nodesStart + e * 14, 91, 4, 0, Math.PI * 2);
         if (e < game.recordings.length) {
-          ctx.fillStyle = "#edf7f4";
+          ctx.fillStyle = e === game.recordings.length - 1 ? "#c7ff45" : "#edf7f4";
           ctx.fill();
         } else {
           ctx.strokeStyle = "#526372";
           ctx.stroke();
         }
       }
-      ctx.textAlign = "left";
-      ctx.fillStyle = "#82919a";
-      ctx.fillText("SCORE " + roundDisplay(game.score) + (game.chain > 1 ? " ×" + game.chain : ""), 18, 78);
 
       if (game.loop === 7) {
         var boss = null;
         for (var b = 0; b < game.enemies.length; b += 1) if (game.enemies[b].type === "S" && game.enemies[b].alive) boss = game.enemies[b];
         if (boss) {
           ctx.fillStyle = "rgba(3,7,13,0.88)";
-          ctx.fillRect(70, 105, 340, 25);
+          ctx.fillRect(58, 114, 364, 28);
           ctx.strokeStyle = "#ff6b61";
-          ctx.strokeRect(70.5, 105.5, 339, 24);
+          ctx.strokeRect(58.5, 114.5, 363, 27);
           ctx.fillStyle = "#ff6b61";
-          ctx.fillRect(76, 112, 328 * clamp(boss.hp / boss.maxHp, 0, 1), 7);
+          ctx.fillRect(65, 123, 350 * clamp(boss.hp / boss.maxHp, 0, 1), 7);
           ctx.fillStyle = "#edf7f4";
-          ctx.font = "800 18px ui-monospace, monospace";
+          ctx.font = "800 16px ui-monospace, monospace";
           ctx.textAlign = "center";
-          ctx.fillText(boss.charge ? "SEPTAGON — BREAK CHARGE" : "SEPTAGON", W / 2, 123);
+          ctx.fillText(boss.charge ? "SEPTAGON — BREAK CHARGE" : "SEPTAGON", W / 2, 136);
         }
       }
       ctx.restore();
