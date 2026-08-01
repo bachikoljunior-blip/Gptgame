@@ -22,7 +22,7 @@ When the concept changes:
 
 ## Current concept
 
-Repository evidence baseline: main `dcb015580757ceeb34ea0edc007ea2cc678837f5`, public artifact `197e0c47b7b78e663969ffe530c8493497c3311129ada2dba77fbaa851de1882`, product build `2026.08.01-f`.
+Repository evidence baseline: main `4bc447e15e8040a5663376931643f1292477f2ca`, public artifact `197e0c47b7b78e663969ffe530c8493497c3311129ada2dba77fbaa851de1882`, product build `2026.08.01-f`.
 
 ECHO//SEVEN is a portrait, mobile-first, first-person 3D action roguelite for a self-contained browser runtime. A run has seven 15-second loops. Movement, aim, manual shots, and DASH events from each loop are replayed by allied echoes in later loops. The player defends a core, chooses one of three upgrades after loops 2, 4, and 6, and fights SEPTAGON with six echoes in loop 7.
 
@@ -178,7 +178,7 @@ Evidence required: automated stress/golden/recovery tests, on-device diagnostic 
 | UI/touch | Safe-area-aware controls, 48–118 px buttons, left-handed mirroring, no-overlap test, labeled YOU/CORE/time/ECHO HUD, and a three-phase title briefing | A few secondary labels remain 10–12 px; target-phone captures, first-run observation, and reach tests are absent. |
 | Visuals | Original palette, geometric silhouettes, WebGL 1/2, Canvas fallback, adaptive effects, layered panels, stronger crosshair, arena light gates/lane markers/beacons, and an enriched fallback scene | Build f's implementation and 9,344-triangle automated stress criterion pass, but matched menu/gameplay/boss/result/reduced-quality/fallback captures have not been produced or reviewed against the criteria. |
 | Audio | Procedural, local-only, gesture-safe cues with a 14-voice cap | Cue vocabulary is sparse and lacks dedicated boss/defeat/ambient identity; phone recording is absent. |
-| Performance/stability | 46 candidate/public tests including artifact tamper rejection, explicit caps, adaptive DPR/quality, exact reload restoration, content-addressed public identity, and remotely exercised automatic restoration | No physical iPhone/Android seven-loop diagnostic run; the probe-free normal delivery still requires its scheduled remote proof. |
+| Performance/stability | 46 candidate/public tests including artifact tamper rejection, explicit caps, adaptive DPR/quality, exact reload restoration, content-addressed public identity, remotely exercised automatic restoration, and successful probe-free delivery | No physical iPhone/Android seven-loop diagnostic run; automated and public evidence does not substitute for that measurement. |
 
 No numeric “overall score” may hide a blocking failure. An element passes only when its applicable hard gates pass and its evidence status is accurate.
 
