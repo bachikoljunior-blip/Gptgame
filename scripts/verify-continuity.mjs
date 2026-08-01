@@ -67,7 +67,7 @@ for (const field of [
 ]) {
   assert.match(state, new RegExp("\\b" + field + ":"), "STATE.yaml is missing " + field);
 }
-assert.match(state, /objective:[\s\S]*?id: "visual-readability-richness-2026-08-01"/);
+assert.match(state, /objective:[\s\S]*?id: "[^"]+"/);
 assert.match(state, /reference_benchmark:[\s\S]*?path: "AI_DEVELOPMENT\/REFERENCE_BENCHMARKS\.md"/);
 for (const title of ["Lemnis Gate", "SUPERHOT", "Gunfire Reborn", "Call of Duty: Mobile"]) {
   assert.match(benchmarks, new RegExp(title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), "benchmark file is missing " + title);

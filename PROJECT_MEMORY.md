@@ -20,6 +20,7 @@ Create the most compelling realistically achievable mobile-first game for the pu
 - Implemented: dual-zone mobile movement/look controls, two-thumb FIRE/DASH drag aiming, viewport-normalized look sensitivity, responsive curved movement input, explicit FIRE and DASH actions, a high-contrast target-responsive crosshair, labeled YOU/CORE/time/ECHO HUD, three-phase title briefing, layered panel treatment, richer 3D light gates/lane markers/beacons, enriched Canvas fallback, exact 900-tick loops, aim-preserving echoes, five ordinary enemy types, seeded wave schedules, three upgrade drafts, final boss and interrupt mechanic, score/best results, settings, procedural audio, haptics, reduced motion, pause/resume, versioned save parsing, safe same-tab run restoration, adaptive effects, guarded debug checkpoints, WebGL context recovery, static VBO caching, dynamic buffer reuse, and combined framebuffer diagnostics.
 - Build `2026.08.01-c` received an independent 10/10 re-audit across all seven axes with no reproducible Critical/High/Medium issue.
 - GitHub Pages release URL: https://bachikoljunior-blip.github.io/Gptgame/. The latest successful main-branch Pages workflow is the canonical release artifact.
+- A two-stage primary phone-browser gate is prepared on `agent/iphone-se3-automation`: Playwright WebKit at iPhone SE (3rd generation) portrait `375×667 / DPR 2`, followed on `main` by Appium/XCUITest driving Mobile Safari on the matching iOS Simulator. Pages deployment depends on both gates and preserves screenshots, video, trace, logs, and JSON reports. It has not been merged or executed on the target WebKit/iOS runners yet.
 
 ## Completed work
 
@@ -62,17 +63,18 @@ Create the most compelling realistically achievable mobile-first game for the pu
 ## Architecture
 
 - Repository index.html: canonical self-contained game (HTML, CSS, JavaScript, custom WebGL 1/2 renderer, Canvas HUD/fallback, procedural WebAudio).
-- Repository .github/workflows/pages.yml: GitHub Pages deployment from main. It runs the full test gate, packages only the tested index.html, and deploys via official Pages actions.
+- Repository .github/workflows/pages.yml: GitHub Pages deployment from main. It runs deterministic tests, the iPhone SE 3 WebKit gate, and the iPhone SE 3 iOS Simulator Mobile Safari gate before packaging only the tested index.html and deploying through official Pages actions.
 - Repository tests/game-core.test.mjs: Node built-in test runner for source validity and guarded runtime checks.
-- Repository package.json: dependency-free test command.
+- Repository tools/test-iphone-webkit.mjs and tools/test-ios-safari.mjs: target-size browser interaction, layout, reload, stress, screenshot, and error gates.
+- Repository package.json: deterministic tests plus pinned Playwright screenshot-test dependencies.
 - Repository PROJECT_MEMORY.md: this continuous project record.
 - Runtime layers inside the single HTML: input, fixed-step simulation, seeded RNG, entities, combat, loop recorder/replay, progression, UI state machine, WebGL scene renderer, Canvas HUD/fallback, audio/feedback, save/telemetry, and query-gated debug checkpoints.
 
 ## Dependencies
 
 - Runtime game: browser platform APIs only; no external libraries or network assets.
-- Deployment: GitHub Actions official Pages actions.
-- Tests: Node built-in test runner only; no package dependencies.
+- Deployment: GitHub Actions official Pages actions, gated by WebKit and iOS Simulator Safari.
+- Tests: Node built-in test runner plus pinned Playwright, pixelmatch, and pngjs development dependencies; the shipped HTML remains dependency-free.
 
 ## Acceptance criteria
 
@@ -89,20 +91,21 @@ Create the most compelling realistically achievable mobile-first game for the pu
 - Game pauses on visibility loss and resumes only through an explicit player action.
 - A same-tab reload restores a valid active run in an explicit paused state without retaining movement, look, FIRE, DASH, or key input.
 - WebGL loss, restoration, resize during loss, and render allocation failure never stop the fixed-step game loop; Canvas fallback remains playable.
-- Production build, automated tests, interactive playtest, regression review, and performance checks pass.
+- Production build, deterministic tests, iPhone SE 3 WebKit interaction/visual checks, iOS Simulator Mobile Safari interaction checks, public revision verification, and applicable regression review pass before publication.
 - Target rendering: 60 FPS on capable phones; stable 30 FPS minimum under the defined entity/particle budgets; DPR is capped and visual effects degrade safely.
+- Automated runner frame gaps are comparative hang/regression evidence only and are never reported as physical-phone FPS.
 
 ## Known bugs
 
 - No confirmed release-blocking game bug remains.
-- A physical iOS/Android device has not yet been exercised. Build `2026.08.01-c` has 375×667, DPR 2 real-Chromium evidence plus deterministic camera/control tests, but still needs a physical-device visual pass.
+- No confirmed release-blocking physical-device-only defect is known. Physical GPU speed, thermal throttling, memory-pressure reloads, hand reach, haptics, speakers, and audio latency remain unmeasured; the user replaced the routine physical-device gate with WebKit plus iOS Simulator Mobile Safari automation, so these facts remain explicit but non-blocking.
 
 ## Technical debt
 
-- Exact balance still requires real-device playtest tuning after the first published build.
-- The 6,300-tick golden suite currently uses a deterministic no-enemy route to isolate renderer/simulation equivalence; live-wave balance still needs physical-device playtesting.
+- Exact balance and touch comfort may still benefit from optional physical-device playtest tuning; they are not routine publication gates.
+- The 6,300-tick golden suite currently uses a deterministic no-enemy route to isolate renderer/simulation equivalence; live-wave balance remains a future playtest question rather than an automated performance claim.
 - Run restoration is intentionally tab-scoped. It does not transfer a live run between tabs, browsers, or devices, and an abrupt process kill that emits no lifecycle event may fall back to the last loop-boundary checkpoint.
-- FIRE and DASH occupy a lower-corner action rail. Their minimum targets are 88px and 64px, remain above the 44px touch baseline, accept aim drag to reduce finger changes, and still require a physical-device reachability check.
+- FIRE and DASH occupy a lower-corner action rail. Their minimum targets are 88px and 64px, remain above the 44px touch baseline, accept aim drag to reduce finger changes, and are checked automatically for layout and trusted simulator touch; actual hand reach remains optional physical-only evidence.
 
 ## Successful patterns
 
@@ -160,10 +163,10 @@ Create the most compelling realistically achievable mobile-first game for the pu
 
 ## Highest-impact next task
 
-Run the full seven-loop flow on physical iPhone Safari and Android Chrome, then tune balance only from observed device evidence.
+Run the prepared WebKit workflow, promote its first WebKit-generated visual baseline, then execute the iPhone SE 3 iOS Simulator Mobile Safari gate. Keep the branch unmerged until those target-runner reports are inspected.
 
 ## Future tasks
 
-1. Run the full seven-loop flow on iPhone Safari and Android Chrome, including simultaneous move+look+FIRE+DASH, rotation, backgrounding, sound, win, loss, and restart.
-2. Record final-boss p95 frame time, peak entities, DPR, and post-run audio voice cleanup on a real phone.
-3. Tune wave/boss balance and address any observed device-specific defects in a later iteration.
+1. Promote the WebKit-generated `375×667 / DPR 2` baseline and make the fast gate green.
+2. Inspect the iOS Simulator Safari video/report for simultaneous move+look+FIRE+DASH, pause/resume, reload restoration, stress state, layout, and runtime errors.
+3. Tune wave/boss balance or physical-only behavior only if later optional device evidence identifies a concrete defect.

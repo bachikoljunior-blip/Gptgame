@@ -6,7 +6,9 @@ Selection status: `complete_verified` against the sources listed below
 
 Direct side-by-side gameplay comparison: `prepared_not_executed`
 
-Physical-phone comparison: `prepared_not_executed`
+Routine iPhone browser gate: `prepared_not_executed` — Playwright WebKit at `375×667 / DPR 2`, then iPhone SE (3rd generation) iOS Simulator Mobile Safari through Appium
+
+Physical-phone-only properties: explicitly unmeasured and non-blocking for routine delivery; GPU speed, thermals, memory pressure, hand reach, haptics, speakers, and audio latency must never be inferred from either automated runner
 
 ## Authority and update rule
 
@@ -22,7 +24,7 @@ When the concept changes:
 
 ## Current concept
 
-Repository evidence baseline: main `29d13e31e56145639cf425c43d30b040ceb5c0c7`, public artifact `93298f8c72fa670affcd7ab40e1b66ac5f60f561783ef0cdfe0dc9f70955eb8a`, product build `2026.08.01-h`.
+Repository product evidence baseline: main product revision `036ed206c988a72c6bd549b531a2830c20fec7b1`, public artifact `d9e7db13cef617a4604beead48082479e64a27c2413446ebbbca695d36dcf923`, product build `2026.08.01-i`; the later state-only main checkpoint is `4c1aa5fd955c9af680b78104c01657b571877e15`.
 
 ECHO//SEVEN is a portrait, mobile-first, first-person 3D action roguelite for a self-contained browser runtime. A run has seven 15-second loops. Movement, aim, manual shots, and DASH events from each loop are replayed by allied echoes in later loops. The player defends a core, chooses one of three upgrades after loops 2, 4, and 6, and fights SEPTAGON with six echoes in loop 7.
 
@@ -34,7 +36,7 @@ The product priorities that control benchmark selection are:
 - meaningful short-run upgrade choices;
 - a unified geometric visual language that works without external runtime assets;
 - useful sound, haptics, and muted-play feedback;
-- deterministic behavior, graceful Canvas fallback, local recovery, and stable 30 FPS minimum with 60 FPS on capable phones.
+- deterministic behavior, graceful Canvas fallback, and local recovery; the 30/60 FPS product target remains, while automated runners enforce resource caps and relative hang/regression guards without pretending to measure physical-phone FPS.
 
 ## Elements intentionally excluded
 
@@ -80,7 +82,7 @@ Pass criteria:
 - enemy contact, projectiles, spawn telegraphs, boss charge, hit confirmation, kill confirmation, and DASH invulnerability are visually and audibly separable;
 - motion, shake, glow, and particles reinforce impact without hiding the target or destabilizing aim.
 
-Evidence required: existing pointer/camera/golden-trace checks plus a physical-phone feel pass. Automated behavior is `complete_verified`; physical feel is `prepared_not_executed`.
+Evidence required for routine delivery: existing pointer/camera/golden-trace checks, Playwright WebKit at the target viewport, and trusted two-thumb Appium actions in the matching iOS Simulator Mobile Safari. Existing deterministic behavior is `complete_verified`; both new target-browser gates are `prepared_not_executed`. Physical comfort and hit feel remain optional, unmeasured tuning evidence.
 
 ### 3. Enemy behavior and boss communication
 
@@ -123,7 +125,7 @@ Pass criteria:
 - browser scrolling, zooming, selection, callouts, and stuck pointers do not interrupt play;
 - a new player can begin, move, aim, fire, DASH, understand the next echo, and pause without outside instructions.
 
-Evidence required: DOM/CSS assertions, production pointer tests, 320/375/480-width captures, and first-run observation. Automated layout/input checks plus build-k menu/result and expanded-diagnostics captures at 320×568/375×667 are `complete_verified`; 480-width capture, physical touch, and first-run observation are `prepared_not_executed`.
+Evidence required: DOM/CSS assertions, production pointer tests, target-width captures, trusted iOS Simulator Safari taps, and the automated first-run path. Existing layout/input checks plus build-k menu/result and expanded-diagnostics captures at 320×568/375×667 are `complete_verified`; the new WebKit and iOS Simulator passes, 480-width capture, and physical touch are `prepared_not_executed`. Physical reach remains optional and cannot be inferred from the simulator.
 
 ### 6. Visuals, animation, and transitions
 
@@ -137,7 +139,7 @@ Pass criteria:
 - high and reduced quality modes preserve gameplay information even when decorative density, DPR, or particles fall;
 - Canvas fallback communicates the same mandatory states even when it cannot match WebGL richness.
 
-Evidence required: matched captures from menu, loop 1, loop 2, boss charge, victory/defeat, reduced quality, and Canvas fallback. The build-h target-size capture matrix is `complete_verified`; direct reference footage, motion comparison, and physical-device review are `prepared_not_executed`, so the visual pass is not benchmark-complete.
+Evidence required: matched captures from menu, loop 1, loop 2, boss charge, victory/defeat, reduced quality, Canvas fallback, target WebKit, and iOS Simulator Safari. The build-h target-size capture matrix is `complete_verified`; the new target-browser captures, direct reference footage, and motion comparison are `prepared_not_executed`, so the visual pass is not benchmark-complete. Physical rendering is optional evidence, not a routine release gate.
 
 ### 7. Audio and haptics
 
@@ -151,7 +153,7 @@ Pass criteria:
 - haptics are short, optional, disabled with reduced motion, and never the sole carrier of required information;
 - muted play remains fully understandable.
 
-Evidence required: source event inventory, automated voice/resume metrics, and recorded phone audio. Public build j adds distinct rising boss-charge, brittle charge-break, and low core-impact identities on the real combat branches; deterministic routing, critical-voice reservation, prior-build applicability, a valid-hash missing-routing negative, PR/main workflows, and the independently fetched public artifact are `complete_verified`. Dedicated defeat and ambient identities plus recorded-phone comparison remain `prepared_not_executed`.
+Evidence required for routine delivery: source event inventory, automated voice/resume metrics, gesture-safe resume, and muted-play parity. Public build j adds distinct rising boss-charge, brittle charge-break, and low core-impact identities on the real combat branches; deterministic routing, critical-voice reservation, prior-build applicability, a valid-hash missing-routing negative, PR/main workflows, and the independently fetched public artifact are `complete_verified`. Dedicated defeat and ambient identities remain `prepared_not_executed`; speakers, recorded-phone comparison, and audio latency remain physical-only, unmeasured, non-blocking properties.
 
 ### 8. Performance, stability, recovery, and fallback
 
@@ -159,32 +161,33 @@ Primary reference: **Call of Duty: Mobile** for device-scalable presentation. Co
 
 Pass criteria:
 
-- target 60 FPS on capable phones and stable 30 FPS minimum under the defined worst-case checkpoint;
+- retain the target of 60 FPS on capable phones and stable 30 FPS minimum, but never convert runner frame gaps into physical-phone FPS evidence;
+- routine automation rejects hangs, non-finite state, budget overruns, and relative regressions at the defined worst-case checkpoint;
 - adaptive quality may reduce DPR and decorative work, but never input, simulation rate, collision, telegraphs, HUD information, or save correctness;
 - caps remain enforced for enemies, friendly and hostile projectiles, particles, triangles, Canvas pixels, and audio voices;
 - WebGL 2, WebGL 1, context loss, render failure, resize, Canvas fallback, pause, backgrounding, and same-tab restoration preserve a playable deterministic run;
 - public delivery identifies and verifies the exact content artifact being served, and a failed candidate restores the last verified artifact.
 
-Evidence required: automated stress/golden/recovery tests, on-device diagnostic report, public artifact revision check, and real-device seven-loop run. Automated source behavior and the currently observed content-addressed build-k public artifact are `complete_verified`; physical-device evidence is `prepared_not_executed`.
+Evidence required for routine delivery: automated stress/golden/recovery tests, WebKit and iOS Simulator Safari stress reports, explicit resource caps, and the public artifact revision check. Existing source behavior and the content-addressed build-k public artifact are `complete_verified`; both new phone-browser gates are `prepared_not_executed`. Physical FPS, heat, and memory pressure remain optional measurements and may not be claimed from the runners.
 
 ## Current quality gap at selection time
 
 | Element | Verified current strength | Remaining gap versus the assigned reference |
 |---|---|---|
 | Loop/echo | Exact 900-tick tapes, deterministic replay, six-echo final loop, final-tick tests, target-size LOOP 01/02 captures, and build-i handoff cards that name the recorded loop, armed echo, next loop, and active replay count | The explicit handoff improves the static causal reading, but stills do not prove that overlapping actions remain understandable in motion; footage and a fresh-viewer check remain absent. |
-| Combat/camera | Manual-fire gating, two-thumb FIRE-drag aim, camera/crosshair/projectile agreement, deterministic stress trace, and a visibly targeted crosshair at both target sizes | Physical-phone responsiveness, comfort, hit feel, and sustained aim stability remain unmeasured. |
+| Combat/camera | Manual-fire gating, two-thumb FIRE-drag aim, camera/crosshair/projectile agreement, deterministic stress trace, and a visibly targeted crosshair at both target sizes | Target WebKit and trusted iOS Simulator two-thumb evidence are prepared but not executed; physical comfort and hit feel remain optional and unmeasured. |
 | Enemy/boss | Five ordinary roles, seeded schedules, aligned boss spawn/telegraph, charge interrupt, and target-size boss-charge captures in WebGL, reduced-motion WebGL, and Canvas | Threat-priority readability has not been judged from motion or by a fresh viewer. |
 | Upgrades | Three unique category-based offers and validated application | Build diversity and choice tension have not been measured across repeated full runs. |
-| UI/touch | Safe-area-aware controls, 48–118 px buttons, left-handed mirroring, labeled YOU/CORE/time/ECHO HUD, and exact 320×568/375×667 menu/result evidence with a 12 px secondary-type floor, full `REPEAT ×7`, no document-width overflow, undersized buttons, or button overlap | Build h repairs the exact 320×568 tutorial's focus-induced initial scroll, and build k removes 9–11 px menu/result labels. Physical first-run, thumb reach, 480-width, and touch-feel tests remain absent. |
-| Visuals | Original palette, geometric silhouettes, WebGL/Canvas fallback, adaptive effects, and a 40-capture target-size matrix covering menu, loops, combat, target state, boss, result, reduced motion, and fallback without page, renderer, or invariant errors | Static captures cannot establish transition timing, echo causality in motion, or parity on a physical phone; blind, expert, and direct matched-reference review remain absent. |
-| Audio | Procedural, local-only, gesture-safe cues with distinct boss charge/break/impact identities and a 10/14 general/critical voice reserve | Dedicated defeat and ambient identity plus phone recording remain absent. |
-| Performance/stability | 51 current-source and current-public tests covering artifact tamper rejection, responsive-layout regressions, explicit caps, adaptive DPR/quality, exact reload restoration, content-addressed identity, automatic restoration, and probe-free delivery | No physical iPhone/Android seven-loop diagnostic run; local headless and public automation do not substitute for that measurement. |
+| UI/touch | Safe-area-aware controls, 48–118 px buttons, left-handed mirroring, labeled YOU/CORE/time/ECHO HUD, and exact 320×568/375×667 menu/result evidence with a 12 px secondary-type floor, full `REPEAT ×7`, no document-width overflow, undersized buttons, or button overlap | Build h repairs the exact 320×568 tutorial's focus-induced initial scroll, and build k removes 9–11 px menu/result labels. Target WebKit and iOS Simulator first-run/touch reports are prepared but not executed; physical thumb reach, 480-width, and touch feel remain optional or unmeasured. |
+| Visuals | Original palette, geometric silhouettes, WebGL/Canvas fallback, adaptive effects, and a 40-capture target-size matrix covering menu, loops, combat, target state, boss, result, reduced motion, and fallback without page, renderer, or invariant errors | Static captures cannot establish transition timing or echo causality in motion; target WebKit/iOS Safari, blind, expert, and direct matched-reference review remain absent. |
+| Audio | Procedural, local-only, gesture-safe cues with distinct boss charge/break/impact identities and a 10/14 general/critical voice reserve | Dedicated defeat and ambient identity remain absent; speaker and latency behavior remain unmeasured physical-only properties. |
+| Performance/stability | 51 current-source and current-public tests covering artifact tamper rejection, responsive-layout regressions, explicit caps, adaptive DPR/quality, exact reload restoration, content-addressed identity, automatic restoration, and probe-free delivery | Target WebKit and iOS Simulator stress gates are prepared but not executed. Physical FPS/thermal/memory behavior remains unmeasured and will not be inferred from runner timing. |
 
 No numeric “overall score” may hide a blocking failure. An element passes only when its applicable hard gates pass and its evidence status is accurate.
 
 ## Browser evidence added during continuation
 
-Two browser methods are kept distinct. The first was live public GitHub Pages in cloud Chrome at a centered 560×936 CSS px Canvas shell. The second used the unbundled candidate HTML in headless Chromium with exact 320×568 and 375×667 mobile/touch viewports, software WebGL plus forced Canvas fallback, and a capture-only hidden diagnostics panel; that browser lacked Japanese glyph coverage, so its geometry and computed-size evidence does not prove Japanese glyph appearance. Neither method substitutes for physical Safari/Chrome touch testing.
+Existing browser evidence and the prepared gates are kept distinct. The first was live public GitHub Pages in cloud Chrome at a centered 560×936 CSS px Canvas shell. The second used the unbundled candidate HTML in headless Chromium with exact 320×568 and 375×667 mobile/touch viewports, software WebGL plus forced Canvas fallback, and a capture-only hidden diagnostics panel; that browser lacked Japanese glyph coverage, so its geometry and computed-size evidence does not prove Japanese glyph appearance. The prepared routine replacement adds Playwright WebKit and an actual iOS Simulator Mobile Safari session; none of these methods measures physical-only performance or feel.
 
 - `complete_verified` for public build i/artifact `d9e7db13…`: the loop boundary names the sealed loop, newly armed echo count, next loop, and count of recorded paths that will replay. Source, assembled candidate, PR, main, and independently fetched public HTML pass 49/49; four exact 320×568/375×667 WebGL captures cover recorded/replay states without page, renderer, shell-overflow, control-overlap, undersized-button, narrow-text, or invariant failures. Public cloud Chrome confirmed the exact artifact, menu-to-playing start, and no game-origin console errors; its throttled background clock did not provide a natural 15-second transition review.
 - `complete_verified` for public build j/artifact `afad352f…`: source, assembled candidate, PR, main, and independently fetched public HTML pass 50/50. Public cloud Chrome returned the same artifact, moved from `SIGNAL START` to playing mode, kept `FIRE` and `DASH` visible, and produced no game-origin console errors; the only observed errors came from an unrelated Chrome extension.
@@ -196,7 +199,8 @@ Two browser methods are kept distinct. The first was live public GitHub Pages in
 - `complete_verified`: against the SUPERHOT separation criterion, the captures preserve ECHO//SEVEN's original navy field, coral threats, lime target state, and geometric silhouettes across both renderers; no reference palette, asset, or recognizable composition was imported.
 - `complete_verified`: PR #19, main Quality run `30695280123`, ordered Pages run `30695280118`, and legacy same-SHA run `30695279819` succeeded. A cache-busted public artifact passed 48/48; live cloud Chrome returned artifact `93298f8c…`, focused `tutorialTitle`, retained `scrollTop=0`, kept the heading visible, and measured tutorial overlay width 560/560 px.
 - `complete_unverified`: LOOP 01/02 stills and the echo-count HUD show distinct states, but they cannot prove the Lemnis Gate-derived causal-readability criterion. Loop-transition footage and a fresh-viewer explanation check remain necessary.
-- `prepared_not_executed`: physical iPhone/Android rendering, real touch reach/feel, recorded phone audio, full loop-transition footage, fresh-viewer review, blind/expert review, and direct matched-reference gameplay comparison.
+- `prepared_not_executed`: target Playwright WebKit and iOS Simulator Mobile Safari runs, full loop-transition footage, fresh-viewer review, blind/expert review, and direct matched-reference gameplay comparison.
+- Explicitly unmeasured and non-blocking: physical iPhone/Android GPU/thermal/memory behavior, real hand reach/feel, haptics, speakers, and audio latency.
 
 ## Evidence sources used for selection
 
@@ -219,7 +223,7 @@ Accessed 2026-08-01. These sources support selection, not a claim that ECHO//SEV
 ## Comparison integrity
 
 - No member of the current run has claimed to have played these reference games during this run.
-- No blind comparison, expert approval, physical-phone comparison, or source-blind visual review has been completed.
+- No blind comparison, expert approval, optional physical-phone comparison, or source-blind visual review has been completed; none is implied by the prepared automated gates.
 - Official descriptions, screenshots/footage, repository evidence, automated tests, and review aggregates are different evidence types and must not be described as interchangeable.
 - Future comparisons must name the build, device or viewport, checkpoint, actions, capture method, expected criterion, observed result, and reviewer independence level.
 - A benchmark is a quality and problem-solving reference only. Characters, fiction, maps, encounters, UI compositions, assets, sound, music, animation, and recognizable designs must remain original.
