@@ -1,0 +1,29 @@
+# Trigger
+
+Activate only when the actual product requires persistent autonomous characters, agents, creatures, organizations, simulated users, or equivalent entities.
+
+# Content
+
+Do not add autonomous entities merely because this module exists.
+
+The default shipped behavior should be local, testable, and deterministic where practical.
+
+Represent relevant state structurally: identity, goals, needs, beliefs, known and unknown facts, relationships, recent events, important memories, plans, schedules, allowed actions, prohibited actions, location, and resources.
+
+Use locally executable systems such as finite-state machines, behavior trees, utility systems, planning, schedules, influence maps, weighted rules, dialogue graphs, and deterministic templates.
+
+Protect canon, mandatory events, secrets, progression, impossible actions, resource limits, role restrictions, and location restrictions through a deterministic authority layer.
+
+Language models may be used only when practical, licensed, explicitly allowed, within performance and cost limits, and optional or backed by a deterministic fallback.
+
+Core shipped behavior must not require an external AI provider unless explicitly authorized.
+
+Persist entity state through the real save system where applicable.
+
+Test relevant behavior such as memory persistence and decay, relationships, conflicting goals, interrupted plans, save and reload, deterministic replay, invalid-action prevention, protected facts, long simulation, and maximum expected entity count.
+
+Measure CPU, memory, storage, and update cost where relevant.
+
+# Stop condition
+
+Stop when the required local entity behavior, persistence, authority rules, tests, and resource evidence satisfy the actual product criteria, or when the product no longer requires the module.

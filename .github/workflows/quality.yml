@@ -1,0 +1,33 @@
+name: Project quality gates
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify continuity loader
+        run: node scripts/verify-continuity.mjs
+      - name: Enforce state and review record
+        env:
+          GATE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: node scripts/verify-floor.mjs
+      - name: Execute game tests
+        run: npm test

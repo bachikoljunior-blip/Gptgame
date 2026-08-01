@@ -1,0 +1,53 @@
+checkpoint_status: "complete_verified"
+captured_at: "2026-08-01T13:40:00+09:00"
+protocol_input: "Legacy repository continuity and standing-delivery policy"
+
+active_logical_session: "gptgame-continuation-2026-08-01; active until explicit user end"
+active_objective: "Improve readability and add richer visuals from the latest Gptgame work."
+objective_state: "prepared_not_applied; repository inspection completed, no product file changed"
+
+current_work:
+  complete_verified:
+    - "Latest published main identified as e7199d140336407aac8fa333d1b2d78ce82a6d21."
+    - "npm test passed 44/44 on the exact main tree."
+    - "Public Pages HTML matched repository index.html by SHA-256."
+  partial: []
+  blocked: []
+  rejected:
+    - "Retrying cloud browser access to a local preview; PROJECT_MEMORY.md records that route as unavailable."
+  verification_pending:
+    - "Requested readability and visual-richness changes have not yet been made."
+
+last_verified_checkpoint:
+  revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
+  build_id: "2026.08.01-e"
+  public_sha256: "6828ad8de381264d48b3e195d7c7e40f4937fe6b72dd8d4ba43192bf7ff582b5"
+  pages_workflow_run: "30684019052; success"
+  evidence:
+    - "npm test: 44 passed, 0 failed"
+    - "curl public index: HTTP 200, build 2026.08.01-e"
+    - "local/public SHA-256 equality"
+
+modified_but_unverified: []
+current_failures:
+  - "Playwright browser executable absent; browser CDN download failed due environment certificate validity."
+uncertainty:
+  - "No physical-device visual pass after build 2026.08.01-e."
+
+remote_state:
+  repository: "bachikoljunior-blip/Gptgame"
+  default_branch: "main"
+  main_revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
+  open_pull_requests: []
+  public_url: "https://bachikoljunior-blip.github.io/Gptgame/"
+  deployment: "complete_verified"
+
+automation:
+  unattended_delivery_chain: false
+  workflows:
+    - "pages.yml: push-to-main path-filtered test and Pages deploy; no schedule, loop, or self-restart trigger"
+
+recovery:
+  method: "Return to e7199d1 before merge, or use a reviewed revert PR after merge. The public artifact can be restored by redeploying e7199d1."
+
+exact_next_product_action: "After Adaptive 2.2 migration validation and integration, implement the bounded readability and visual-richness pass on a fresh branch from the resulting main."

@@ -4,7 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/game-core.test.mjs"
+    "test": "node --test tests/game-core.test.mjs",
+    "test:continuity": "node scripts/verify-continuity.mjs",
+    "gate:floor": "node scripts/verify-floor.mjs",
+    "release:prepare": "node scripts/prepare-release.mjs index.html _site/index.html",
+    "release:verify": "node scripts/verify-public-revision.mjs"
   },
   "engines": {
     "node": ">=20"

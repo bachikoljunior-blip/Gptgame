@@ -1,0 +1,120 @@
+protocol_version: "2.2"
+
+project:
+  id: "bachikoljunior-blip/Gptgame"
+  active: true
+  visibility: "public"
+  default_branch: "main"
+  product: "ECHO//SEVEN mobile-first browser game"
+  canonical_product_source: "index.html"
+  retained_records:
+    - "PROJECT_MEMORY.md"
+    - "README.md"
+
+logical_session:
+  id: "gptgame-continuation-2026-08-01"
+  active: true
+  explicit_end_required: true
+
+objective:
+  id: "visual-readability-richness-2026-08-01"
+  statement: "Starting from the latest verified Gptgame main, improve visual readability and add richer visual presentation without regressing mobile controls, deterministic gameplay, or performance budgets."
+  status: "prepared_not_applied"
+  key_requirements:
+    - "Use the latest published main as the baseline."
+    - "Increase small-screen readability and information hierarchy."
+    - "Enrich menu, HUD, arena, and combat presentation without external runtime assets."
+    - "Preserve two-thumb FIRE/DASH drag aiming and all existing game behavior."
+    - "Merge verified work into main and verify the GitHub Pages release."
+  acceptance_evidence:
+    latest_main_baseline: "complete_verified: e7199d140336407aac8fa333d1b2d78ce82a6d21"
+    readability: "prepared_not_executed"
+    visual_richness: "prepared_not_executed"
+    regression_suite: "prepared_not_executed for the visual change; baseline 44/44 passed"
+    public_release: "prepared_not_applied"
+
+execution:
+  selected_rigor: "STRICT"
+  rationale: "The product change will merge to main and publish through GitHub Pages; delivery is therefore STRICT even though the visual implementation itself is bounded."
+  active_work: "Migrate the verified legacy continuity record and delivery policy to Adaptive 2.2 before resuming the visual objective."
+  last_verified_checkpoint:
+    revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
+    branch: "origin/main"
+    build_id: "2026.08.01-e"
+    tests: "complete_verified: npm test passed 44/44 on 2026-08-01 Asia/Tokyo"
+    deployment: "complete_verified: Pages workflow run 30684019052 succeeded"
+    public_surface: "complete_verified: served index.html SHA-256 6828ad8de381264d48b3e195d7c7e40f4937fe6b72dd8d4ba43192bf7ff582b5 matched repository index.html"
+  modified_but_unverified:
+    - "Adaptive 2.2 canonical files, deterministic gates, revision-stamped release assembly, and rollback artifact workflow on agent/adaptive-2-2-migration; local execution passed, remote PR/deployment execution pending."
+  current_blockers: []
+  current_uncertainty:
+    - "No physical iPhone or Android visual pass is available in this Work run."
+    - "Local Playwright exists but its browser binary is absent; a Chromium download failed because the external CDN certificate was not yet valid in the environment."
+    - "The connected GitHub tool set can create and merge PRs but exposes no branch-protection or ruleset mutation API; local gh is absent."
+  exact_next_action: "Commit and push the reviewed migration, run both PR workflows, merge only after they pass, observe the one-time F6 mismatch and automatic rollback, then remove the probe and complete a verified normal deployment before resuming the visual objective."
+
+floor:
+  last_check: "complete_unverified: F1 reconciled; F2 state current; F3 source/candidate/rollback artifacts executed; F4 accurate; F5 Level C passed; F6 remote pending; F7 migration criteria pending remote; F8 recorded; F9 local negative probes passed and remote activation pending"
+  independence_level_used: "C"
+  review_outcome: "complete_verified"
+  reviewed_changes_digest: "7793a94ba636312cbebb2d2f97f18a290872c63063a2315a086c57afca872b92"
+  skips:
+    - "F8 | F5 STRICT prefers Level A/B | Level C used because no separately permitted independent reviewer is available in this run; negative gate and recovery-artifact tests strengthen the substitute; revisit if A/B becomes available."
+    - "F8 | F6 real-browser interaction | Playwright browser binary is absent and its CDN download failed on certificate validity; the served artifact will be fetched and run through the full deterministic harness; revisit on a physical or available browser."
+    - "F8 | F9 required merge checks | gh is absent, the connected GitHub tools expose no branch-protection/ruleset mutation, and unauthenticated protection API returned 401; checks can block deployment but are not verified required for merge; revisit when capability appears."
+  waivers: []
+  enforcement:
+    f2_state_update_check:
+      status: "complete_unverified"
+      mechanism: "scripts/verify-floor.mjs rejects every governed commit lacking STATE.yaml; deliberate local bad input failed; PR and Pages workflows prepared, remote execution pending."
+    f3_execution_check:
+      status: "complete_unverified"
+      mechanism: "npm test rejected /dev/null and passed 44/44 on source, candidate, and rollback artifacts; PR and Pages execution is prepared; required-merge status enforcement cannot be configured with exposed tools."
+    f5_review_record_check:
+      status: "complete_unverified"
+      mechanism: "scripts/verify-floor.mjs validates Level A/B/C, complete_verified outcome, and governed-tree SHA-256; deliberate invalid review failed; remote execution pending."
+    f6_public_revision_check:
+      status: "prepared_not_applied"
+      mechanism: "Post-deploy public HTML commit-meta comparison plus full served-artifact harness; fake revision failed locally; remote candidate/rollback execution pending."
+    revert_mechanism:
+      status: "prepared_not_applied"
+      mechanism: "Pages workflow holds the last verified public revision as a separate artifact and redeploys plus verifies it after candidate verification failure; local rollback artifact passed 44/44, remote rollback probe pending."
+    last_observed_failing:
+      - "F2: synthetic index.html-only commit rejected."
+      - "F3: GAME_HTML=/dev/null rejected with 44 failures."
+      - "F5: prepared_not_executed review record rejected."
+      - "F6: all-zero expected public revision rejected."
+    unenforced_items:
+      - "F2/F3/F5 are not verified required merge checks because branch-protection capability is not exposed; they are configured to block Pages deployment."
+      - "F6 and automatic rollback are prepared_not_applied until the controlled remote probe completes."
+    unattended_allowed: false
+
+migration:
+  source: "Legacy AGENTS.md delivery policy plus PROJECT_MEMORY.md product/continuity record"
+  status: "complete_unverified"
+  pre_migration_checkpoint: "AI_DEVELOPMENT/ARCHIVE/PRE_MIGRATION_2026-08-01.yaml"
+  legacy_authority_scope: "Legacy records remain evidence; conflicting operating mechanics are superseded by Adaptive 2.2 only after loader validation."
+  modules_installed: "complete_verified: nine separate Layer 3 files pass shape and non-activation checks"
+  modules_activated: []
+  review_findings:
+    - "Level C found that the deploy job lacked checkout/setup for its verifier; repaired and syntax/execution checked."
+    - "Level C found that an unattended Pages failure had no automatic restoration; added a separate verified rollback artifact, failure-triggered redeploy, and post-rollback runtime check."
+
+recovery:
+  last_known_good_revision_or_artifact: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
+  rollback_or_recovery_method: "Before merge, discard only the task branch and return to origin/main. After merge, revert the migration merge through a reviewed PR; for the public product redeploy the last verified product revision e7199d1 if release verification fails."
+
+remote:
+  repository: "bachikoljunior-blip/Gptgame"
+  working_branch: "agent/adaptive-2-2-migration"
+  pull_request: "prepared_not_applied"
+  main_revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
+  deployed_revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
+  verified_public_revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21 (content hash match; source did not yet embed commit revision)"
+  public_url: "https://bachikoljunior-blip.github.io/Gptgame/"
+  status: "complete_verified"
+  open_pull_requests: []
+  repository_permissions: "complete_verified: connected GitHub app reports admin/push permissions"
+
+updated_at: "2026-08-01T14:00:24+09:00"
+reconciliation_status: "complete_verified"
