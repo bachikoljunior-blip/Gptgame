@@ -211,6 +211,24 @@ function makeWebGLContext() {
   return { gl, calls };
 }
 
+function makeStorage() {
+  const data = new Map();
+  return {
+    getItem(key) {
+      return data.has(key) ? data.get(key) : null;
+    },
+    setItem(key, value) {
+      data.set(key, String(value));
+    },
+    removeItem(key) {
+      data.delete(key);
+    },
+    clear() {
+      data.clear();
+    },
+  };
+}
+
 function createHarness(options = {}) {
   const elements = new Map();
   const documentListeners = new Map();
@@ -234,24 +252,6 @@ function createHarness(options = {}) {
       elements.set(id, element);
     }
     return elements.get(id);
-  };
-
-  const storage = () => {
-    const data = new Map();
-    return {
-      getItem(key) {
-        return data.has(key) ? data.get(key) : null;
-      },
-      setItem(key, value) {
-        data.set(key, String(value));
-      },
-      removeItem(key) {
-        data.delete(key);
-      },
-      clear() {
-        data.clear();
-      },
-    };
   };
 
   const document = {
@@ -279,8 +279,8 @@ function createHarness(options = {}) {
     location: { search: "?e7test=1" },
     document,
     navigator: { vibrate() {}, maxTouchPoints: 1 },
-    localStorage: storage(),
-    sessionStorage: storage(),
+    localStorage: options.localStorage ?? makeStorage(),
+    sessionStorage: options.sessionStorage ?? makeStorage(),
     matchMedia: () => media,
     requestAnimationFrame: () => 1,
     cancelAnimationFrame() {},
@@ -335,7 +335,7 @@ test("runtime exposes deterministic fixed-step contract only in test mode", () =
   assert.deepEqual(
     JSON.parse(JSON.stringify(api.info())),
     {
-      buildId: "2026.08.01-c",
+      buildId: "2026.08.01-d",
       rulesVersion: 2,
       saveVersion: 2,
       fixedHz: 60,
@@ -759,7 +759,7 @@ test("device report captures stress peaks without network telemetry", () => {
   assert.ok(metrics.framebufferBytes > metrics.backingPixels * 4);
   assert.equal(metrics.sampledFrames, 0);
   const report = api.diagnostics.report();
-  assert.match(report, /build: 2026\.08\.01-c/);
+  assert.match(report, /build: 2026\.08\.01-d/);
   assert.match(report, /peaks: enemies 64/);
   assert.match(report, /framebuffer [0-9.]+ MiB est\./);
   assert.match(report, /samples 4 \/ depth 24bit/);
@@ -859,6 +859,128 @@ test("background lifecycle pauses are counted separately", () => {
   assert.equal(paused.metrics.pauses, 1);
   assert.equal(paused.metrics.backgroundPauses, 1);
   assert.equal(paused.metrics.rotationPauses, 0);
+});
+
+test("same-tab reload restores combat exactly, paused, with every input released", async () => {
+  const sessionStorage = makeStorage();
+  const first = createHarness({ sessionStorage });
+  first.api.checkpoints.load("L2_ECHO_START");
+  first.api.input.setAim(1, 0);
+  first.api.input.setTouchMove(0.8, -0.4);
+  first.api.input.fireDown();
+  first.api.stepTicks(37);
+  first.api.input.fireUp();
+  const before = first.api.lifecycle.pause("background");
+  const raw = sessionStorage.getItem("echoSeven.runCheckpoint");
+  assert.ok(raw);
+  assert.ok(raw.length < 1800000);
+
+  const second = createHarness({ sessionStorage });
+  const restored = second.api.snapshot();
+  assert.equal(restored.mode, "paused");
+  assert.equal(restored.previousMode, "playing");
+  assert.equal(restored.loop, before.loop);
+  assert.equal(restored.tick, before.tick);
+  assert.equal(restored.coreHp, before.coreHp);
+  assert.equal(restored.score, before.score);
+  assert.equal(restored.kills, before.kills);
+  assert.equal(restored.echoes, before.echoes);
+  assert.equal(restored.recorderLength, before.recorderLength);
+  assert.deepEqual(JSON.parse(JSON.stringify(restored.player)), JSON.parse(JSON.stringify(before.player)));
+  assert.deepEqual(JSON.parse(JSON.stringify(restored.enemies)), JSON.parse(JSON.stringify(before.enemies)));
+  assert.deepEqual(restored.inputState, {
+    movePointerId: null,
+    lookPointerId: null,
+    fireHeld: false,
+    fireQueued: false,
+    dashQueued: false,
+    lookDelta: 0,
+  });
+
+  first.elements.get("resumeButton").listeners.get("click")[0]();
+  second.elements.get("resumeButton").listeners.get("click")[0]();
+  await Promise.resolve();
+  assert.equal(first.api.snapshot().mode, "playing");
+  assert.equal(second.api.snapshot().mode, "playing");
+  const uninterrupted = first.api.stepTicks(90);
+  const continued = second.api.stepTicks(90);
+  assert.equal(continued.tick, before.tick + 90);
+  for (const key of ["tick", "coreHp", "score", "kills", "friendly", "hostile", "rngState"]) {
+    assert.equal(continued[key], uninterrupted[key], `${key} diverged after restoration`);
+  }
+  assert.deepEqual(JSON.parse(JSON.stringify(continued.player)), JSON.parse(JSON.stringify(uninterrupted.player)));
+  assert.deepEqual(JSON.parse(JSON.stringify(continued.enemies)), JSON.parse(JSON.stringify(uninterrupted.enemies)));
+  assert.deepEqual(JSON.parse(JSON.stringify(continued.friendlyProjectiles)), JSON.parse(JSON.stringify(uninterrupted.friendlyProjectiles)));
+});
+
+test("late-run checkpoint remains bounded and restores all six echo tapes", () => {
+  const sessionStorage = makeStorage();
+  const first = createHarness({ sessionStorage });
+  const late = first.api.checkpoints.load("L7_BOSS_START");
+  assert.equal(late.echoes, 6);
+  first.api.diagnostics.sampleFrames(Array.from({ length: 5000 }, (_, index) => 16 + (index % 17) / 7));
+  first.api.lifecycle.pause("background");
+  const raw = sessionStorage.getItem("echoSeven.runCheckpoint");
+  assert.ok(raw);
+  assert.ok(raw.length < 1800000, `checkpoint grew to ${raw.length} bytes`);
+
+  const restored = createHarness({ sessionStorage }).api.snapshot();
+  assert.equal(restored.mode, "paused");
+  assert.equal(restored.previousMode, "playing");
+  assert.equal(restored.loop, 7);
+  assert.equal(restored.echoes, 6);
+  assert.equal(restored.recorderLength, 0);
+  assert.equal(restored.metrics.sampledFrames, 3600);
+});
+
+test("reload preserves the exact three upgrade offers before resuming selection", async () => {
+  const sessionStorage = makeStorage();
+  const first = createHarness({ sessionStorage });
+  first.api.checkpoints.load("L2_ECHO_START");
+  const choice = first.api.stepTicks(900);
+  assert.equal(choice.mode, "upgrade");
+  assert.equal(choice.upgradeOffers.length, 3);
+
+  const second = createHarness({ sessionStorage });
+  const restored = second.api.snapshot();
+  assert.equal(restored.mode, "paused");
+  assert.equal(restored.previousMode, "upgrade");
+  assert.deepEqual(JSON.parse(JSON.stringify(restored.upgradeOffers)), JSON.parse(JSON.stringify(choice.upgradeOffers)));
+  second.elements.get("resumeButton").listeners.get("click")[0]();
+  await Promise.resolve();
+  const resumed = second.api.snapshot();
+  assert.equal(resumed.mode, "upgrade");
+  assert.deepEqual(JSON.parse(JSON.stringify(resumed.upgradeOffers)), JSON.parse(JSON.stringify(choice.upgradeOffers)));
+  assert.equal(second.elements.get("upgradeCards").children.length, 3);
+});
+
+test("malformed run checkpoint is discarded without leaving the title screen", () => {
+  const sessionStorage = makeStorage();
+  sessionStorage.setItem("echoSeven.runCheckpoint", JSON.stringify({
+    version: 2,
+    rulesVersion: 2,
+    rngState: 1,
+    fxRngState: 2,
+    entityId: 1,
+    enemySerial: 1,
+    elapsedMs: 0,
+    metrics: null,
+    game: { mode: "playing", seed: 1 },
+  }));
+  const { api } = createHarness({ sessionStorage });
+  assert.equal(api.snapshot().mode, "menu");
+  assert.equal(sessionStorage.getItem("echoSeven.runCheckpoint"), null);
+});
+
+test("intentional return to title discards the resumable run", () => {
+  const sessionStorage = makeStorage();
+  const { api, elements } = createHarness({ sessionStorage });
+  api.checkpoints.load("L2_ECHO_START");
+  api.lifecycle.pause();
+  assert.ok(sessionStorage.getItem("echoSeven.runCheckpoint"));
+  elements.get("quitButton").listeners.get("click")[0]();
+  assert.equal(api.snapshot().mode, "menu");
+  assert.equal(sessionStorage.getItem("echoSeven.runCheckpoint"), null);
 });
 
 test("save sanitizer survives malformed values and clamps progress", () => {

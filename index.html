@@ -927,8 +927,10 @@
     var LOOP_TICKS = 900;
     var SAVE_VERSION = 2;
     var RULES_VERSION = 2;
-    var BUILD_ID = "2026.08.01-c";
+    var BUILD_ID = "2026.08.01-d";
     var SAVE_KEY = "echoSeven.save.v2";
+    var RUN_CHECKPOINT_KEY = "echoSeven.runCheckpoint";
+    var RUN_CHECKPOINT_VERSION = 2;
     var CORE_X = 240;
     var CORE_Y = 410;
     var PLAYER_CORE_CLEARANCE = 48;
@@ -1541,9 +1543,11 @@
       particles: [],
       pulses: [],
       chosenUpgrades: [],
+      pendingUpgrades: [],
       build: newBuild(),
       transitionTicks: 0,
       pendingLoop: 0,
+      previousMode: "playing",
       runStartAt: 0,
       result: null,
       shake: 0,
@@ -1555,6 +1559,7 @@
       maxProjectiles: 0,
       maxParticles: 0,
       damageByActor: [],
+      bossSpawned: false,
       terminalLock: false
     };
 
@@ -2543,6 +2548,8 @@
       resetCombatArrays();
       game.loop = loopNumber;
       game.tick = 0;
+      game.pendingLoop = 0;
+      game.pendingUpgrades = [];
       game.recorder = [];
       game.player = createPlayer();
       game.schedule = buildSchedule(loopNumber);
@@ -2582,6 +2589,7 @@
       game.playerKos = 0;
       game.recordings = [];
       game.chosenUpgrades = [];
+      game.pendingUpgrades = [];
       game.build = newBuild();
       game.runStartAt = performance.now();
       game.result = null;
@@ -2591,6 +2599,8 @@
       game.maxProjectiles = 0;
       game.maxParticles = 0;
       game.damageByActor = [];
+      game.previousMode = "playing";
+      game.pendingLoop = 0;
       game.qualityBadWindows = 0;
       game.qualityGoodWindows = 0;
       game.qualityCooldown = 0;
@@ -2604,20 +2614,282 @@
       startLoop(1);
     }
 
+    function clearRunCheckpoint() {
+      try { sessionStorage.removeItem(RUN_CHECKPOINT_KEY); } catch (ignored) {}
+    }
+
+    function checkpointTreeIsSafe(value, depth) {
+      if (value === null) return true;
+      if (typeof value === "number") return Number.isFinite(value);
+      if (typeof value === "boolean") return true;
+      if (typeof value === "string") return value.length <= 200;
+      if (typeof value !== "object" || depth > 7) return false;
+      if (Array.isArray(value)) {
+        if (value.length > 10000) return false;
+        for (var a = 0; a < value.length; a += 1) {
+          if (!checkpointTreeIsSafe(value[a], depth + 1)) return false;
+        }
+        return true;
+      }
+      var keys = Object.keys(value);
+      if (keys.length > 64) return false;
+      for (var k = 0; k < keys.length; k += 1) {
+        if (keys[k] === "__proto__" || keys[k] === "prototype" || keys[k] === "constructor") return false;
+        if (!checkpointTreeIsSafe(value[keys[k]], depth + 1)) return false;
+      }
+      return true;
+    }
+
+    function recordHasFiniteNumbers(record, keys) {
+      if (!record || typeof record !== "object" || Array.isArray(record)) return false;
+      for (var i = 0; i < keys.length; i += 1) {
+        if (!Number.isFinite(record[keys[i]])) return false;
+      }
+      return true;
+    }
+
+    function recordsAreValid(records, limit, numericKeys) {
+      if (!Array.isArray(records) || records.length > limit) return false;
+      for (var i = 0; i < records.length; i += 1) {
+        if (!recordHasFiniteNumbers(records[i], numericKeys)) return false;
+      }
+      return true;
+    }
+
+    function tapeIsValid(tape, exactLength) {
+      if (!Array.isArray(tape) || tape.length > LOOP_TICKS) return false;
+      if (exactLength && tape.length !== LOOP_TICKS) return false;
+      for (var i = 0; i < tape.length; i += 1) {
+        var frame = tape[i];
+        if (!recordHasFiniteNumbers(frame, ["x", "y", "a", "f", "fx", "fy", "d"])) return false;
+        if ((frame.a !== 0 && frame.a !== 1) || (frame.f !== 0 && frame.f !== 1) || (frame.d !== 0 && frame.d !== 1)) return false;
+      }
+      return true;
+    }
+
+    function upgradeIdsAreValid(ids, limit) {
+      if (!Array.isArray(ids) || ids.length > limit || new Set(ids).size !== ids.length) return false;
+      return ids.every(function (id) {
+        return typeof id === "string" && UPGRADES.some(function (upgrade) { return upgrade.id === id; });
+      });
+    }
+
+    function buildIsValid(build) {
+      var baseline = newBuild();
+      if (!build || typeof build !== "object" || Array.isArray(build)) return false;
+      var keys = Object.keys(baseline);
+      if (Object.keys(build).length !== keys.length) return false;
+      for (var i = 0; i < keys.length; i += 1) {
+        var key = keys[i];
+        if (typeof baseline[key] === "boolean") {
+          if (typeof build[key] !== "boolean") return false;
+        } else if (!Number.isFinite(build[key]) || build[key] < 0 || build[key] > 5000) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function playerIsValid(player) {
+      var baseline = createPlayer();
+      if (!player || typeof player !== "object" || Array.isArray(player)) return false;
+      var keys = Object.keys(baseline);
+      for (var i = 0; i < keys.length; i += 1) {
+        var key = keys[i];
+        if (typeof baseline[key] === "boolean") {
+          if (typeof player[key] !== "boolean") return false;
+        } else if (!Number.isFinite(player[key])) {
+          return false;
+        }
+      }
+      return player.x >= -100 && player.x <= W + 100 && player.y >= 0 && player.y <= H + 100 &&
+        player.radius > 0 && player.radius <= 100 && player.maxHp > 0 && player.maxHp <= 10000;
+    }
+
+    function runGameStateIsValid(state) {
+      if (!state || typeof state !== "object" || Array.isArray(state) || !checkpointTreeIsSafe(state, 0)) return false;
+      var expectedKeys = Object.keys(game).filter(function (key) { return key !== "rng" && key !== "fxRng"; });
+      if (Object.keys(state).length !== expectedKeys.length || !expectedKeys.every(function (key) {
+        return Object.prototype.hasOwnProperty.call(state, key);
+      })) return false;
+      var allowedModes = ["playing", "countdown", "rewind", "upgrade", "paused"];
+      if (allowedModes.indexOf(state.mode) === -1) return false;
+      var resumeMode = state.mode === "paused" ? state.previousMode : state.mode;
+      if (["playing", "countdown", "rewind", "upgrade"].indexOf(resumeMode) === -1) return false;
+      if (!Number.isInteger(state.seed) || state.seed < 1 || state.seed > 0xffffffff) return false;
+      if (!Number.isInteger(state.loop) || state.loop < 1 || state.loop > 7) return false;
+      if (!Number.isInteger(state.tick) || state.tick < 0 || state.tick > LOOP_TICKS) return false;
+      if (!Number.isInteger(state.totalTicks) || state.totalTicks < 0 || state.totalTicks > LOOP_TICKS * 7) return false;
+      if (!recordHasFiniteNumbers(state, [
+        "coreHp", "coreMax", "coreShield", "coreInvuln", "score", "kills", "chain", "chainTimer",
+        "playerKos", "transitionTicks", "pendingLoop", "runStartAt", "shake", "quality",
+        "qualityCooldown", "qualityBadWindows", "qualityGoodWindows", "maxEnemies", "maxProjectiles", "maxParticles"
+      ])) return false;
+      if (state.coreMax <= 0 || state.coreMax > 5000 || state.coreHp < -1000 || state.coreHp > state.coreMax + 5000) return false;
+      if (state.score < 0 || state.score > 999999999 || state.kills < 0 || state.kills > 999999) return false;
+      if (!Number.isInteger(state.quality) || state.quality < 0 || state.quality > 2) return false;
+      if (typeof state.coreHitThisLoop !== "boolean" || typeof state.terminalLock !== "boolean" || typeof state.bossSpawned !== "boolean") return false;
+      if (!playerIsValid(state.player) || !buildIsValid(state.build)) return false;
+      if (!upgradeIdsAreValid(state.chosenUpgrades, 3) || !upgradeIdsAreValid(state.pendingUpgrades, 3)) return false;
+      if (state.pendingUpgrades.some(function (id) { return state.chosenUpgrades.indexOf(id) !== -1; })) return false;
+      if (!Array.isArray(state.recordings) || state.recordings.length > 6) return false;
+      for (var r = 0; r < state.recordings.length; r += 1) {
+        if (!tapeIsValid(state.recordings[r], true)) return false;
+      }
+      if (!tapeIsValid(state.recorder, false) || state.recorder.length !== state.tick) return false;
+      var expectedRecordings = resumeMode === "rewind" || resumeMode === "upgrade" ? state.loop : state.loop - 1;
+      if (state.recordings.length !== expectedRecordings) return false;
+      if (resumeMode === "rewind" || resumeMode === "upgrade") {
+        if (state.pendingLoop !== state.loop + 1 || state.tick !== LOOP_TICKS) return false;
+      } else if (state.pendingLoop !== 0) {
+        return false;
+      }
+      if (resumeMode === "upgrade" ? state.pendingUpgrades.length !== 3 : state.pendingUpgrades.length !== 0) return false;
+      if (!recordsAreValid(state.schedule, 100, ["tick", "announce", "x", "y"])) return false;
+      if (!state.schedule.every(function (event) {
+        return typeof event.type === "string" && Boolean(ENEMY_STATS[event.type]) &&
+          typeof event.announced === "boolean" && typeof event.spawned === "boolean";
+      })) return false;
+      if (!recordsAreValid(state.enemies, MAX_ENEMIES, ["id", "x", "y", "vx", "vy", "hp", "maxHp", "radius", "speed", "telegraphTicks", "contactCooldown", "fireCooldown", "orbitDir", "slowTicks", "staggerTicks"])) return false;
+      if (!state.enemies.every(function (enemy) { return Boolean(ENEMY_STATS[enemy.type]) && typeof enemy.alive === "boolean"; })) return false;
+      if (!recordsAreValid(state.friendly, MAX_FRIENDLY, ["id", "x", "y", "vx", "vy", "damage", "actor", "radius", "life", "pierce", "steering", "homingRange", "lastHit"])) return false;
+      if (!state.friendly.every(function (bullet) { return typeof bullet.alive === "boolean"; })) return false;
+      if (!recordsAreValid(state.hostile, MAX_HOSTILE, ["id", "x", "y", "vx", "vy", "damage", "radius", "life"])) return false;
+      if (!state.hostile.every(function (bullet) { return typeof bullet.alive === "boolean" && typeof bullet.targetCore === "boolean"; })) return false;
+      if (!Array.isArray(state.echoRuntime) || state.echoRuntime.length > 6) return false;
+      if (!Array.isArray(state.particles) || state.particles.length > MAX_PARTICLES) return false;
+      if (!Array.isArray(state.pulses) || state.pulses.length > 28) return false;
+      if (!Array.isArray(state.damageByActor) || state.damageByActor.length > 7 || !state.damageByActor.every(Number.isFinite)) return false;
+      return true;
+    }
+
+    function serializableRunMetrics() {
+      if (!runMetrics) return null;
+      var snapshot = {};
+      Object.keys(runMetrics).forEach(function (key) {
+        var value = runMetrics[key];
+        snapshot[key] = Array.isArray(value) ? value.slice(-3600) : value;
+      });
+      snapshot.elapsedMs = clamp(performance.now() - runMetrics.startedAt, 0, 3600000);
+      delete snapshot.startedAt;
+      return snapshot;
+    }
+
+    function restoreRunMetrics(raw, elapsedMs) {
+      var restored = createRunMetrics();
+      if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
+        restored.startedAt = performance.now() - elapsedMs;
+        return restored;
+      }
+      Object.keys(restored).forEach(function (key) {
+        if (Array.isArray(restored[key])) {
+          if (Array.isArray(raw[key])) restored[key] = raw[key].filter(Number.isFinite).slice(-3600);
+        } else if (typeof restored[key] === "boolean") {
+          if (typeof raw[key] === "boolean") restored[key] = raw[key];
+        } else if (Number.isFinite(raw[key])) {
+          restored[key] = raw[key];
+        }
+      });
+      restored.startedAt = performance.now() - clamp(Number(raw.elapsedMs) || elapsedMs, 0, 3600000);
+      restored.audioResumeFailuresStart = audio.resumeFailures;
+      restored.sampledFrames = restored.frameIntervals.length;
+      restored.slowFrames = restored.frameIntervals.filter(function (value) { return value > 34; }).length;
+      return restored;
+    }
+
+    function serializableGameState() {
+      var snapshot = {};
+      Object.keys(game).forEach(function (key) {
+        if (key !== "rng" && key !== "fxRng") snapshot[key] = game[key];
+      });
+      snapshot.echoRuntime = [];
+      snapshot.particles = [];
+      snapshot.pulses = [];
+      snapshot.shake = 0;
+      snapshot.result = null;
+      snapshot.runStartAt = 0;
+      snapshot.damageByActor = [];
+      for (var i = 0; i < game.damageByActor.length; i += 1) {
+        snapshot.damageByActor[i] = Number.isFinite(game.damageByActor[i]) ? game.damageByActor[i] : 0;
+      }
+      return snapshot;
+    }
+
     function checkpointRun() {
-      if (game.mode === "menu" || game.mode === "result") return;
+      if (["playing", "countdown", "rewind", "upgrade", "paused"].indexOf(game.mode) === -1) return false;
       try {
-        sessionStorage.setItem("echoSeven.runCheckpoint", JSON.stringify({
-          version: 1,
-          seed: game.seed,
-          loop: game.loop,
-          tick: game.tick,
-          coreHp: Math.round(game.coreHp * 100) / 100,
-          score: game.score,
-          upgrades: game.chosenUpgrades.slice(),
-          recordedLoops: game.recordings.length
-        }));
-      } catch (ignored) {}
+        var elapsedMs = clamp(performance.now() - game.runStartAt, 0, 3600000);
+        var payload = {
+          version: RUN_CHECKPOINT_VERSION,
+          rulesVersion: RULES_VERSION,
+          build: BUILD_ID,
+          savedAt: Date.now(),
+          rngState: game.rng.state(),
+          fxRngState: game.fxRng.state(),
+          entityId: entityId,
+          enemySerial: enemySerial,
+          elapsedMs: elapsedMs,
+          metrics: serializableRunMetrics(),
+          game: serializableGameState()
+        };
+        sessionStorage.setItem(RUN_CHECKPOINT_KEY, JSON.stringify(payload));
+        return true;
+      } catch (ignored) {
+        return false;
+      }
+    }
+
+    function readRunCheckpoint() {
+      try {
+        var text = sessionStorage.getItem(RUN_CHECKPOINT_KEY);
+        if (!text) return null;
+        if (text.length > 1800000) throw new Error("checkpoint too large");
+        var raw = JSON.parse(text);
+        if (!raw || raw.version !== RUN_CHECKPOINT_VERSION || raw.rulesVersion !== RULES_VERSION) throw new Error("checkpoint version mismatch");
+        if (!Number.isInteger(raw.rngState) || raw.rngState < 0 || raw.rngState > 0xffffffff) throw new Error("invalid gameplay rng");
+        if (!Number.isInteger(raw.fxRngState) || raw.fxRngState < 0 || raw.fxRngState > 0xffffffff) throw new Error("invalid effects rng");
+        if (!Number.isInteger(raw.entityId) || raw.entityId < 1 || raw.entityId > 1000000000) throw new Error("invalid entity id");
+        if (!Number.isInteger(raw.enemySerial) || raw.enemySerial < 1 || raw.enemySerial > 1000000000) throw new Error("invalid enemy serial");
+        if (!Number.isFinite(raw.elapsedMs) || raw.elapsedMs < 0 || raw.elapsedMs > 3600000) throw new Error("invalid elapsed time");
+        if (!runGameStateIsValid(raw.game)) throw new Error("invalid game state");
+        if (raw.metrics !== null && !checkpointTreeIsSafe(raw.metrics, 0)) throw new Error("invalid metrics");
+        return raw;
+      } catch (error) {
+        clearRunCheckpoint();
+        return null;
+      }
+    }
+
+    function restoreRunCheckpoint() {
+      var checkpoint = readRunCheckpoint();
+      if (!checkpoint) return false;
+      try {
+        var restoredState = deepCopy(checkpoint.game);
+        Object.keys(game).forEach(function (key) {
+          if (key !== "rng" && key !== "fxRng") game[key] = restoredState[key];
+        });
+        game.rng = mulberry32(checkpoint.rngState >>> 0);
+        game.fxRng = mulberry32(checkpoint.fxRngState >>> 0);
+        game.runStartAt = performance.now() - checkpoint.elapsedMs;
+        entityId = checkpoint.entityId;
+        enemySerial = checkpoint.enemySerial;
+        runMetrics = restoreRunMetrics(checkpoint.metrics, checkpoint.elapsedMs);
+        var resumeMode = game.mode === "paused" ? game.previousMode : game.mode;
+        game.previousMode = resumeMode;
+        game.mode = "paused";
+        game.terminalLock = false;
+        clearInput();
+        controlsVisible(false);
+        hideBanner();
+        recordDisplayMetrics();
+        document.getElementById("pauseReason").textContent = "進行中のランを復元しました。再開後は指を置き直してください。";
+        showOverlay("paused");
+        announce("進行中のランを復元しました");
+        return true;
+      } catch (error) {
+        clearRunCheckpoint();
+        return false;
+      }
     }
 
     function drawPolygon(x, y, radius, sides, rotation, fill, stroke, lineWidth) {
@@ -4127,6 +4399,7 @@
     }
 
     function showMenu() {
+      clearRunCheckpoint();
       game.mode = "menu";
       game.terminalLock = false;
       controlsVisible(false);
@@ -4149,7 +4422,12 @@
       controlsVisible(false);
       var container = document.getElementById("upgradeCards");
       container.textContent = "";
-      var options = pickUpgradeOptions();
+      if (!upgradeIdsAreValid(game.pendingUpgrades, 3) || game.pendingUpgrades.length !== 3) {
+        game.pendingUpgrades = pickUpgradeOptions().map(function (upgrade) { return upgrade.id; });
+      }
+      var options = game.pendingUpgrades.map(function (id) {
+        return UPGRADES.find(function (upgrade) { return upgrade.id === id; });
+      }).filter(Boolean);
       var locked = false;
       options.forEach(function (upgrade) {
         var button = document.createElement("button");
@@ -4162,6 +4440,7 @@
           if (locked) return;
           locked = true;
           if (applyUpgrade(upgrade.id)) {
+            game.pendingUpgrades = [];
             hideAllOverlays();
             startLoop(game.pendingLoop);
           } else {
@@ -4171,6 +4450,7 @@
         container.appendChild(button);
       });
       showOverlay("upgrade");
+      checkpointRun();
       announce("強化を1つ選択してください");
     }
 
@@ -4195,7 +4475,7 @@
       if (won) save.wins += 1;
       save.lastResult = { won: won, score: Math.round(game.score), seed: game.seed >>> 0 };
       writeSave();
-      try { sessionStorage.removeItem("echoSeven.runCheckpoint"); } catch (ignored) {}
+      clearRunCheckpoint();
 
       document.getElementById("resultEyebrow").textContent = won ? "TIMELINE STABLE" : "TIMELINE LOST";
       document.getElementById("resultTitle").textContent = won ? "SIGNAL COMPLETE" : "SIGNAL FAILED";
@@ -4241,6 +4521,12 @@
         clearInput();
         lastFrameAt = performance.now();
         accumulator = 0;
+        if (game.previousMode === "upgrade") {
+          game.mode = "upgrade";
+          showUpgrade();
+          announce("復元した強化選択を再開");
+          return;
+        }
         game.mode = game.previousMode === "countdown" || game.previousMode === "rewind" ? game.previousMode : "playing";
         shell.dataset.mode = game.mode;
         hideAllOverlays();
@@ -4583,6 +4869,8 @@
         }),
         hostile: game.hostile.length,
         upgrades: game.chosenUpgrades.slice(),
+        upgradeOffers: game.pendingUpgrades.slice(),
+        previousMode: game.previousMode,
         rngState: game.rng.state(),
         won: game.mode === "result" && save.lastResult ? save.lastResult.won : null,
         controlsVisible: !attackButton.hidden && !dashButton.hidden && !crosshair.hidden && !gameIcons.hidden,
@@ -4852,6 +5140,10 @@
             return debugSnapshot();
           }
         },
+        session: {
+          checkpoint: function () { return checkpointRun(); },
+          discard: function () { clearRunCheckpoint(); return debugSnapshot(); }
+        },
         input: {
           setTouchMove: function (x, y) {
             var move = normalize(Number(x) || 0, Number(y) || 0);
@@ -4936,7 +5228,7 @@
     updateMenuStats();
     layoutControls();
     resizeCanvas();
-    showMenu();
+    if (!restoreRunCheckpoint()) showMenu();
     requestAnimationFrame(animationFrame);
   }());
   </script>
