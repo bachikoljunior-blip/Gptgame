@@ -19,6 +19,8 @@ const verifyingRollbackArtifact = process.env.ROLLBACK_ARTIFACT === "1";
 const declaredBuildId = html.match(/var BUILD_ID = "([^"]+)";/)?.[1] ?? "";
 const verifyingPreVisualRollback = verifyingRollbackArtifact
   && declaredBuildId !== "2026.08.01-f";
+const verifyingPreTitleOverflowRepairRollback = verifyingRollbackArtifact
+  && declaredBuildId !== "2026.08.01-g";
 
 class FakeClassList {
   #values = new Set();
@@ -351,7 +353,10 @@ test("artifact revision rejects content tampering", () => {
 test("visual hierarchy keeps loop data legible and enriches both render paths", {
   skip: verifyingPreVisualRollback ? "current visual acceptance is not applicable to the pre-refresh rollback" : false,
 }, () => {
-  assert.equal(declaredBuildId, "2026.08.01-f");
+  assert.ok(
+    ["2026.08.01-f", "2026.08.01-g"].includes(declaredBuildId),
+    "visual hierarchy criteria require build f or later",
+  );
   assert.match(html, /#menuTitle::after\s*\{[\s\S]*?content:\s*"07"/);
   assert.match(html, /grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
   assert.match(html, /ctx\.font = "900 30px ui-monospace, monospace"/);
@@ -360,6 +365,18 @@ test("visual hierarchy keeps loop data legible and enriches both render paths", 
   assert.match(html, /var gatePositions = quality === 2 \? \[-8\.4, 10\.2\] : \[10\.2\]/);
   assert.match(html, /var scanY = reducedMotion \? 244 : 108 \+ \(now \* 0\.035\)/);
   assert.match(html, /addRing\(glow, 0, 0\.03, 0, 6\.15/);
+});
+
+test("title hierarchy fits narrow overlays without horizontal scrolling", {
+  skip: verifyingPreTitleOverflowRepairRollback
+    ? "title overflow repair is not applicable to the pre-repair rollback"
+    : false,
+}, () => {
+  assert.equal(declaredBuildId, "2026.08.01-g");
+  assert.match(html, /\.overlay\s*\{[\s\S]*?overflow-x:\s*hidden;[\s\S]*?overflow-y:\s*auto;/);
+  assert.match(html, /h1\s*\{[\s\S]*?font-size:\s*clamp\(28px, 9vw, 50px\);/);
+  assert.match(html, /h1\s*\{[\s\S]*?letter-spacing:\s*clamp\(0\.075em, 0\.35vw, 0\.11em\);/);
+  assert.doesNotMatch(html, /@media\s*\(max-width:\s*360px\)[\s\S]*?h1\s*\{\s*font-size:\s*36px;/);
 });
 
 test("runtime exposes deterministic fixed-step contract only in test mode", () => {
