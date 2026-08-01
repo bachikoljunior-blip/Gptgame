@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#05090f">
   <meta name="color-scheme" content="dark">
-  <meta name="artifact-revision" content="d9e7db13cef617a4604beead48082479e64a27c2413446ebbbca695d36dcf923">
+  <meta name="artifact-revision" content="afad352fb846fd4134d64f2c6076008d813ec9ad25177b3e7cb9ea7f5b78a6af">
   <title>ECHO//SEVEN</title>
   <style>
     :root {
@@ -1116,7 +1116,7 @@
     var LOOP_TICKS = 900;
     var SAVE_VERSION = 2;
     var RULES_VERSION = 2;
-    var BUILD_ID = "2026.08.01-i";
+    var BUILD_ID = "2026.08.01-j";
     var SAVE_KEY = "echoSeven.save.v2";
     var RUN_CHECKPOINT_KEY = "echoSeven.runCheckpoint";
     var RUN_CHECKPOINT_VERSION = 2;
@@ -1652,7 +1652,35 @@
       master: null,
       voices: 0,
       nodesCreated: 0,
-      resumeFailures: 0
+      resumeFailures: 0,
+      cueCounts: {},
+      lastCue: null
+    };
+
+    var AUDIO_GENERAL_VOICE_LIMIT = 10;
+    var AUDIO_CRITICAL_VOICE_LIMIT = 14;
+    var BOSS_CUE_RECIPES = {
+      bossCharge: {
+        critical: true,
+        steps: [
+          [0, 96, 0.28, "sawtooth", 0.075, 260],
+          [90, 210, 0.18, "square", 0.04, 420]
+        ]
+      },
+      bossBreak: {
+        critical: true,
+        steps: [
+          [0, 760, 0.11, "square", 0.055, 190],
+          [55, 520, 0.14, "triangle", 0.045, 110]
+        ]
+      },
+      bossImpact: {
+        critical: true,
+        steps: [
+          [0, 72, 0.3, "sawtooth", 0.1, 34],
+          [75, 46, 0.24, "square", 0.055, 28]
+        ]
+      }
     };
 
     function ensureAudio() {
@@ -1680,8 +1708,9 @@
       }
     }
 
-    function tone(frequency, duration, type, volume, endFrequency) {
-      if (!save.settings.sound || !audio.context || audio.context.state !== "running" || audio.voices >= 14) return;
+    function tone(frequency, duration, type, volume, endFrequency, critical) {
+      var voiceLimit = critical ? AUDIO_CRITICAL_VOICE_LIMIT : AUDIO_GENERAL_VOICE_LIMIT;
+      if (!save.settings.sound || !audio.context || audio.context.state !== "running" || audio.voices >= voiceLimit) return;
       var now = audio.context.currentTime;
       var oscillator = audio.context.createOscillator();
       var gain = audio.context.createGain();
@@ -1704,12 +1733,34 @@
       };
     }
 
+    function playToneSequence(recipe) {
+      for (var i = 0; i < recipe.steps.length; i += 1) {
+        (function (step) {
+          var play = function () {
+            tone(step[1], step[2], step[3], step[4], step[5], recipe.critical);
+          };
+          if (step[0] > 0) setTimeout(play, step[0]);
+          else play();
+        })(recipe.steps[i]);
+      }
+    }
+
+    function cueRecipeSignature(recipe) {
+      return recipe.steps.map(function (step) { return step.join(":"); }).join("|");
+    }
+
     function playSound(kind) {
+      audio.cueCounts[kind] = (audio.cueCounts[kind] || 0) + 1;
+      audio.lastCue = kind;
+      if (BOSS_CUE_RECIPES[kind]) {
+        playToneSequence(BOSS_CUE_RECIPES[kind]);
+        return;
+      }
       if (kind === "shoot") tone(560, 0.035, "triangle", 0.018, 330);
       else if (kind === "dash") tone(160, 0.12, "sawtooth", 0.07, 820);
       else if (kind === "hit") tone(120, 0.08, "square", 0.045, 70);
       else if (kind === "kill") tone(340, 0.07, "triangle", 0.035, 620);
-      else if (kind === "core") tone(88, 0.2, "sawtooth", 0.09, 45);
+      else if (kind === "core") tone(88, 0.2, "sawtooth", 0.09, 45, true);
       else if (kind === "loop") {
         tone(220, 0.18, "triangle", 0.05, 440);
         setTimeout(function () { tone(440, 0.16, "triangle", 0.045, 880); }, 100);
@@ -2486,6 +2537,7 @@
             damage: damages[c]
           };
           addPulse(CORE_X, CORE_Y, 150, "#ff6b61", 51, "charge");
+          playSound("bossCharge");
           if (c === 0) announce("BREAK THE CHARGE — 攻撃を集中");
         }
       }
@@ -2495,8 +2547,10 @@
           enemy.staggerTicks = 27;
           addPulse(enemy.x, enemy.y, 90, "#c7ff45", 24, "break");
           game.score += 600;
+          playSound("bossBreak");
           announce("CHARGE BROKEN");
         } else {
+          playSound("bossImpact");
           damageCore(enemy.charge.damage, true);
           addPulse(CORE_X, CORE_Y, 170, "#ff6b61", 30, "charge");
           announce("CORE BREAK -" + enemy.charge.damage);
@@ -2855,6 +2909,8 @@
       game.qualityGoodWindows = 0;
       game.qualityCooldown = 0;
       runMetrics = createRunMetrics();
+      audio.cueCounts = {};
+      audio.lastCue = null;
       recordDisplayMetrics();
       document.getElementById("copyReportStatus").textContent = "";
       document.getElementById("deviceReport").open = false;
@@ -5294,6 +5350,17 @@
         rendererBufferResizes: renderer3d.dynamicBufferResizes,
         rendererGlError: renderer3d.glError,
         rendererError: renderer3d.lastError,
+        audio: {
+          lastCue: audio.lastCue,
+          cueCounts: Object.assign({}, audio.cueCounts),
+          cueSignatures: {
+            bossCharge: cueRecipeSignature(BOSS_CUE_RECIPES.bossCharge),
+            bossBreak: cueRecipeSignature(BOSS_CUE_RECIPES.bossBreak),
+            bossImpact: cueRecipeSignature(BOSS_CUE_RECIPES.bossImpact)
+          },
+          generalVoiceLimit: AUDIO_GENERAL_VOICE_LIMIT,
+          criticalVoiceLimit: AUDIO_CRITICAL_VOICE_LIMIT
+        },
         metrics: metrics
       };
     }
@@ -5365,6 +5432,26 @@
         loadDebugCheckpoint("L7_BOSS_START");
         game.tick = 27;
         updateSchedule();
+      } else if (id === "BOSS_CHARGE_START") {
+        loadDebugCheckpoint("L7_BOSS_START");
+        game.tick = 198;
+        game.schedule = [];
+        resetCombatArrays();
+        spawnEnemy("S", bossPositionAtTick(game.tick).x, bossPositionAtTick(game.tick).y);
+      } else if (id === "BOSS_CHARGE_BREAK" || id === "BOSS_CHARGE_IMPACT") {
+        loadDebugCheckpoint("L7_BOSS_START");
+        game.tick = 249;
+        game.schedule = [];
+        resetCombatArrays();
+        var chargeBoss = spawnEnemy("S", bossPositionAtTick(game.tick).x, bossPositionAtTick(game.tick).y);
+        chargeBoss.charge = {
+          index: 0,
+          endTick: game.tick,
+          startHp: chargeBoss.hp,
+          threshold: 105,
+          damage: 30
+        };
+        if (id === "BOSS_CHARGE_BREAK") chargeBoss.hp -= chargeBoss.charge.threshold;
       } else if (id === "BOSS_CLUTCH") {
         loadDebugCheckpoint("L7_BOSS_START");
         game.tick = 899;
@@ -5529,7 +5616,7 @@
         snapshot: function () { return deepCopy(debugSnapshot()); },
         assertInvariants: assertInvariants,
         checkpoints: {
-          list: function () { return ["FRESH_BOOT", "L1_T899", "L2_ECHO_START", "PRISM_ORBIT", "PLAYER_KO", "L7_BOSS_START", "BOSS_TELEGRAPH", "BOSS_CLUTCH", "TIE_BREAK", "PERF_WORST"]; },
+          list: function () { return ["FRESH_BOOT", "L1_T899", "L2_ECHO_START", "PRISM_ORBIT", "PLAYER_KO", "L7_BOSS_START", "BOSS_TELEGRAPH", "BOSS_CHARGE_START", "BOSS_CHARGE_BREAK", "BOSS_CHARGE_IMPACT", "BOSS_CLUTCH", "TIE_BREAK", "PERF_WORST"]; },
           load: loadDebugCheckpoint
         },
         lifecycle: {
