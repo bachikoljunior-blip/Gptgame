@@ -151,7 +151,7 @@ Pass criteria:
 - haptics are short, optional, disabled with reduced motion, and never the sole carrier of required information;
 - muted play remains fully understandable.
 
-Evidence required: source event inventory, automated voice/resume metrics, and recorded phone audio. Build j adds distinct rising boss-charge, brittle charge-break, and low core-impact identities on the real combat branches; deterministic routing, prior-build applicability, and a valid-hash missing-routing negative are `complete_verified`. Dedicated defeat and ambient identities plus recorded-phone comparison remain `prepared_not_executed`.
+Evidence required: source event inventory, automated voice/resume metrics, and recorded phone audio. Public build j adds distinct rising boss-charge, brittle charge-break, and low core-impact identities on the real combat branches; deterministic routing, critical-voice reservation, prior-build applicability, a valid-hash missing-routing negative, PR/main workflows, and the independently fetched public artifact are `complete_verified`. Dedicated defeat and ambient identities plus recorded-phone comparison remain `prepared_not_executed`.
 
 ### 8. Performance, stability, recovery, and fallback
 
