@@ -28,6 +28,8 @@ const verifyingPreLoopHandoffRepairRollback = verifyingRollbackArtifact
   && !buildAtLeast("2026.08.01-i");
 const verifyingPreBossAudioRollback = verifyingRollbackArtifact
   && !buildAtLeast("2026.08.01-j");
+const verifyingPreSecondaryTypeFloorRollback = verifyingRollbackArtifact
+  && !buildAtLeast("2026.08.01-k");
 
 class FakeClassList {
   #values = new Set();
@@ -433,6 +435,25 @@ test("loop handoff identifies the recorded path and the echoes replaying next", 
   assert.equal(reducedReplay.mode, "countdown");
   assert.equal(reducedReplay.loop, 2);
   assert.equal(reducedBanner.dataset.phase, "replay");
+});
+
+test("small-screen menu and result secondary labels keep a 12px floor", {
+  skip: verifyingPreSecondaryTypeFloorRollback
+    ? "secondary type-floor criteria are not applicable to the pre-type-floor rollback"
+    : false,
+}, () => {
+  assert.ok(buildAtLeast("2026.08.01-k"), "secondary type-floor criteria require build k or later");
+  const requiredRules = [
+    /\.mission-index\s*\{[^}]*?font-size:\s*12px;/,
+    /\.mission-step strong\s*\{[^}]*?font-size:\s*clamp\(12px, 3vw, 14px\);[^}]*?letter-spacing:\s*0\.015em;/,
+    /\.mission-step small\s*\{[^}]*?font-size:\s*12px;/,
+    /\.stat span\s*\{[^}]*?font-size:\s*12px;/,
+    /\.device-report summary strong\s*\{[^}]*?font-size:\s*12px;/,
+    /\.diagnostic-grid dt\s*\{[^}]*?font-size:\s*12px;/,
+    /\.diagnostic-grid dd\s*\{[^}]*?font-size:\s*12px;/,
+    /\.copy-status\s*\{[^}]*?font-size:\s*12px;/,
+  ];
+  for (const rule of requiredRules) assert.match(html, rule);
 });
 
 test("runtime exposes deterministic fixed-step contract only in test mode", () => {
