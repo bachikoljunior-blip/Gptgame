@@ -13,9 +13,9 @@ Create the most compelling realistically achievable mobile-first game for the pu
 - Game direction selected: `ECHO//SEVEN`, a portrait 3D action roguelite built around seven 15-second time loops.
 - Each loop records the current player's movement, aim direction, manual shots, and DASH events. Earlier recordings replay as allied echoes, turning route and firing plans into the primary strategy.
 - Selected visual direction: midnight navy, icy white, acid-lime player/action highlights, coral danger indicators.
-- Current source and release candidate is build `2026.08.01-d`, implemented in repository-root index.html.
+- Current source and release candidate is build `2026.08.01-e`, implemented in repository-root index.html.
 - The arena is true perspective 3D: custom WebGL 2 and WebGL 1 shaders, depth-tested lit meshes, fog, glow passes, 3D actors/enemies/core/boss/projectiles, perimeter walls, and a player-anchored first-person camera. Canvas 2D remains a deterministic failure fallback and HUD/input layer.
-- Implemented: dual-zone mobile movement/look controls, explicit FIRE and DASH actions, a centered target-responsive crosshair, exact 900-tick loops, aim-preserving echoes, five ordinary enemy types, seeded wave schedules, three upgrade drafts, final boss and interrupt mechanic, score/best results, settings, procedural audio, haptics, reduced motion, pause/resume, versioned save parsing, safe same-tab run restoration, adaptive effects, guarded debug checkpoints, WebGL context recovery, static VBO caching, dynamic buffer reuse, and combined framebuffer diagnostics.
+- Implemented: dual-zone mobile movement/look controls, two-thumb FIRE/DASH drag aiming, viewport-normalized look sensitivity, responsive curved movement input, explicit FIRE and DASH actions, a centered target-responsive crosshair, exact 900-tick loops, aim-preserving echoes, five ordinary enemy types, seeded wave schedules, three upgrade drafts, final boss and interrupt mechanic, score/best results, settings, procedural audio, haptics, reduced motion, pause/resume, versioned save parsing, safe same-tab run restoration, adaptive effects, guarded debug checkpoints, WebGL context recovery, static VBO caching, dynamic buffer reuse, and combined framebuffer diagnostics.
 - Build `2026.08.01-c` received an independent 10/10 re-audit across all seven axes with no reproducible Critical/High/Medium issue.
 - GitHub Pages release URL: https://bachikoljunior-blip.github.io/Gptgame/. The latest successful main-branch Pages workflow is the canonical release artifact.
 
@@ -27,12 +27,13 @@ Create the most compelling realistically achievable mobile-first game for the pu
 - Implemented the canonical game in one self-contained HTML file with no external runtime assets.
 - Replaced the former flat arena renderer with a dependency-free WebGL renderer while preserving the deterministic simulation and Canvas fallback.
 - Added Node-based static/runtime checks that execute the inline game in a controlled browser-API harness.
-- Passed 41 automated tests covering self-containment and syntax, manual-fire inactivity and cadence, recorded-aim replay, four-direction camera/crosshair/projectile alignment, core collision, production pointer-zone handling and fast-tap buffering, adaptive-quality input preservation, left-handed instructional copy, rule-version save migration, safe same-tab combat/late-run/upgrade restoration, malformed-checkpoint rejection, deliberate-run discard, fixed-step rules, WebGL 1/2 shader paths, finite 3D geometry, static/dynamic buffer reuse, render-failure fallback, context loss-resize-restoration, a Canvas/WebGL 6,300-tick golden trace, loop recording, echo creation, boss spawn/clutch/tie behavior, seeded determinism, telegraph accuracy, rotation pause, keyboard activation, mobile HUD layout, simultaneous move/FIRE/DASH, idle rendering, stress entities, framebuffer accounting, save sanitization, and upgrade validation.
+- Passed 44 automated tests covering self-containment and syntax, two-thumb move/FIRE/aim operation, viewport-normalized look sensitivity, short-drag movement response, manual-fire inactivity and cadence, recorded-aim replay, four-direction camera/crosshair/projectile alignment, core collision, production pointer-zone handling and fast-tap buffering, adaptive-quality input preservation, left-handed instructional copy, rule-version save migration, safe same-tab combat/late-run/upgrade restoration, malformed-checkpoint rejection, deliberate-run discard, fixed-step rules, WebGL 1/2 shader paths, finite 3D geometry, static/dynamic buffer reuse, render-failure fallback, context loss-resize-restoration, a Canvas/WebGL 6,300-tick golden trace, loop recording, echo creation, boss spawn/clutch/tie behavior, seeded determinism, telegraph accuracy, rotation pause, keyboard activation, mobile HUD layout, simultaneous move/FIRE/DASH, idle rendering, stress entities, framebuffer accounting, save sanitization, and upgrade validation.
 - Fixed review findings: deterministic enemy sequencing on replay, boss telegraph/spawn alignment, loss priority on simultaneous core/boss destruction, removal of dead bosses before result rendering, DASHBURST split-child handling, unknown upgrade rejection, rotation pause, pause-menu keyboard behavior, HUD/control overlap, DASH contrast, phone-size HUD typography, and inactive-screen render throttling.
 - Fixed 3D review findings: camera clipping at legal movement corners, per-frame static geometry uploads, per-frame TypedArray/GPU buffer allocation, uncaught WebGL render failures, context-loss resize loss, ineffective player-body invulnerability flicker, and incomplete dual-canvas/depth/MSAA resource accounting.
 - Replaced follow-camera auto-fire play with first-person yaw aiming and input-gated firing. Echo tapes now store normalized facing components and only reproduce shots that the player actually fired.
 - Fixed first-person audit findings: solid-core camera exclusion, a shared eye/crosshair/muzzle/projectile aim plane, exact east/west facing, input-preserving adaptive-quality resize, rule-version tutorial migration, mirrored left-handed copy/ARIA, and dead-state look-input disposal.
 - Replaced the former diagnostic-only session checkpoint with a bounded, versioned gameplay checkpoint. Same-tab reload restores the exact player, enemies, projectiles, echo tapes, RNG state, upgrade offers, and diagnostics in an explicit paused state while releasing all touch/key actions. Malformed, incompatible, finished, or deliberately abandoned runs are discarded.
+- Removed the three-finger dependency from ordinary mobile combat: FIRE and DASH now double as horizontal look surfaces while held, so one thumb can aim and fire while the other moves. Look sensitivity scales with viewport width, fast pointer samples are buffered without large jumps, and the floating movement pad reaches useful speed with a shorter drag.
 - Published index.html, tests, package metadata, README, Pages workflow, and this project memory to main. Initial release workflow head: `29e0ab03a41c9f9f40115fdc2eb2accc2ebb8984`; workflow path-filter refinement: `57772a37dc700939b9aabfdd9f584886eee95202`.
 
 ## Rejected or retained alternatives
@@ -45,7 +46,7 @@ Create the most compelling realistically achievable mobile-first game for the pu
 
 - One self-contained HTML is the canonical game implementation. GitHub Pages serves it as root index.html.
 - Portrait logical playfield targets approximately 480×800 and scales to the viewport. This supports phones while remaining playable on desktop.
-- Primary touch control uses one drag zone for view-relative movement and the opposite drag zone for yaw aiming, plus independent FIRE and DASH buttons. FIRE supports tap buffering and hold-to-repeat but never shoots without explicit input.
+- Primary touch control uses one drag zone for view-relative movement and the opposite drag zone for yaw aiming, plus independent FIRE and DASH buttons. Both action buttons also accept horizontal aim drag while held, keeping move+aim+fire practical with two thumbs. FIRE supports tap buffering and hold-to-repeat but never shoots without explicit input.
 - Seven fixed-length loops give the title mechanical meaning and provide a readable run structure.
 - Geometric 3D silhouettes distinguish roles independently of color; emissive color reinforces rather than replaces shape.
 - Local-only save data stores settings, best results, aggregate run telemetry, and schema version. No network data collection.
@@ -72,6 +73,7 @@ Create the most compelling realistically achievable mobile-first game for the pu
 - Primary loop, echo replay, upgrades, boss, win state, loss state, restart, pause, and local best result all function.
 - Touch and pointer input do not scroll, zoom, select text, or remain stuck after interruption.
 - First-person movement, look, FIRE, and DASH can be used concurrently with separate touches; left-handed mode mirrors the movement/look zones and action rail.
+- Move+aim+FIRE can be performed with two thumbs, without requiring a third simultaneous touch.
 - Keyboard fallback supports desktop testing.
 - All important threats are distinguishable by shape and telegraph, not color alone.
 - Tutorial can be completed without reading long instructions.
@@ -93,7 +95,7 @@ Create the most compelling realistically achievable mobile-first game for the pu
 - Exact balance still requires real-device playtest tuning after the first published build.
 - The 6,300-tick golden suite currently uses a deterministic no-enemy route to isolate renderer/simulation equivalence; live-wave balance still needs physical-device playtesting.
 - Run restoration is intentionally tab-scoped. It does not transfer a live run between tabs, browsers, or devices, and an abrupt process kill that emits no lifecycle event may fall back to the last loop-boundary checkpoint.
-- FIRE and DASH occupy a lower-corner action rail. Their minimum targets are 88px and 64px, remain above the 44px touch baseline, and require a physical-device reachability check.
+- FIRE and DASH occupy a lower-corner action rail. Their minimum targets are 88px and 64px, remain above the 44px touch baseline, accept aim drag to reduce finger changes, and still require a physical-device reachability check.
 
 ## Successful patterns
 
@@ -135,13 +137,14 @@ Create the most compelling realistically achievable mobile-first game for the pu
 - 2026-08-01: build `2026.08.01-c` regression gate passed 36/36 tests after the strict audit. Added coverage proves core exclusion, one aim plane at near/mid/far distances, all four cardinal camera/projectile directions, adaptive-quality touch retention, rule-version tutorial migration, left-handed copy/ARIA mirroring, and dead-state look-input disposal.
 - 2026-08-01: independent re-audit awarded build `2026.08.01-c` 10/10 on all seven axes with zero reproducible Critical/High/Medium issue. Real Chromium at 375×667/DPR 2 passed WebGL 2 and forced WebGL 1 shader compilation, 8,744-triangle stress rendering, simultaneous move+look+FIRE+DASH, solid-core clearance, real context loss/fallback/resize/restoration, `gl.getError() === 0`, and zero page/console errors.
 - 2026-08-01: build `2026.08.01-d` regression gate passed 41/41 tests. Added coverage proves exact same-tab combat restoration with cleared input and a matching 90-tick continuation, bounded six-echo late-run restoration with retained diagnostic samples, stable restoration of the same three upgrade offers, malformed-checkpoint rejection, and deliberate checkpoint deletion on return to title. Full 6,300-tick Canvas/WebGL determinism and all prior renderer/input/save gates remained green.
+- 2026-08-01: build `2026.08.01-e` regression gate passed 44/44 tests. Added coverage proves two-thumb movement plus FIRE-drag aiming, equivalent ten-percent swipe rotation at 320px and 480px widths, and useful movement response from a 15px thumb drag. Full 6,300-tick Canvas/WebGL determinism and all prior renderer/input/save/checkpoint gates remained green.
 - 2026-07-31: published Pages URL loaded `ECHO//SEVEN` build `2026.07.31-c` with no external src/href elements.
 - 2026-07-31: public-page interaction passed title → first-run tutorial → countdown/play → DASH → pause → Enter on restart. DASH entered its 3-second cooldown, pause froze the state, and keyboard restart returned to LOOP 01 countdown.
 - 2026-07-31: no warning/error entry originated from the GitHub Pages game origin during the live interaction. Browser-extension diagnostics were excluded as unrelated environment noise.
 
 ## Performance history
 
-- Current first-person 3D candidate size is 203,426 bytes uncompressed and 48,003 bytes gzip-compressed.
+- Current first-person 3D candidate size is 207,371 bytes uncompressed and 48,628 bytes gzip-compressed.
 - Node runtime-harness checks complete quickly, but this does not measure real Canvas/GPU performance.
 - Runtime caps: 80 enemies, 96 allied projectiles, 64 hostile projectiles, 180 particles, and 12,000 stress-scene triangles; each Canvas backing store is capped to 1.5 million pixels.
 - Adaptive quality reduces mesh/effect density and DPR after sustained slow-frame windows. Static arena geometry is cached per quality tier; dynamic CPU arrays and GPU capacity are reused.
