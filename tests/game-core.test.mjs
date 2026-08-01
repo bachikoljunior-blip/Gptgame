@@ -319,7 +319,8 @@ test("single HTML is self-contained and syntactically valid", () => {
   assert.match(html, /id="sceneCanvas"/);
   assert.match(html, /id="attackButton"/);
   assert.match(html, /id="crosshair"/);
-  assert.match(html, /FIRE MANUALLY/);
+  assert.match(html, /FIRE \+ AIM/);
+  assert.match(html, /FIREやDASHを押したまま左右へ滑らせても照準/);
   assert.match(html, /getContext\("webgl2"/);
   assert.match(html, /attribute vec3 aPosition/);
   assert.match(html, /uniform mat4 uViewProjection/);
@@ -335,7 +336,7 @@ test("runtime exposes deterministic fixed-step contract only in test mode", () =
   assert.deepEqual(
     JSON.parse(JSON.stringify(api.info())),
     {
-      buildId: "2026.08.01-d",
+      buildId: "2026.08.01-e",
       rulesVersion: 2,
       saveVersion: 2,
       fixedHz: 60,
@@ -620,6 +621,85 @@ test("production pointer handlers split move/look zones and preserve a fast FIRE
   canvas.listeners.get("pointerup")[0](pointer(11, 70, 480));
 });
 
+test("FIRE drag combines manual shooting and aim on one action thumb", () => {
+  const { api, elements } = createHarness();
+  api.reset({ seed: 721 });
+  const canvas = elements.get("gameCanvas");
+  const attack = elements.get("attackButton");
+  const pointer = (pointerId, clientX, clientY) => ({
+    pointerId,
+    pointerType: "touch",
+    button: 0,
+    clientX,
+    clientY,
+    preventDefault() {},
+  });
+
+  canvas.listeners.get("pointerdown")[0](pointer(21, 70, 560));
+  canvas.listeners.get("pointermove")[0](pointer(21, 70, 500));
+  attack.listeners.get("pointerdown")[0](pointer(22, 360, 650));
+  attack.listeners.get("pointermove")[0](pointer(22, 404, 650));
+
+  const state = api.stepTicks(1);
+  assert.equal(state.inputState.movePointerId, 21);
+  assert.equal(state.inputState.firePointerId, 22);
+  assert.equal(state.inputState.fireHeld, true);
+  assert.equal(state.metrics.manualShots, 1);
+  assert.equal(state.metrics.concurrentFire, true);
+  assert.ok(state.player.facingX > 0.2, `FIRE drag did not turn aim: ${state.player.facingX}`);
+  assert.ok(state.player.x > 240, "view-relative movement did not follow FIRE-drag aim");
+
+  attack.listeners.get("pointerup")[0](pointer(22, 404, 650));
+  const released = api.snapshot();
+  assert.equal(released.inputState.firePointerId, null);
+  assert.equal(released.inputState.fireHeld, false);
+});
+
+test("look sensitivity stays consistent across phone widths", () => {
+  const facingAfterTenPercentSwipe = (width) => {
+    const { api, elements } = createHarness();
+    api.reset({ seed: width });
+    const canvas = elements.get("gameCanvas");
+    canvas.rectWidth = width;
+    const pointer = (pointerId, clientX) => ({
+      pointerId,
+      pointerType: "touch",
+      button: 0,
+      clientX,
+      clientY: 320,
+      preventDefault() {},
+    });
+    const start = width * 0.7;
+    canvas.listeners.get("pointerdown")[0](pointer(23, start));
+    canvas.listeners.get("pointermove")[0](pointer(23, start + width * 0.1));
+    return api.stepTicks(1).player.facingX;
+  };
+
+  const narrow = facingAfterTenPercentSwipe(320);
+  const standard = facingAfterTenPercentSwipe(480);
+  assert.ok(narrow > 0.25 && standard > 0.25);
+  assert.ok(Math.abs(narrow - standard) < 0.015, `${narrow} vs ${standard}`);
+});
+
+test("floating movement pad reaches a responsive walk from a short thumb drag", () => {
+  const { api, elements } = createHarness();
+  api.reset({ seed: 722 });
+  const canvas = elements.get("gameCanvas");
+  const pointer = (pointerId, clientX, clientY) => ({
+    pointerId,
+    pointerType: "touch",
+    button: 0,
+    clientX,
+    clientY,
+    preventDefault() {},
+  });
+  canvas.listeners.get("pointerdown")[0](pointer(24, 70, 540));
+  canvas.listeners.get("pointermove")[0](pointer(24, 85, 540));
+  const state = api.snapshot();
+  assert.ok(state.inputState.moveX > 0.38, `short drag stayed sluggish: ${state.inputState.moveX}`);
+  assert.ok(Math.abs(state.inputState.moveY) < 0.000001);
+});
+
 test("the solid core keeps walking and dashing first-person cameras outside", () => {
   const { api } = createHarness();
   const distanceFromCore = (state) => Math.hypot(state.player.x - 240, state.player.y - 410);
@@ -759,7 +839,7 @@ test("device report captures stress peaks without network telemetry", () => {
   assert.ok(metrics.framebufferBytes > metrics.backingPixels * 4);
   assert.equal(metrics.sampledFrames, 0);
   const report = api.diagnostics.report();
-  assert.match(report, /build: 2026\.08\.01-d/);
+  assert.match(report, /build: 2026\.08\.01-e/);
   assert.match(report, /peaks: enemies 64/);
   assert.match(report, /framebuffer [0-9.]+ MiB est\./);
   assert.match(report, /samples 4 \/ depth 24bit/);
@@ -891,6 +971,10 @@ test("same-tab reload restores combat exactly, paused, with every input released
   assert.deepEqual(restored.inputState, {
     movePointerId: null,
     lookPointerId: null,
+    firePointerId: null,
+    dashPointerId: null,
+    moveX: 0,
+    moveY: 0,
     fireHeld: false,
     fireQueued: false,
     dashQueued: false,
