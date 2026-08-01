@@ -63,7 +63,7 @@ execution:
     deployment: "complete_verified for current main: ordered Pages run 30687172562 succeeded after dynamic run 30687173235"
     public_surface: "complete_verified for current observation: a cache-busted fetch returned git-revision 0efbceaa583b4ce51c432445d906c8b76f68b0b4 and build 2026.08.01-f"
   modified_but_unverified:
-    - "PR #11 branch merge preserves PR #10's all-main-push legacy-publisher wait and adds canonical reference benchmarks, content-addressed artifact identity, rollback conversion, tamper regression, and a one-time remote F6 probe. Combined execution and Level C review passed; remote branch update remains."
+    - "PR #11 branch now contains the verified merge of main 0efbcea, preserving its all-main-push legacy-publisher wait and adding canonical reference benchmarks, content-addressed artifact identity, rollback conversion, tamper regression, and an explicitly ordered one-time remote F6 probe. Combined execution and Level C review passed; PR synchronize checks remain."
   current_blockers: []
   current_uncertainty:
     - "No physical iPhone or Android visual pass is available in this Work run."
@@ -82,7 +82,7 @@ floor:
   last_check: "complete_unverified: F1 reconciled to main/public 0efbcea and PR #11; F2 merged state current and negative input rejected; F3 source/candidate/current rollback 46/46 plus legacy rollback 45 applicable + 1 not_applicable, with empty/tampered input rejected; F4 accurate; F5 combined Level C complete_verified; F6 current commit-marker release verified and content-addressed remote probe pending; F7 benchmark traceability recorded and direct comparison pending; F8 recorded; F9 ordered deployment active while content/revert probe remains pending"
   independence_level_used: "C"
   review_outcome: "complete_verified"
-  reviewed_changes_digest: "985704af83ff4a04c1f6ba07daf3a72243d5716fa8489bcf69de5f5e1f67e19f"
+  reviewed_changes_digest: "a09dbd7dff64e7ced5e14d8051acb3fdf7fba8a754dd9829f94a8506fc533c75"
   skips:
     - "F8 | F5 STRICT prefers Level A/B | Level C used because no separately permitted independent reviewer is available in this run; negative gate and recovery-artifact tests strengthen the substitute; revisit if A/B becomes available."
     - "F8 | F6 real-browser interaction | Playwright browser binary is absent and its CDN download failed on certificate validity; use a cache-busted public fetch plus the full deterministic harness and revisit on a physical or available browser."
@@ -98,7 +98,7 @@ floor:
       mechanism: "After merging PR #10, the content-addressed source, release candidate, and current build-f rollback each passed 46/46; legacy build e passed 45 applicable checks plus one not_applicable. Empty HTML, content tampering, and malformed workflow assumptions were rejected; remote execution remains pending."
     f5_review_record_check:
       status: "complete_unverified"
-      mechanism: "scripts/verify-floor.mjs rejects invalid review records and validates Level C outcome against governed-tree SHA-256 985704af83ff4a04c1f6ba07daf3a72243d5716fa8489bcf69de5f5e1f67e19f; combined review preserved #10 ordering and added independent content identity. Remote execution remains pending."
+      mechanism: "scripts/verify-floor.mjs rejects invalid review records and validates Level C outcome against governed-tree SHA-256 a09dbd7dff64e7ced5e14d8051acb3fdf7fba8a754dd9829f94a8506fc533c75; combined review preserved #10 ordering and added independent content identity. Remote execution remains pending."
     f6_public_revision_check:
       status: "complete_unverified"
       mechanism: "PR #10 ordered deployment run 30687172562 and a cache-busted fetch verify current commit marker 0efbcea. SHA-256 content identity plus a one-time all-zero remote probe are being merged on top; rejection/restoration and normal verification are pending."
@@ -152,7 +152,7 @@ recovery:
 remote:
   repository: "bachikoljunior-blip/Gptgame"
   working_branch: "agent/reference-benchmarks-artifact-revision"
-  pull_request: "complete_unverified: https://github.com/bachikoljunior-blip/Gptgame/pull/11 is draft at head 328f66d; verified main-merge update and checks remain"
+  pull_request: "complete_unverified: https://github.com/bachikoljunior-blip/Gptgame/pull/11 contains main-merge head 46b0380; an ordered-probe synchronize commit and checks remain"
   main_revision: "0efbceaa583b4ce51c432445d906c8b76f68b0b4"
   deployed_revision: "complete_verified for current observation: git-revision 0efbceaa583b4ce51c432445d906c8b76f68b0b4, build 2026.08.01-f"
   verified_public_revision: "complete_verified for current cache-busted fetch: 0efbceaa583b4ce51c432445d906c8b76f68b0b4"
@@ -161,5 +161,5 @@ remote:
   open_pull_requests: []
   repository_permissions: "complete_verified: connected GitHub app reports admin/push permissions"
 
-updated_at: "2026-08-01T15:36:00+09:00"
+updated_at: "2026-08-01T15:38:00+09:00"
 reconciliation_status: "complete_verified: main/public 0efbcea and draft PR #11 incorporated; combined local verification passed"
