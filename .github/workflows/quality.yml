@@ -26,6 +26,12 @@ jobs:
           cache: npm
       - name: Restore exact dependencies
         run: npm ci
+      # Before the gates themselves: a silently inert gate and a passing gate both print
+      # nothing and exit 0, so the gate is proved able to fail first.
+      - name: Prove the continuity gate can fail
+        run: node scripts/verify-continuity.mjs --selftest
+      - name: Verify the vendored kit has not drifted
+        run: npm run check:kit
       - name: Verify continuity loader
         run: node scripts/verify-continuity.mjs
       - name: Enforce state and review record
