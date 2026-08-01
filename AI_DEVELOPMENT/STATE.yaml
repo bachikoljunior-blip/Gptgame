@@ -27,7 +27,7 @@ objective:
     - "Preserve two-thumb FIRE/DASH drag aiming and all existing game behavior."
     - "Merge verified work into main and verify the GitHub Pages release."
   acceptance_evidence:
-    latest_main_baseline: "complete_verified: e7199d140336407aac8fa333d1b2d78ce82a6d21"
+    latest_main_baseline: "complete_verified: 40639f59cd0b0105120e2c5610083eb1223ad9c5; public artifact passed 44/44"
     readability: "prepared_not_executed"
     visual_richness: "prepared_not_executed"
     regression_suite: "prepared_not_executed for the visual change; baseline 44/44 passed"
@@ -36,25 +36,24 @@ objective:
 execution:
   selected_rigor: "STRICT"
   rationale: "The product change will merge to main and publish through GitHub Pages; delivery is therefore STRICT even though the visual implementation itself is bounded."
-  active_work: "Complete the verified Adaptive 2.2 activation by removing the one-time F6 probe and proving a normal revision-stamped Pages deployment before resuming the visual objective."
+  active_work: "Adaptive 2.2 migration is verified; resume the visual-readability and visual-richness objective from the latest published main."
   last_verified_checkpoint:
-    revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
+    revision: "40639f59cd0b0105120e2c5610083eb1223ad9c5"
     branch: "origin/main"
     build_id: "2026.08.01-e"
-    tests: "complete_verified: npm test passed 44/44 on 2026-08-01 Asia/Tokyo"
-    deployment: "complete_verified: Pages workflow run 30684019052 succeeded"
-    public_surface: "complete_verified: served index.html SHA-256 6828ad8de381264d48b3e195d7c7e40f4937fe6b72dd8d4ba43192bf7ff582b5 matched repository index.html"
-  modified_but_unverified:
-    - "One-time AI_DEVELOPMENT/F9_DEPLOY_PROBE removal and the corresponding canonical-state update on agent/adaptive-2-2-activate; local verification pending, remote normal deployment pending."
+    tests: "complete_verified: workflow source/candidate tests and independently fetched public artifact passed 44/44"
+    deployment: "complete_verified: normal Pages workflow run 30685673152 succeeded"
+    public_surface: "complete_verified: git-revision meta equals 40639f59cd0b0105120e2c5610083eb1223ad9c5 and the served artifact passed 44/44"
+  modified_but_unverified: []
   current_blockers: []
   current_uncertainty:
     - "No physical iPhone or Android visual pass is available in this Work run."
     - "Local Playwright exists but its browser binary is absent; a Chromium download failed because the external CDN certificate was not yet valid in the environment."
     - "The connected GitHub tool set can create and merge PRs but exposes no branch-protection or ruleset mutation API; local gh is absent."
-  exact_next_action: "Verify and deliver the probe-removal PR, confirm a successful normal Pages deployment serves its exact main revision and passes 44/44, then resume the visual-readability implementation."
+  exact_next_action: "From the latest main, implement the bounded menu/HUD/arena/fallback visual-readability pass, add focused regression assertions, execute the full suite, perform Level C falsification, then deliver and verify the public revision."
 
 floor:
-  last_check: "complete_unverified: F1 reconciled; F2 state current; F3 source/candidate/rollback executed; F4 accurate; F5 Level C passed; F6 controlled remote mismatch and automatic restoration complete_verified; F7 migration normal-delivery criterion pending; F8 recorded; F9 F6 and revert active, F2/F3/F5 deployment-blocking but not protected-merge required"
+  last_check: "complete_verified: F1 reconciled; F2 state current; F3 source/candidate/public executed 44/44; F4 accurate; F5 Level C; F6 normal public revision verified; F7 migration criteria mapped; F8 recorded; F9 F6 and revert active, F2/F3/F5 deployment-blocking but not protected-merge required"
   independence_level_used: "C"
   review_outcome: "complete_verified"
   reviewed_changes_digest: "8e715809d9ac3ddc4b99197adf5066b5c92f0f513279e0f910b101e22b227cbb"
@@ -88,12 +87,12 @@ floor:
       - "F6 remote: main run 30685438086 rejected the deliberately impossible revision, then automatically restored and verified e7199d1; independent public recheck passed 44/44."
     unenforced_items:
       - "F2/F3/F5 are not verified required merge checks because branch-protection capability is not exposed; they are configured to block Pages deployment."
-      - "Normal no-probe deployment still needs one successful remote observation before the migration is complete_verified."
+      - "No additional F9 item is pending beyond the recorded branch-protection limitation for F2/F3/F5."
     unattended_allowed: false
 
 migration:
   source: "Legacy AGENTS.md delivery policy plus PROJECT_MEMORY.md product/continuity record"
-  status: "complete_unverified"
+  status: "complete_verified"
   pre_migration_checkpoint: "AI_DEVELOPMENT/ARCHIVE/PRE_MIGRATION_2026-08-01.yaml"
   legacy_authority_scope: "Legacy records remain evidence; conflicting operating mechanics are superseded by the validated Adaptive 2.2 loader now on main."
   modules_installed: "complete_verified: nine separate Layer 3 files pass shape and non-activation checks"
@@ -108,24 +107,27 @@ migration:
     loader_discovery: "complete_verified"
     fresh_run_resumption: "complete_verified"
     rollback_recovery: "complete_verified: run 30685438086"
-    normal_delivery: "complete_unverified"
-    product_regression: "complete_verified: restored public artifact passed 44/44"
+    normal_delivery: "complete_verified: workflow run 30685673152 served revision 40639f59cd0b0105120e2c5610083eb1223ad9c5"
+    product_regression: "complete_verified: normal public artifact passed 44/44"
+    non_conflicting_instructions_preserved: "complete_verified"
+    modules_inactive: "complete_verified"
+    accidental_publication_or_regression: "complete_verified: no gameplay behavior changed; same build 2026.08.01-e passed"
 
 recovery:
-  last_known_good_revision_or_artifact: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
-  rollback_or_recovery_method: "Before merge, discard only the task branch and return to origin/main. After merge, revert the migration merge through a reviewed PR; for the public product redeploy the last verified product revision e7199d1 if release verification fails."
+  last_known_good_revision_or_artifact: "40639f59cd0b0105120e2c5610083eb1223ad9c5"
+  rollback_or_recovery_method: "For later product delivery, the Pages workflow assembles 40639f5 as the verified rollback source until a newer public revision is recorded. Revert operating changes only through a reviewed PR."
 
 remote:
   repository: "bachikoljunior-blip/Gptgame"
   working_branch: "agent/adaptive-2-2-migration"
-  pull_request: "complete_verified: https://github.com/bachikoljunior-blip/Gptgame/pull/5 merged as 18fbaab3b4a55fad3139c5555872a42f52c38dd2"
-  main_revision: "18fbaab3b4a55fad3139c5555872a42f52c38dd2"
-  deployed_revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21"
-  verified_public_revision: "e7199d140336407aac8fa333d1b2d78ce82a6d21 (content hash match; source did not yet embed commit revision)"
+  pull_request: "complete_verified: #5 merged migration; #6 merged normal-deployment activation"
+  main_revision: "40639f59cd0b0105120e2c5610083eb1223ad9c5"
+  deployed_revision: "40639f59cd0b0105120e2c5610083eb1223ad9c5"
+  verified_public_revision: "40639f59cd0b0105120e2c5610083eb1223ad9c5"
   public_url: "https://bachikoljunior-blip.github.io/Gptgame/"
   status: "complete_verified"
   open_pull_requests: []
   repository_permissions: "complete_verified: connected GitHub app reports admin/push permissions"
 
-updated_at: "2026-08-01T14:20:00+09:00"
+updated_at: "2026-08-01T14:27:00+09:00"
 reconciliation_status: "complete_verified"
