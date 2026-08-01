@@ -28,42 +28,39 @@ objective:
     - "Merge verified work into main and verify the GitHub Pages release."
   acceptance_evidence:
     latest_main_baseline: "complete_verified: work branch starts at origin/main f759de7c8fe29596e840fe11a308a43175dfb2db; latest published product revision 40639f5 passed 44/44"
-    readability: "complete_unverified: labeled HUD, higher-contrast crosshair, readable sans-serif body copy, and three-phase title hierarchy are live at revision 045d253; public artifact checks passed, physical-device visual review unavailable"
-    visual_richness: "complete_unverified: layered panels, arena light gates/lane markers/beacons, dynamic scan ring, and enriched Canvas fallback are live at revision 045d253; public runtime checks passed, physical visual review unavailable"
-    regression_suite: "complete_verified: source, revision-stamped candidate, remote CI, and independently fetched public artifact passed 45/45; verified rollback passed 44/44 applicable checks with the new visual criterion explicitly not_applicable"
-    public_release: "complete_verified: workflow run 30686475034 served revision 045d2533325bbd3672767daa38566f9647fdb894 and the independently fetched artifact passed 45/45; after state-only main commit 4a61bbe triggered the legacy Pages publisher, rerun attempt 2 restored the same verified revision and another independent fetch passed 45/45"
+    readability: "complete_unverified: labeled HUD, higher-contrast crosshair, readable sans-serif body copy, and three-phase title hierarchy are live in build 2026.08.01-f at public revision 0efbcea; public artifact checks passed, physical-device visual review unavailable"
+    visual_richness: "complete_unverified: layered panels, arena light gates/lane markers/beacons, dynamic scan ring, and enriched Canvas fallback are live in build 2026.08.01-f at public revision 0efbcea; public runtime checks passed, physical visual review unavailable"
+    regression_suite: "complete_verified: source, revision-stamped candidate, remote CI, current visual rollback, and independently fetched public artifact passed 45/45; pre-refresh rollback passed 44/44 applicable checks with the visual criterion explicitly not_applicable"
+    public_release: "complete_verified: PR #10 merged as 0efbceaa583b4ce51c432445d906c8b76f68b0b4; run 30687172562 waited for legacy run 30687173235, deployed and verified the exact revision, and an independent public fetch passed 45/45"
 
 execution:
   selected_rigor: "STRICT"
   rationale: "The product change will merge to main and publish through GitHub Pages; delivery is therefore STRICT even though the visual implementation itself is bounded."
-  active_work: "Build 2026.08.01-f is publicly restored and verified after a state-only main push exposed a competing legacy Pages publisher; a minimal all-main-push custom deployment repair is being prepared before returning to the physical visual-inspection blocker."
+  active_work: "Build 2026.08.01-f and the ordered all-main-push Pages repair are merged and publicly verified; only physical-device/browser visual inspection remains before the visual objective can be upgraded."
   last_verified_checkpoint:
-    revision: "045d2533325bbd3672767daa38566f9647fdb894"
+    revision: "0efbceaa583b4ce51c432445d906c8b76f68b0b4"
     branch: "origin/main"
     build_id: "2026.08.01-f"
-    tests: "complete_verified: PR/main workflows passed; independently fetched public artifact passed 45/45"
-    deployment: "complete_verified: Pages workflow run 30686475034 attempt 2 restored the verified visual release after the legacy publisher race"
-    public_surface: "complete_verified: after emergency restoration, git-revision meta again equals 045d2533325bbd3672767daa38566f9647fdb894 and the independently fetched served artifact passed 45/45"
-  modified_but_unverified:
-    - "prepared_not_applied: .github/workflows/pages.yml removes the main-push path filter and makes the tested deploy wait for the competing branch-based publisher to finish, so every main update settles on the revision-stamped artifact."
-    - "prepared_not_applied: tests/game-core.test.mjs derives rollback visual expectations from the embedded build ID instead of assuming every rollback is the pre-refresh UI."
-    - "prepared_not_applied: AI_DEVELOPMENT/STATE.yaml records the Pages race, recovery, and repair continuation state."
+    tests: "complete_verified: PR and main workflows passed; current source/current rollback/public artifact passed 45/45 and pre-refresh rollback passed 44/44 applicable + 1 not_applicable"
+    deployment: "complete_verified: Pages workflow run 30687172562 waited for legacy run 30687173235, then deployed and verified 0efbcea without rollback"
+    public_surface: "complete_verified: independently fetched git-revision meta equals 0efbceaa583b4ce51c432445d906c8b76f68b0b4 and the served artifact passed 45/45"
+  modified_but_unverified: []
   current_blockers:
     - "External verification blocker: no physical iPhone/Android or runnable browser binary is available for direct visual inspection of the live composition."
   current_uncertainty:
     - "No physical iPhone or Android visual pass is available in this Work run."
     - "Local Playwright exists but its browser binary is absent; a Chromium download failed because the external CDN certificate was not yet valid in the environment."
     - "The connected GitHub tool set can create and merge PRs but exposes no branch-protection or ruleset mutation API; local gh is absent."
-    - "GitHub's legacy branch-based Pages publisher cannot be disabled with the exposed connector; the smallest available defense is to run the tested custom deployment after every main push."
+    - "GitHub's legacy branch-based Pages publisher cannot be disabled with the exposed connector; the verified defense runs the tested custom deployment after every main push and waits for the same-SHA legacy run first."
   review_findings:
     - "Level C found that a new feature-specific visual test would incorrectly reject the older verified rollback artifact; made build identity self-consistent, marked only the new visual criterion not_applicable for rollback, and added a pre-upload rollback execution step."
     - "Post-delivery reconciliation found that the state-only merge 4a61bbe still triggered GitHub's legacy Pages publisher and temporarily replaced the revision-stamped artifact with raw index.html; rerunning custom deployment job 91333277431 restored 045d253 and the public 45/45 result."
     - "Initial rollback execution falsified the assumption that ROLLBACK_ARTIFACT always means build e: the current rollback source is visual build f, so visual/HUD expectations now use the artifact's declared build ID."
     - "Level C run-history comparison found that merely triggering the custom deploy on every main push was insufficient because the legacy publisher has sometimes completed after the custom workflow; the deploy now discovers and waits for that same-SHA legacy run before publishing."
-  exact_next_action: "Finish the Level C digest and local gates for the ordered all-main-push Pages repair, publish it through a PR, verify the custom workflow waits for the same-SHA legacy run and the real public surface settles on the repair merge SHA, then checkpoint that evidence and return to physical visual inspection."
+  exact_next_action: "When a real browser or phone is available, inspect the live title, tutorial, LOOP 01 HUD, targeted crosshair, boss HUD, reduced-motion mode, and Canvas fallback at 320×568 and 375×667; repair any visual defect, otherwise map that evidence and mark the objective complete_verified."
 
 floor:
-  last_check: "complete_unverified: F1 reconciled against main 4a61bbe and public recovery; F2 repair state prepared; F3 source and current visual rollback 45/45, pre-refresh rollback 44/44 + 1 not_applicable, ordered workflow assertions passed, remote workflow prepared_not_executed; F4 accurate; F5 Level C complete_verified; F6 emergency restoration to 045d253 complete_verified, ordered repair prepared_not_applied; F7 n/a while visual objective remains complete_unverified; F8 browser/connector limits recorded; F9 repair not yet active"
+  last_check: "complete_unverified: F1 reconciled against main/public 0efbcea; F2 checkpoint current; F3 source/current rollback/public 45/45 and pre-refresh rollback 44/44 + 1 not_applicable; F4 accurate; F5 Level C complete_verified; F6 run 30687172562 and independent public verification complete_verified; F7 n/a while visual objective remains complete_unverified; F8 browser/connector limits recorded; F9 F6/revert active and ordered race defense verified, F2/F3/F5 protected-merge enforcement absent"
   independence_level_used: "C"
   review_outcome: "complete_verified"
   reviewed_changes_digest: "fd28b1b395b19ffe0896b15be793d580fbe0e42a1e48c527ec79b1521113679e"
@@ -79,16 +76,16 @@ floor:
       mechanism: "scripts/verify-floor.mjs rejects every governed commit lacking STATE.yaml; deliberate bad input failed and CI wiring passed on prior PRs, but required-merge enforcement remains unavailable."
     f3_execution_check:
       status: "complete_unverified"
-      mechanism: "npm test rejected /dev/null; current source and current visual rollback each passed 45/45, while the pre-refresh rollback passed 44/44 applicable checks with one explicit not_applicable criterion. Workflow ordering assertions passed locally; remote repair execution is prepared_not_executed and required-merge enforcement remains unavailable."
+      mechanism: "npm test rejected /dev/null; current source, current visual rollback, and independently fetched public revision 0efbcea each passed 45/45, while the pre-refresh rollback passed 44/44 applicable checks with one explicit not_applicable criterion. PR/main workflow execution passed; required-merge enforcement remains unavailable."
     f5_review_record_check:
       status: "complete_unverified"
-      mechanism: "scripts/verify-floor.mjs validates Level A/B/C, complete_verified outcome, and governed-tree SHA-256; deliberate invalid review failed and the ordered Pages repair Level C digest fd28b1b395b19ffe0896b15be793d580fbe0e42a1e48c527ec79b1521113679e is recorded; remote PR execution is prepared_not_executed."
+      mechanism: "scripts/verify-floor.mjs validates Level A/B/C, complete_verified outcome, and governed-tree SHA-256; deliberate invalid review failed, ordered Pages repair Level C digest fd28b1b395b19ffe0896b15be793d580fbe0e42a1e48c527ec79b1521113679e is recorded, and PR/main executions passed. Required-merge enforcement remains unavailable."
     f6_public_revision_check:
       status: "complete_verified"
-      mechanism: "Pages post-deploy public HTML commit-meta comparison plus full served-artifact harness. Visual main run 30686475034 verified 045d253 and 45/45; attempt 2 plus an independent public refetch restored and reverified the same result after the legacy publisher race. The all-main-push trigger repair remains prepared_not_applied."
+      mechanism: "Pages post-deploy public HTML commit-meta comparison plus full served-artifact harness. Run 30687172562 waited for same-SHA legacy run 30687173235, then deployed and verified 0efbcea; an independent public refetch confirmed the exact meta and passed 45/45."
     revert_mechanism:
       status: "complete_verified"
-      mechanism: "Pages workflow holds the last verified public revision as a separate artifact and redeploys plus verifies it after candidate verification failure. Run 30685438086 restored e7199d1 automatically; the workflow check and an independent public fetch both passed 44/44."
+      mechanism: "Pages workflow holds the last verified public revision as a separate artifact and redeploys plus verifies it after candidate verification failure. Run 30685438086 restored e7199d1 automatically; PR/main run 30687172562 also executed the current visual rollback artifact successfully at 45/45 before upload."
     last_observed_failing:
       - "F2: synthetic index.html-only commit rejected."
       - "F3: GAME_HTML=/dev/null rejected with 44 failures."
@@ -100,7 +97,6 @@ floor:
     unenforced_items:
       - "F2/F3/F5 are not verified required merge checks because branch-protection capability is not exposed; they are configured to block Pages deployment."
       - "No additional F9 item is pending beyond the recorded branch-protection limitation for F2/F3/F5."
-      - "The legacy Pages publisher remains independently enabled; the all-main-push custom deployment trigger is prepared_not_applied and must be remotely verified before this race repair is complete_verified."
     unattended_allowed: false
 
 migration:
@@ -127,20 +123,20 @@ migration:
     accidental_publication_or_regression: "complete_verified: no gameplay behavior changed; same build 2026.08.01-e passed"
 
 recovery:
-  last_known_good_revision_or_artifact: "045d2533325bbd3672767daa38566f9647fdb894"
-  rollback_or_recovery_method: "For later product delivery, the Pages workflow assembles 045d253 as the verified rollback source. The automatic revert mechanism was remotely exercised in run 30685438086. If the legacy publisher races before the repair lands, rerun the last successful custom deploy job; attempt 2 of run 30686475034 restored 045d253."
+  last_known_good_revision_or_artifact: "0efbceaa583b4ce51c432445d906c8b76f68b0b4"
+  rollback_or_recovery_method: "The Pages workflow assembles the recorded last known good revision, executes that rollback artifact before upload, and automatically redeploys plus verifies it after candidate failure. Run 30685438086 exercised automatic restoration; run 30687172562 verified ordered deployment after the legacy publisher."
 
 remote:
   repository: "bachikoljunior-blip/Gptgame"
-  working_branch: "agent/pages-all-main-deploy"
-  pull_request: "prepared_not_applied: the Pages race repair branch has not yet been published"
-  main_revision: "4a61bbe8e6210336bf3445e468a2a3d2e4ab1333"
-  deployed_revision: "045d2533325bbd3672767daa38566f9647fdb894"
-  verified_public_revision: "045d2533325bbd3672767daa38566f9647fdb894"
+  working_branch: "agent/pages-fix-checkpoint"
+  pull_request: "complete_verified: https://github.com/bachikoljunior-blip/Gptgame/pull/10 merged as 0efbceaa583b4ce51c432445d906c8b76f68b0b4"
+  main_revision: "0efbceaa583b4ce51c432445d906c8b76f68b0b4 (last verified operational revision; this state-only checkpoint will advance main without product changes)"
+  deployed_revision: "0efbceaa583b4ce51c432445d906c8b76f68b0b4"
+  verified_public_revision: "0efbceaa583b4ce51c432445d906c8b76f68b0b4"
   public_url: "https://bachikoljunior-blip.github.io/Gptgame/"
   status: "complete_verified"
   open_pull_requests: []
   repository_permissions: "complete_verified: connected GitHub app reports admin/push permissions"
 
-updated_at: "2026-08-01T15:31:00+09:00"
-reconciliation_status: "complete_unverified"
+updated_at: "2026-08-01T15:13:00+09:00"
+reconciliation_status: "complete_verified"
