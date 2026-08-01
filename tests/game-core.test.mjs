@@ -22,6 +22,8 @@ const verifyingPreVisualRollback = verifyingRollbackArtifact
   && !buildAtLeast("2026.08.01-f");
 const verifyingPreTitleOverflowRepairRollback = verifyingRollbackArtifact
   && !buildAtLeast("2026.08.01-g");
+const verifyingPreOverlayReadingRepairRollback = verifyingRollbackArtifact
+  && !buildAtLeast("2026.08.01-h");
 
 class FakeClassList {
   #values = new Set();
@@ -375,6 +377,18 @@ test("title hierarchy fits narrow overlays without horizontal scrolling", {
   assert.match(html, /h1\s*\{[\s\S]*?font-size:\s*clamp\(28px, 9vw, 50px\);/);
   assert.match(html, /h1\s*\{[\s\S]*?letter-spacing:\s*clamp\(0\.075em, 0\.35vw, 0\.11em\);/);
   assert.doesNotMatch(html, /@media\s*\(max-width:\s*360px\)[\s\S]*?h1\s*\{\s*font-size:\s*36px;/);
+});
+
+test("overlay focus preserves top-to-bottom reading order on short screens", {
+  skip: verifyingPreOverlayReadingRepairRollback
+    ? "initial overlay reading repair is not applicable to the pre-repair rollback"
+    : false,
+}, () => {
+  assert.ok(buildAtLeast("2026.08.01-h"), "overlay reading-order criteria require build h or later");
+  assert.match(html, /<h2 id="tutorialTitle" tabindex="-1" data-initial-focus>/);
+  assert.match(html, /function showOverlay\(name\)[\s\S]*?overlay\.scrollTop = 0;/);
+  assert.match(html, /focusTarget\.focus\(\{ preventScroll: true \}\);/);
+  assert.match(html, /catch \(ignored\) \{ focusTarget\.focus\(\); \}[\s\S]*?overlay\.scrollTop = 0;/);
 });
 
 test("runtime exposes deterministic fixed-step contract only in test mode", () => {

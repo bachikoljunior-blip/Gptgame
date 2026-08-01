@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#05090f">
   <meta name="color-scheme" content="dark">
-  <meta name="artifact-revision" content="47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec">
+  <meta name="artifact-revision" content="93298f8c72fa670affcd7ab40e1b66ac5f60f561783ef0cdfe0dc9f70955eb8a">
   <title>ECHO//SEVEN</title>
   <style>
     :root {
@@ -965,7 +965,7 @@
     <section class="overlay" id="tutorialOverlay" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle" hidden>
       <div class="panel">
         <p class="eyebrow">TACTICAL BRIEF</p>
-        <h2 id="tutorialTitle">行動を残せ</h2>
+        <h2 id="tutorialTitle" tabindex="-1" data-initial-focus>行動を残せ</h2>
         <div class="tutorial-grid">
           <div class="tutorial-step">
             <span class="step-number">1</span>
@@ -1074,7 +1074,7 @@
     var LOOP_TICKS = 900;
     var SAVE_VERSION = 2;
     var RULES_VERSION = 2;
-    var BUILD_ID = "2026.08.01-g";
+    var BUILD_ID = "2026.08.01-h";
     var SAVE_KEY = "echoSeven.save.v2";
     var RUN_CHECKPOINT_KEY = "echoSeven.runCheckpoint";
     var RUN_CHECKPOINT_VERSION = 2;
@@ -4667,9 +4667,14 @@
       if (!overlay) return;
       overlay.hidden = false;
       overlay.inert = false;
+      overlay.scrollTop = 0;
       shell.dataset.mode = name;
       var focusTarget = overlay.querySelector("[data-initial-focus]") || overlay.querySelector("button, input");
-      if (focusTarget) setTimeout(function () { focusTarget.focus(); }, 0);
+      if (focusTarget) setTimeout(function () {
+        try { focusTarget.focus({ preventScroll: true }); }
+        catch (ignored) { focusTarget.focus(); }
+        overlay.scrollTop = 0;
+      }, 0);
     }
 
     function controlsVisible(visible) {

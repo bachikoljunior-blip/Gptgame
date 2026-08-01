@@ -22,7 +22,7 @@ When the concept changes:
 
 ## Current concept
 
-Repository evidence baseline: main `f44c2739a7116018cd0de12f2a1dcb55b771f0a6`, public artifact `47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec`, product build `2026.08.01-g`.
+Repository evidence baseline: main `b35e25da0a9953430cd8bf9acd8678e834a372b4`, public artifact `47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec`, product build `2026.08.01-g`. The current target-viewport candidate is build `2026.08.01-h`, artifact `93298f8c72fa670affcd7ab40e1b66ac5f60f561783ef0cdfe0dc9f70955eb8a`.
 
 ECHO//SEVEN is a portrait, mobile-first, first-person 3D action roguelite for a self-contained browser runtime. A run has seven 15-second loops. Movement, aim, manual shots, and DASH events from each loop are replayed by allied echoes in later loops. The player defends a core, chooses one of three upgrades after loops 2, 4, and 6, and fights SEPTAGON with six echoes in loop 7.
 
@@ -123,7 +123,7 @@ Pass criteria:
 - browser scrolling, zooming, selection, callouts, and stuck pointers do not interrupt play;
 - a new player can begin, move, aim, fire, DASH, understand the next echo, and pause without outside instructions.
 
-Evidence required: DOM/CSS assertions, production pointer tests, 320/375/480-width captures, and first-run observation. Automated layout/input checks are `complete_verified`; captures and observation are `prepared_not_executed`.
+Evidence required: DOM/CSS assertions, production pointer tests, 320/375/480-width captures, and first-run observation. Automated layout/input checks and current-candidate 320×568/375×667 Chromium captures are `complete_verified`; 480-width capture, physical touch, and first-run observation are `prepared_not_executed`.
 
 ### 6. Visuals, animation, and transitions
 
@@ -137,7 +137,7 @@ Pass criteria:
 - high and reduced quality modes preserve gameplay information even when decorative density, DPR, or particles fall;
 - Canvas fallback communicates the same mandatory states even when it cannot match WebGL richness.
 
-Evidence required: matched captures from menu, loop 1, loop 2, boss charge, victory/defeat, reduced quality, and Canvas fallback. Direct visual comparison is `prepared_not_executed`; no visual pass may be called benchmark-complete before it exists.
+Evidence required: matched captures from menu, loop 1, loop 2, boss charge, victory/defeat, reduced quality, and Canvas fallback. The current-candidate target-size capture matrix is `complete_verified`; direct reference footage, motion comparison, and physical-device review are `prepared_not_executed`, so the visual pass is not benchmark-complete.
 
 ### 7. Audio and haptics
 
@@ -165,33 +165,34 @@ Pass criteria:
 - WebGL 2, WebGL 1, context loss, render failure, resize, Canvas fallback, pause, backgrounding, and same-tab restoration preserve a playable deterministic run;
 - public delivery identifies and verifies the exact content artifact being served, and a failed candidate restores the last verified artifact.
 
-Evidence required: automated stress/golden/recovery tests, on-device diagnostic report, public artifact revision check, and real-device seven-loop run. Automated source behavior and the currently observed build-f public marker are `complete_verified`; replacement of the deployment-race-prone commit marker is tracked in `STATE.yaml`; physical-device evidence is `prepared_not_executed`.
+Evidence required: automated stress/golden/recovery tests, on-device diagnostic report, public artifact revision check, and real-device seven-loop run. Automated source behavior and the currently observed content-addressed build-g public artifact are `complete_verified`; physical-device evidence is `prepared_not_executed`.
 
 ## Current quality gap at selection time
 
 | Element | Verified current strength | Remaining gap versus the assigned reference |
 |---|---|---|
-| Loop/echo | Exact 900-tick tapes, deterministic replay, six-echo final loop, final-tick tests | No captured comparison proving that overlapping causality is as easy to read as the mechanic is to execute. |
-| Combat/camera | Manual-fire gating, two-thumb FIRE-drag aim, camera/crosshair/projectile agreement, deterministic stress trace | Physical-phone responsiveness, comfort, hit feel, and sustained aim stability remain unmeasured. |
-| Enemy/boss | Five ordinary roles, seeded schedules, aligned boss spawn/telegraph, charge interrupt | Threat-priority readability has not been judged from current live footage. |
+| Loop/echo | Exact 900-tick tapes, deterministic replay, six-echo final loop, final-tick tests, and target-size LOOP 01/02 still captures | Stills do not prove that overlapping causality or the record-to-replay transition is understandable in motion; footage and a fresh-viewer check remain absent. |
+| Combat/camera | Manual-fire gating, two-thumb FIRE-drag aim, camera/crosshair/projectile agreement, deterministic stress trace, and a visibly targeted crosshair at both target sizes | Physical-phone responsiveness, comfort, hit feel, and sustained aim stability remain unmeasured. |
+| Enemy/boss | Five ordinary roles, seeded schedules, aligned boss spawn/telegraph, charge interrupt, and target-size boss-charge captures in WebGL, reduced-motion WebGL, and Canvas | Threat-priority readability has not been judged from motion or by a fresh viewer. |
 | Upgrades | Three unique category-based offers and validated application | Build diversity and choice tension have not been measured across repeated full runs. |
-| UI/touch | Safe-area-aware controls, 48–118 px buttons, left-handed mirroring, no-overlap test, labeled YOU/CORE/time/ECHO HUD, and a three-phase title briefing | The first real-browser pass found build f's title 97 px wider than its content box at the 560 px game shell; build g repairs that candidate defect. A few secondary labels remain 10–12 px, and target-phone captures, first-run observation, and reach tests are still absent. |
-| Visuals | Original palette, geometric silhouettes, WebGL 1/2, Canvas fallback, adaptive effects, layered panels, stronger crosshair, arena light gates/lane markers/beacons, and an enriched fallback scene | Menu, tutorial, LOOP 01 Canvas fallback, pause, and settings were inspected in a cloud Chrome shell, but matched target-size menu/gameplay/boss/result/reduced-quality/WebGL captures have not been completed or compared side by side. |
+| UI/touch | Safe-area-aware controls, 48–118 px buttons, left-handed mirroring, labeled YOU/CORE/time/ECHO HUD, and exact 320×568/375×667 menu/tutorial/settings/pause/upgrade/result evidence with no document-width overflow, undersized buttons, or button overlap | Build h repairs the exact 320×568 tutorial's focus-induced initial scroll. A few secondary labels remain 10–12 px; physical first-run, thumb reach, and touch-feel tests remain absent. |
+| Visuals | Original palette, geometric silhouettes, WebGL/Canvas fallback, adaptive effects, and a 40-capture target-size matrix covering menu, loops, combat, target state, boss, result, reduced motion, and fallback without page, renderer, or invariant errors | Static captures cannot establish transition timing, echo causality in motion, or parity on a physical phone; blind, expert, and direct matched-reference review remain absent. |
 | Audio | Procedural, local-only, gesture-safe cues with a 14-voice cap | Cue vocabulary is sparse and lacks dedicated boss/defeat/ambient identity; phone recording is absent. |
-| Performance/stability | 47 candidate/public tests including artifact tamper rejection, responsive-title regression rejection, explicit caps, adaptive DPR/quality, exact reload restoration, content-addressed public identity, remotely exercised automatic restoration, and successful probe-free delivery | No physical iPhone/Android seven-loop diagnostic run; automated and public evidence does not substitute for that measurement. |
+| Performance/stability | 48 current-candidate tests and 47 current-public tests covering artifact tamper rejection, responsive-layout regressions, explicit caps, adaptive DPR/quality, exact reload restoration, content-addressed identity, automatic restoration, and probe-free delivery | No physical iPhone/Android seven-loop diagnostic run; local headless and public automation do not substitute for that measurement. |
 
 No numeric “overall score” may hide a blocking failure. An element passes only when its applicable hard gates pass and its evidence status is accurate.
 
 ## Browser evidence added during continuation
 
-Capture method: live public GitHub Pages build f in cloud Chrome, outer viewport 1363×936 CSS px, centered game shell 560×936 CSS px, Canvas fallback active. This is real-browser evidence for the observed shell only; it is not a physical-phone or exact target-viewport substitute.
+Two browser methods are kept distinct. The first was live public GitHub Pages in cloud Chrome at a centered 560×936 CSS px Canvas shell. The second used the unbundled candidate HTML in headless Chromium with exact 320×568 and 375×667 mobile/touch viewports, software WebGL plus forced Canvas fallback, Japanese test fonts, and a capture-only hidden diagnostics panel. Neither method substitutes for physical Safari/Chrome touch testing.
 
-- `complete_verified`: the title block exposed a 414 px client width with a 511 px scroll width, while the menu overlay exposed a 560 px client width with a 584 px scroll width. The visible title crossed the panel edge and created horizontal scrolling.
-- `complete_verified`: tutorial, LOOP 01 Canvas fallback, pause, and settings rendered with a clear primary/secondary/tertiary hierarchy at that shell size; no game-origin blocking console error was observed. Extension-origin metadata errors are unrelated to the game and are excluded.
-- `complete_verified`: build g changes the title from viewport-capped 64 px type to `clamp(28px, 9vw, 50px)`, tightens letter spacing responsively, removes the conflicting 36 px narrow override, and makes overlay scrolling vertical-only. Source and assembled candidate pass the dedicated rejection test plus the full 47-test suite.
-- `complete_verified`: PR #15 and both main workflows passed. Public artifact `47d85a25…` passed 47/47; cloud Chrome measured overlay client/scroll width 560/560 px, displayed the full title inside the card, entered LOOP 01, and emitted no game-origin warning or error.
-- `prepared_not_executed`: exact 320×568 and 375×667 captures. A data-URL viewport wrapper was rejected by the cloud browser URL policy; no indirect workaround was attempted.
-- `prepared_not_executed`: LOOP 02, targeted crosshair, boss charge, victory/defeat, reduced-quality, reduced-motion, WebGL, fresh-viewer, blind, expert, reference-matched, and physical-phone comparisons.
+- `complete_verified`: the earlier public build-f cloud pass exposed a 414 px title client width with a 511 px scroll width and a 560/584 px menu-overlay client/scroll width. Build g repaired that overflow; its public artifact `47d85a25…` passed 47/47 and cloud Chrome showed the full title at 560/560 px.
+- `complete_verified`: exact target-size reproduction on build g found a separate tutorial defect at 320×568: initial autofocus scrolled the long overlay to its bottom, hiding the title and first instruction. Build h resets the overlay to the top and focuses with `preventScroll`; the exact repaired capture opens on `TACTICAL BRIEF`, the title, and step 1, while a separate bottom-scroll capture shows steps 2–3 and both actions.
+- `complete_verified`: candidate build h/artifact `93298f8c…` produced 40 captures across both target sizes. The matrix covers menu, tutorial top/bottom, settings, LOOP 01/02, combat, targeted crosshair, boss charge, result, pause, upgrade, reduced motion, WebGL, and Canvas fallback. It recorded zero document/shell horizontal overflows, undersized buttons, button overlaps, page errors, renderer errors, or invariant failures.
+- `complete_verified`: the targeted crosshair carried its `targeted` state at both sizes; boss-charge threat treatment and the primary HUD/actions remained visible in WebGL, reduced-motion WebGL, and Canvas. Against the Call of Duty: Mobile/Gunfire Mobile touch-HUD criterion, ECHO//SEVEN retains only two large labeled combat actions plus two utility buttons rather than adopting their denser compositions.
+- `complete_verified`: against the SUPERHOT separation criterion, the captures preserve ECHO//SEVEN's original navy field, coral threats, lime target state, and geometric silhouettes across both renderers; no reference palette, asset, or recognizable composition was imported.
+- `complete_unverified`: LOOP 01/02 stills and the echo-count HUD show distinct states, but they cannot prove the Lemnis Gate-derived causal-readability criterion. Loop-transition footage and a fresh-viewer explanation check remain necessary.
+- `prepared_not_executed`: physical iPhone/Android rendering, real touch reach/feel, recorded phone audio, full loop-transition footage, fresh-viewer review, blind/expert review, and direct matched-reference gameplay comparison.
 
 ## Evidence sources used for selection
 
