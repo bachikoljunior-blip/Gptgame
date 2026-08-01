@@ -1,4 +1,6 @@
-# ECHO//SEVEN — Persistent Project Memory
+# ECHO//SEVEN — Product History (Legacy Continuity Record)
+
+> Active continuation authority moved to `AI_DEVELOPMENT/STATE.yaml` under Adaptive 2.2. This file remains a verified product-history and design-evidence reference; do not use its transient “next task” fields over newer canonical state.
 
 Last updated: 2026-08-01 (Asia/Tokyo)
 Session status: active; do not archive or finalize until the user explicitly ends the session.
