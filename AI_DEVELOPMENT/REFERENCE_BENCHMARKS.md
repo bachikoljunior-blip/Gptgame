@@ -22,7 +22,7 @@ When the concept changes:
 
 ## Current concept
 
-Repository evidence baseline: main `b6c6a495fe52891d450f9b21a036ebb512a0a334` (state/benchmark checkpoint), public artifact `197e0c47b7b78e663969ffe530c8493497c3311129ada2dba77fbaa851de1882`, product build `2026.08.01-f`. Candidate build `2026.08.01-g`, artifact `47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec`, repairs the first defect found by the browser pass below and remains unpublished until its delivery checks complete.
+Repository evidence baseline: main `f44c2739a7116018cd0de12f2a1dcb55b771f0a6`, public artifact `47d85a25222acbfab21a91448f6dc72bef6a54e091e91f34a73a58a0dc3a80ec`, product build `2026.08.01-g`.
 
 ECHO//SEVEN is a portrait, mobile-first, first-person 3D action roguelite for a self-contained browser runtime. A run has seven 15-second loops. Movement, aim, manual shots, and DASH events from each loop are replayed by allied echoes in later loops. The player defends a core, chooses one of three upgrades after loops 2, 4, and 6, and fights SEPTAGON with six echoes in loop 7.
 
@@ -178,7 +178,7 @@ Evidence required: automated stress/golden/recovery tests, on-device diagnostic 
 | UI/touch | Safe-area-aware controls, 48–118 px buttons, left-handed mirroring, no-overlap test, labeled YOU/CORE/time/ECHO HUD, and a three-phase title briefing | The first real-browser pass found build f's title 97 px wider than its content box at the 560 px game shell; build g repairs that candidate defect. A few secondary labels remain 10–12 px, and target-phone captures, first-run observation, and reach tests are still absent. |
 | Visuals | Original palette, geometric silhouettes, WebGL 1/2, Canvas fallback, adaptive effects, layered panels, stronger crosshair, arena light gates/lane markers/beacons, and an enriched fallback scene | Menu, tutorial, LOOP 01 Canvas fallback, pause, and settings were inspected in a cloud Chrome shell, but matched target-size menu/gameplay/boss/result/reduced-quality/WebGL captures have not been completed or compared side by side. |
 | Audio | Procedural, local-only, gesture-safe cues with a 14-voice cap | Cue vocabulary is sparse and lacks dedicated boss/defeat/ambient identity; phone recording is absent. |
-| Performance/stability | 46 candidate/public tests including artifact tamper rejection, explicit caps, adaptive DPR/quality, exact reload restoration, content-addressed public identity, remotely exercised automatic restoration, and successful probe-free delivery | No physical iPhone/Android seven-loop diagnostic run; automated and public evidence does not substitute for that measurement. |
+| Performance/stability | 47 candidate/public tests including artifact tamper rejection, responsive-title regression rejection, explicit caps, adaptive DPR/quality, exact reload restoration, content-addressed public identity, remotely exercised automatic restoration, and successful probe-free delivery | No physical iPhone/Android seven-loop diagnostic run; automated and public evidence does not substitute for that measurement. |
 
 No numeric “overall score” may hide a blocking failure. An element passes only when its applicable hard gates pass and its evidence status is accurate.
 
@@ -189,6 +189,7 @@ Capture method: live public GitHub Pages build f in cloud Chrome, outer viewport
 - `complete_verified`: the title block exposed a 414 px client width with a 511 px scroll width, while the menu overlay exposed a 560 px client width with a 584 px scroll width. The visible title crossed the panel edge and created horizontal scrolling.
 - `complete_verified`: tutorial, LOOP 01 Canvas fallback, pause, and settings rendered with a clear primary/secondary/tertiary hierarchy at that shell size; no game-origin blocking console error was observed. Extension-origin metadata errors are unrelated to the game and are excluded.
 - `complete_verified`: build g changes the title from viewport-capped 64 px type to `clamp(28px, 9vw, 50px)`, tightens letter spacing responsively, removes the conflicting 36 px narrow override, and makes overlay scrolling vertical-only. Source and assembled candidate pass the dedicated rejection test plus the full 47-test suite.
+- `complete_verified`: PR #15 and both main workflows passed. Public artifact `47d85a25…` passed 47/47; cloud Chrome measured overlay client/scroll width 560/560 px, displayed the full title inside the card, entered LOOP 01, and emitted no game-origin warning or error.
 - `prepared_not_executed`: exact 320×568 and 375×667 captures. A data-URL viewport wrapper was rejected by the cloud browser URL policy; no indirect workaround was attempted.
 - `prepared_not_executed`: LOOP 02, targeted crosshair, boss charge, victory/defeat, reduced-quality, reduced-motion, WebGL, fresh-viewer, blind, expert, reference-matched, and physical-phone comparisons.
 
