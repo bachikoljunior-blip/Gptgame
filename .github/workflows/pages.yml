@@ -46,6 +46,8 @@ jobs:
           GATE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
           test -f index.html
+          node scripts/verify-continuity.mjs --selftest
+          npm run check:kit
           node scripts/verify-continuity.mjs
           node scripts/verify-floor.mjs
           npm test

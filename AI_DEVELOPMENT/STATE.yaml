@@ -104,7 +104,7 @@ floor:
   last_check: "complete_verified for delivered build k: F1 reconciled checkpoint main 30e2947/public 69f72f7b; F2 final record current; F3 source/candidate/PR/product-main/checkpoint-main/public each passed and prior build-j rollback passed 50 applicable plus one skip; F4 accurate; F5 Level C exact-target review repaired truncation and valid-hash old-type negative passed; F6 checkpoint run 30698191992 retained artifact 69f72f7b and independent public fetch, computed-type checks, and start-to-countdown review passed; F7 UI evidence mapped without claiming natural countdown-to-playing, Japanese glyph, or physical-phone parity; F8 clock/480-width/glyph/physical/reference limits recorded; F9 F6/revert active, F2/F3/F5 required-merge enforcement absent"
   independence_level_used: "C"
   review_outcome: "complete_verified"
-  reviewed_changes_digest: "18af66a2eae365f4c9beeb8d9d3d47744939aac58397ab414c8145f0b74fca52"
+  reviewed_changes_digest: "4144e14d81773b7a02d5995d93692b9866dabd423c069463f0bd675cef6cff80"
   skips:
     - "F8 | F5 STRICT prefers Level A/B | Level C used because no separately permitted independent reviewer is available in this run; exact pre/post browser evidence, a falsifying old-behavior artifact, candidate/rollback tests, and capture metrics strengthen the substitute; revisit if A/B becomes available."
     - "F8 | physical-phone interaction, audio, and GPU/font rendering | exact 320×568/375×667 headless Chromium WebGL/Canvas evidence is complete, but no physical iPhone/Android is available; revisit on physical Safari and Chrome."
