@@ -5,6 +5,7 @@ import test from "node:test";
 import vm from "node:vm";
 import { performance } from "node:perf_hooks";
 import { fileURLToPath } from "node:url";
+import { verifyArtifactRevision } from "../scripts/artifact-revision.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const htmlPath = process.env.GAME_HTML
@@ -309,6 +310,7 @@ function createHarness(options = {}) {
 }
 
 test("single HTML is self-contained and syntactically valid", () => {
+  assert.doesNotThrow(() => verifyArtifactRevision(html));
   assert.equal(scripts.length, 1);
   assert.doesNotMatch(html, /<script[^>]+\bsrc\s*=/i);
   assert.doesNotMatch(html, /<link[^>]+\bhref\s*=\s*["']https?:/i);
@@ -338,6 +340,12 @@ test("single HTML is self-contained and syntactically valid", () => {
   scripts.forEach((script, index) => {
     assert.doesNotThrow(() => new vm.Script(script, { filename: "syntax-" + index + ".js" }));
   });
+});
+
+test("artifact revision rejects content tampering", () => {
+  const tampered = html.replace("<title>ECHO//SEVEN</title>", "<title>ECHO//SEVEN altered</title>");
+  assert.notEqual(tampered, html);
+  assert.throws(() => verifyArtifactRevision(tampered), /embedded artifact revision does not match/);
 });
 
 test("visual hierarchy keeps loop data legible and enriches both render paths", {

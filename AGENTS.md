@@ -2,7 +2,7 @@
 
 These instructions apply only to `bachikoljunior-blip/Gptgame`.
 
-At the start of every Work run, read `START_HERE.md`, then load the minimum relevant portion of `AI_DEVELOPMENT/STATE.yaml` and verify it against actual repository, runtime, remote, and deployment reality. Apply the mandatory floor in `AI_DEVELOPMENT/PROTOCOL.md` in full and use the lowest sufficient rigor above it.
+At the start of every Work run, read `START_HERE.md`, then load the minimum relevant portion of `AI_DEVELOPMENT/STATE.yaml` and verify it against actual repository, runtime, remote, and deployment reality. Load `AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md` whenever selecting, implementing, or judging user-visible quality. Apply the mandatory floor in `AI_DEVELOPMENT/PROTOCOL.md` in full and use the lowest sufficient rigor above it.
 
 Load protocol detail and files under `AI_DEVELOPMENT/MODULES/` only when the active work reaches them. `PROJECT_MEMORY.md` is retained product history, not the canonical active-state authority.
 
