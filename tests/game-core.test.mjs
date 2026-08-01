@@ -26,6 +26,8 @@ const verifyingPreOverlayReadingRepairRollback = verifyingRollbackArtifact
   && !buildAtLeast("2026.08.01-h");
 const verifyingPreLoopHandoffRepairRollback = verifyingRollbackArtifact
   && !buildAtLeast("2026.08.01-i");
+const verifyingPreBossAudioRollback = verifyingRollbackArtifact
+  && !buildAtLeast("2026.08.01-j");
 
 class FakeClassList {
   #values = new Set();
@@ -641,6 +643,38 @@ test("boss checkpoint starts final loop with six echoes and spawns boss", () => 
   assert.equal(state.loop, 7);
   assert.equal(state.echoes, 6);
   assert.ok(state.enemies.some((enemy) => enemy.type === "S"));
+  assert.equal(api.assertInvariants().ok, true);
+});
+
+test("boss charge start, break, and core impact route distinct audio cues", {
+  skip: verifyingPreBossAudioRollback
+    ? "boss charge audio criteria are not applicable to the pre-audio rollback"
+    : false,
+}, () => {
+  assert.ok(buildAtLeast("2026.08.01-j"), "boss charge audio criteria require build j or later");
+  const { api } = createHarness();
+
+  api.checkpoints.load("BOSS_CHARGE_START");
+  const started = api.stepTicks(1);
+  assert.equal(started.audio.cueCounts.bossCharge, 1);
+  assert.equal(started.audio.cueCounts.bossBreak ?? 0, 0);
+  assert.equal(started.audio.cueCounts.bossImpact ?? 0, 0);
+  assert.equal(new Set(Object.values(started.audio.cueSignatures)).size, 3);
+  assert.ok(started.audio.generalVoiceLimit < started.audio.criticalVoiceLimit);
+  assert.equal(started.audio.criticalVoiceLimit - started.audio.generalVoiceLimit, 4);
+
+  const breakLoaded = api.checkpoints.load("BOSS_CHARGE_BREAK");
+  const broken = api.stepTicks(1);
+  assert.equal(broken.audio.cueCounts.bossBreak, 1);
+  assert.equal(broken.audio.cueCounts.bossImpact ?? 0, 0);
+  assert.equal(broken.coreHp, breakLoaded.coreHp);
+
+  const impactLoaded = api.checkpoints.load("BOSS_CHARGE_IMPACT");
+  const impacted = api.stepTicks(1);
+  assert.equal(impacted.audio.cueCounts.bossImpact, 1);
+  assert.equal(impacted.audio.cueCounts.bossBreak ?? 0, 0);
+  assert.equal(impacted.audio.cueCounts.core, 1);
+  assert.equal(impacted.coreHp, impactLoaded.coreHp - 30);
   assert.equal(api.assertInvariants().ok, true);
 });
 

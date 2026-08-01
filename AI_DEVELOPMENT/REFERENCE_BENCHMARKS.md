@@ -151,7 +151,7 @@ Pass criteria:
 - haptics are short, optional, disabled with reduced motion, and never the sole carrier of required information;
 - muted play remains fully understandable.
 
-Evidence required: source event inventory, automated voice/resume metrics, and recorded phone audio. The current source has bounded procedural cues, but it lacks dedicated boss-charge, boss-break, defeat, and ambient identities; this gap is `complete_verified` by source inspection. Recorded-phone comparison is `prepared_not_executed`.
+Evidence required: source event inventory, automated voice/resume metrics, and recorded phone audio. Build j adds distinct rising boss-charge, brittle charge-break, and low core-impact identities on the real combat branches; deterministic routing, prior-build applicability, and a valid-hash missing-routing negative are `complete_verified`. Dedicated defeat and ambient identities plus recorded-phone comparison remain `prepared_not_executed`.
 
 ### 8. Performance, stability, recovery, and fallback
 
