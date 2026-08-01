@@ -172,6 +172,8 @@
 
     #attackButton {
       bottom: calc(var(--safe-bottom) + clamp(18px, 4.5vw, 28px));
+      display: grid;
+      place-content: center;
       width: clamp(88px, 25vw, 118px);
       min-width: 88px;
       min-height: 88px;
@@ -188,14 +190,28 @@
       text-shadow: 0 0 14px rgba(199, 255, 69, 0.55);
     }
 
+    #attackButton::after,
+    #dashButton::after {
+      content: "↔ AIM";
+      display: block;
+      margin-top: 5px;
+      font-size: 0.52em;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      opacity: 0.82;
+    }
+
     #attackButton.is-pressed {
       color: #07111d;
       background: var(--lime);
       box-shadow: inset 0 0 0 6px var(--lime), 0 0 28px rgba(199, 255, 69, 0.55);
+      scale: 0.96;
     }
 
     #dashButton {
       bottom: calc(var(--safe-bottom) + clamp(120px, 31vw, 152px));
+      display: grid;
+      place-content: center;
       width: clamp(64px, 18vw, 84px);
       min-width: 64px;
       min-height: 64px;
@@ -216,6 +232,7 @@
       color: #07111d;
       background: var(--cyan);
       box-shadow: inset 0 0 0 6px var(--cyan), 0 0 22px rgba(142, 233, 255, 0.45);
+      scale: 0.95;
     }
 
     #dashButton[aria-disabled="true"] {
@@ -791,8 +808,8 @@
 
     <div id="movePad" aria-hidden="true"><div id="moveKnob"></div></div>
     <div id="crosshair" aria-hidden="true" hidden></div>
-    <button id="attackButton" type="button" aria-label="手動射撃" hidden>FIRE</button>
-    <button id="dashButton" type="button" aria-label="ダッシュ" hidden>DASH</button>
+    <button id="attackButton" type="button" aria-label="手動射撃。押したまま左右に滑らせると照準" hidden>FIRE</button>
+    <button id="dashButton" type="button" aria-label="ダッシュ。押したまま左右に滑らせると照準" hidden>DASH</button>
     <div id="loopBanner" hidden></div>
     <div id="screenFlash" aria-hidden="true"></div>
     <pre id="debugPanel" hidden></pre>
@@ -826,7 +843,7 @@
           </div>
           <div class="tutorial-step">
             <span class="step-number">2</span>
-            <div><strong>FIRE MANUALLY</strong><small>FIREを押した時だけ照準方向へ攻撃する。押し続けて連射、DASH中は無敵。</small></div>
+            <div><strong>FIRE + AIM</strong><small>FIREを押した時だけ攻撃する。押したまま左右へ滑らせれば、連射しながら照準できる。DASH中は無敵。</small></div>
           </div>
           <div class="tutorial-step">
             <span class="step-number">3</span>
@@ -927,7 +944,7 @@
     var LOOP_TICKS = 900;
     var SAVE_VERSION = 2;
     var RULES_VERSION = 2;
-    var BUILD_ID = "2026.08.01-d";
+    var BUILD_ID = "2026.08.01-e";
     var SAVE_KEY = "echoSeven.save.v2";
     var RUN_CHECKPOINT_KEY = "echoSeven.runCheckpoint";
     var RUN_CHECKPOINT_VERSION = 2;
@@ -940,6 +957,9 @@
     var MAX_FRIENDLY = 96;
     var MAX_HOSTILE = 64;
     var MAX_PARTICLES = 180;
+    var LOOK_BUFFER_LIMIT = 0.85;
+    var LOOK_TURN_LIMIT = 0.38;
+    var LOOK_SAMPLE_LIMIT = 0.55;
     var query = new URLSearchParams(location.search);
     var testMode = query.get("e7test") === "1" || query.get("debug") === "1";
     var manualClock = false;
@@ -981,8 +1001,14 @@
       lookLastX: 0,
       lookPointerLastAt: 0,
       lookDelta: 0,
+      firePointerId: null,
+      fireLastX: 0,
+      firePointerLastAt: 0,
       fireHeld: false,
       fireQueued: false,
+      dashPointerId: null,
+      dashLastX: 0,
+      dashPointerLastAt: 0,
       dashQueued: false,
       keys: Object.create(null)
     };
@@ -1023,6 +1049,42 @@
       var length = Math.hypot(x, y);
       if (length < 0.0001) return { x: 0, y: 0, length: 0 };
       return { x: x / length, y: y / length, length: length };
+    }
+
+    function lookSensitivity(width) {
+      var safeWidth = clamp(Number(width) || cssWidth || 480, 300, 600);
+      return Math.PI / (safeWidth * 0.96);
+    }
+
+    function queueLookDistance(deltaX, width) {
+      if (!Number.isFinite(deltaX)) return;
+      var turn = clamp(deltaX * lookSensitivity(width), -LOOK_SAMPLE_LIMIT, LOOK_SAMPLE_LIMIT);
+      input.lookDelta = clamp(input.lookDelta + turn, -LOOK_BUFFER_LIMIT, LOOK_BUFFER_LIMIT);
+    }
+
+    function queueLookPointerEvent(event, previousX) {
+      var rect = canvas.getBoundingClientRect();
+      var latestX = Number(previousX);
+      if (!Number.isFinite(latestX)) latestX = Number(event.clientX) || 0;
+      var samples = [event];
+      if (typeof event.getCoalescedEvents === "function") {
+        try {
+          var coalesced = event.getCoalescedEvents();
+          if (coalesced && coalesced.length) samples = coalesced;
+        } catch (ignored) {}
+      }
+      for (var i = 0; i < samples.length; i += 1) {
+        var sampleX = Number(samples[i].clientX);
+        if (!Number.isFinite(sampleX)) continue;
+        queueLookDistance(sampleX - latestX, rect.width);
+        latestX = sampleX;
+      }
+      var eventX = Number(event.clientX);
+      if (Number.isFinite(eventX) && Math.abs(eventX - latestX) > 0.001) {
+        queueLookDistance(eventX - latestX, rect.width);
+        latestX = eventX;
+      }
+      return latestX;
     }
 
     function rotateDirection(x, y, angle) {
@@ -2002,8 +2064,9 @@
         return;
       }
 
-      var turn = input.lookDelta;
-      input.lookDelta = 0;
+      var turn = clamp(input.lookDelta, -LOOK_TURN_LIMIT, LOOK_TURN_LIMIT);
+      input.lookDelta -= turn;
+      if (Math.abs(input.lookDelta) < 0.00001) input.lookDelta = 0;
       if (input.keys.KeyQ) turn -= 0.045;
       if (input.keys.KeyE) turn += 0.045;
       if (Math.abs(turn) > 0.00001) {
@@ -4327,6 +4390,8 @@
       }
       if (input.pointerId !== null && now - input.pointerLastAt > 30000) clearPointer("stale-timeout");
       if (input.lookPointerId !== null && now - input.lookPointerLastAt > 30000) clearLookPointer();
+      if (input.firePointerId !== null && now - input.firePointerLastAt > 30000) releaseAttack();
+      if (input.dashPointerId !== null && now - input.dashPointerLastAt > 30000) releaseDash();
       if (!manualClock && simulationActive) {
         accumulator += Math.min(0.05, interval / 1000);
         var steps = 0;
@@ -4550,8 +4615,8 @@
         dashButton.style.right = "calc(var(--safe-right) + clamp(16px, 4vw, 24px))";
         dashButton.style.left = "auto";
       }
-      document.getElementById("tutorialMoveCopy").textContent = moveSide + "をドラッグして移動。" + lookSide + "をドラッグして一人称視点の照準を動かす。";
-      canvas.setAttribute("aria-label", "ECHO SEVENの一人称3D戦闘画面。" + moveSide + "をドラッグして移動、" + lookSide + "をドラッグして照準を動かします。");
+      document.getElementById("tutorialMoveCopy").textContent = moveSide + "をドラッグして移動。" + lookSide + "をドラッグして照準。FIREやDASHを押したまま左右へ滑らせても照準できる。";
+      canvas.setAttribute("aria-label", "ECHO SEVENの一人称3D戦闘画面。" + moveSide + "をドラッグして移動、" + lookSide + "をドラッグして照準を動かします。FIREとDASHを押したまま左右へドラッグしても照準できます。");
       soundButton.textContent = save.settings.sound ? "♪" : "×";
       soundButton.setAttribute("aria-label", save.settings.sound ? "音を消す" : "音を出す");
     }
@@ -4568,16 +4633,28 @@
       input.lookPointerId = null;
     }
 
+    function releaseAttack(event) {
+      if (event && input.firePointerId !== null && event.pointerId !== input.firePointerId) return;
+      input.firePointerId = null;
+      input.fireHeld = false;
+      attackButton.classList.remove("is-pressed");
+    }
+
+    function releaseDash(event) {
+      if (event && input.dashPointerId !== null && event.pointerId !== input.dashPointerId) return;
+      input.dashPointerId = null;
+      dashButton.classList.remove("is-pressed");
+    }
+
     function clearInput() {
       clearPointer();
       clearLookPointer();
+      releaseAttack();
+      releaseDash();
       input.lookDelta = 0;
-      input.fireHeld = false;
       input.fireQueued = false;
       input.dashQueued = false;
       input.keys = Object.create(null);
-      attackButton.classList.remove("is-pressed");
-      dashButton.classList.remove("is-pressed");
     }
 
     function logicalPointer(event) {
@@ -4625,8 +4702,7 @@
     canvas.addEventListener("pointermove", function (event) {
       if (event.pointerId === input.lookPointerId) {
         event.preventDefault();
-        input.lookDelta += clamp((event.clientX - input.lookLastX) * 0.008, -0.24, 0.24);
-        input.lookLastX = event.clientX;
+        input.lookLastX = queueLookPointerEvent(event, input.lookLastX);
         input.lookPointerLastAt = performance.now();
         return;
       }
@@ -4635,13 +4711,14 @@
       input.pointerLastAt = performance.now();
       var rect = canvas.getBoundingClientRect();
       var baseRadius = clamp(rect.width * 0.13, 44, 56);
-      var maxTravel = baseRadius * 0.78;
-      var dead = baseRadius * 0.12;
+      var maxTravel = baseRadius * 0.72;
+      var dead = baseRadius * 0.09;
       var dx = event.clientX - input.pointerOriginX;
       var dy = event.clientY - input.pointerOriginY;
       var n = normalize(dx, dy);
       var travel = Math.min(maxTravel, n.length);
-      var strength = n.length <= dead ? 0 : clamp((n.length - dead) / (maxTravel - dead), 0, 1);
+      var linearStrength = n.length <= dead ? 0 : clamp((n.length - dead) / (maxTravel - dead), 0, 1);
+      var strength = linearStrength > 0 ? Math.pow(linearStrength, 0.72) : 0;
       input.moveX = n.x * strength;
       input.moveY = n.y * strength;
       moveKnob.style.transform = "translate(" + (n.x * travel) + "px, " + (n.y * travel) + "px)";
@@ -4657,16 +4734,22 @@
     attackButton.addEventListener("pointerdown", function (event) {
       if (game.mode !== "playing") return;
       if (event.pointerType === "mouse" && event.button !== 0) return;
+      if (input.firePointerId !== null) return;
       event.preventDefault();
+      input.firePointerId = event.pointerId;
+      input.fireLastX = event.clientX;
+      input.firePointerLastAt = performance.now();
       input.fireHeld = true;
       input.fireQueued = true;
       attackButton.classList.add("is-pressed");
       try { attackButton.setPointerCapture(event.pointerId); } catch (ignored) {}
     });
-    function releaseAttack() {
-      input.fireHeld = false;
-      attackButton.classList.remove("is-pressed");
-    }
+    attackButton.addEventListener("pointermove", function (event) {
+      if (event.pointerId !== input.firePointerId) return;
+      event.preventDefault();
+      input.fireLastX = queueLookPointerEvent(event, input.fireLastX);
+      input.firePointerLastAt = performance.now();
+    }, { passive: false });
     attackButton.addEventListener("pointerup", releaseAttack);
     attackButton.addEventListener("pointercancel", releaseAttack);
     attackButton.addEventListener("lostpointercapture", releaseAttack);
@@ -4677,12 +4760,21 @@
     dashButton.addEventListener("pointerdown", function (event) {
       if (game.mode !== "playing") return;
       if (event.pointerType === "mouse" && event.button !== 0) return;
+      if (input.dashPointerId !== null) return;
       event.preventDefault();
+      input.dashPointerId = event.pointerId;
+      input.dashLastX = event.clientX;
+      input.dashPointerLastAt = performance.now();
       input.dashQueued = true;
       dashButton.classList.add("is-pressed");
       try { dashButton.setPointerCapture(event.pointerId); } catch (ignored) {}
     });
-    function releaseDash() { dashButton.classList.remove("is-pressed"); }
+    dashButton.addEventListener("pointermove", function (event) {
+      if (event.pointerId !== input.dashPointerId) return;
+      event.preventDefault();
+      input.dashLastX = queueLookPointerEvent(event, input.dashLastX);
+      input.dashPointerLastAt = performance.now();
+    }, { passive: false });
     dashButton.addEventListener("pointerup", releaseDash);
     dashButton.addEventListener("pointercancel", releaseDash);
     dashButton.addEventListener("lostpointercapture", releaseDash);
@@ -4878,6 +4970,10 @@
         inputState: {
           movePointerId: input.pointerId,
           lookPointerId: input.lookPointerId,
+          firePointerId: input.firePointerId,
+          dashPointerId: input.dashPointerId,
+          moveX: input.moveX,
+          moveY: input.moveY,
           fireHeld: input.fireHeld,
           fireQueued: input.fireQueued,
           dashQueued: input.dashQueued,
