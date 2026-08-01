@@ -23,6 +23,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+      - name: Restore exact dependencies
+        run: npm ci
       - name: Verify continuity loader
         run: node scripts/verify-continuity.mjs
       - name: Enforce state and review record

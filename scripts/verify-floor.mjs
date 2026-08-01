@@ -16,12 +16,14 @@ const governedFiles = [
   "AI_DEVELOPMENT/F9_DEPLOY_PROBE",
   "index.html",
   "package.json",
+  "package-lock.json",
 ];
 const governedDirectories = [
   ".github/workflows",
   "AI_DEVELOPMENT/MODULES",
   "scripts",
   "tests",
+  "tools",
 ];
 
 function walk(relative) {
