@@ -4,9 +4,12 @@
  * Fast browser gate for the primary ECHO//SEVEN phone surface.
  *
  * Playwright WebKit uses the built-in iPhone SE (3rd gen) portrait profile.
- * Synthetic PointerEvents cover deterministic multi-pointer behavior because
- * Playwright WebKit exposes one touchscreen contact; the iOS/Appium gate covers
- * trusted multi-touch in actual Mobile Safari.
+ * The Playwright device descriptor, coarse-pointer media query, and real tap()
+ * calls prove the emulated touch path. Linux WebKit can still report
+ * navigator.maxTouchPoints as zero, so that diagnostic is recorded but is not
+ * treated as physical hardware evidence. Synthetic PointerEvents cover
+ * deterministic multi-pointer behavior; the iOS/Appium gate covers trusted
+ * multi-touch in actual Mobile Safari.
  */
 
 import { createServer } from 'node:http';
@@ -179,6 +182,11 @@ try {
   const browserType = browserName === 'chromium' ? chromium : webkit;
   browser = await browserType.launch({ headless: true });
   const profile = devices['iPhone SE (3rd gen)'];
+  report.emulation = {
+    profile: 'iPhone SE (3rd gen)',
+    hasTouch: profile.hasTouch === true,
+    isMobile: profile.isMobile === true,
+  };
   context = await browser.newContext({
     ...profile,
     locale: 'ja-JP',
@@ -221,7 +229,11 @@ try {
   check(entry?.status() === 200, 'entry responds successfully', `status=${entry?.status()}`);
   check(device.viewport.width === 375 && device.viewport.height === 667, 'iPhone SE 3 portrait viewport', JSON.stringify(device.viewport));
   check(device.dpr === 2, 'iPhone SE 3 DPR', `dpr=${device.dpr}`);
-  check(device.maxTouchPoints > 0 && device.coarse && device.portrait, 'portrait touch surface is active', JSON.stringify(device));
+  check(
+    report.emulation.hasTouch && report.emulation.isMobile && device.coarse && device.portrait,
+    'portrait touch emulation is active',
+    JSON.stringify({ ...report.emulation, reportedMaxTouchPoints: device.maxTouchPoints, coarse: device.coarse, portrait: device.portrait }),
+  );
   check(/Safari\//.test(device.userAgent) && /Mobile\//.test(device.userAgent), 'Safari mobile user agent is active', device.userAgent);
   check(device.renderer === 'webgl-3d' || device.renderer === 'canvas-2d', 'renderer initializes', `renderer=${device.renderer}`);
 

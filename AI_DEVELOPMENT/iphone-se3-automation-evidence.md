@@ -4,9 +4,10 @@ Date: 2026-08-01 (Asia/Tokyo)
 Branch: `agent/iphone-se3-automation`
 Base: `ea0a90e9c53a20d45c5caf3dfb829e9a1078f17e` (`origin/main`)
 
-Overall status: `complete_unverified`. Implementation and local surrogate checks are
-complete; target Playwright WebKit and iOS Simulator Mobile Safari are
-`prepared_not_executed`. No merge or deployment occurred.
+Overall status: `complete_unverified`. Implementation, local surrogate checks, and the
+first target Playwright WebKit evidence run are complete. The inspected WebKit baseline
+is promoted; the corrected PR rerun, iOS Simulator Mobile Safari, merge, and deployment
+remain open.
 
 ## Release path prepared
 
@@ -43,9 +44,24 @@ driver 12.1.3 are Apache-2.0 and accept the workflow's Node 22/npm 10+ runtime.
   `IOS_SIMULATOR_UDID` before creating a session.
 - `FLOOR_RANGE_FILES=... npm run gate:floor`: Level C review digest matched the governed
   tree.
+- PR #28 Quality run `30699678924` passed. Its first Pages/WebKit run `30699678903`
+  exercised the full target WebKit interaction path with zero page, console, request, or
+  HTTP errors and produced a healthy `750×1334` gameplay candidate. The run rejected two
+  review conditions: the intentionally missing baseline and Linux WebKit reporting
+  `navigator.maxTouchPoints=0` even though the Playwright iPhone profile has touch enabled,
+  the coarse-pointer query is true, and real `tap()` calls succeeded.
+- The candidate was visually inspected and promoted to
+  `tests/baselines/iphone-se3-webkit-loop2.png` (SHA-256
+  `00ee1ebe02a4897186c696864cbe0504ff8cdda7201b6319ad37f3bbb21e990a`). The harness now
+  treats the descriptor, mobile flag, coarse pointer, and successful real taps as the
+  emulated-touch contract while retaining `maxTouchPoints` only as a diagnostic; it does
+  not spoof the browser value or claim physical multi-touch.
+- The corrected harness plus promoted baseline passed locally in Chromium surrogate mode
+  with zero failures and a `0.01298` visual-diff ratio.
 
-Chromium is not counted as target WebKit or Mobile Safari evidence. The target gates remain
-open until GitHub Actions executes them and the first WebKit baseline is promoted.
+Chromium is not counted as target WebKit or Mobile Safari evidence. The initial target
+WebKit run is accepted as execution evidence but not a passing release gate; the corrected
+target rerun and main-only Mobile Safari gate remain open.
 
 ## Explicit non-claims
 
