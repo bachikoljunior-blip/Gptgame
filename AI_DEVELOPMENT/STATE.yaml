@@ -35,7 +35,7 @@ objective:
     readability: "complete_verified: build h/artifact 93298f8c reproduced build g's focus-induced tutorial auto-scroll at exact 320×568, repairs it with a focusable top heading, top reset, and preventScroll, and opens in the intended order at exact 320×568/375×667; live public Chrome also focused the visible heading at scrollTop 0 and overlay width 560/560"
     visual_richness: "complete_unverified: build i adds an explicit record-to-replay handoff and four exact 320×568/375×667 WebGL captures pass layout/runtime invariants; motion causality, direct matched-reference, and physical-phone review remain"
     regression_suite: "complete_verified: build-j source, assembled candidate, PR #23, main, and independently fetched public artifact passed 50/50; verified build-i rollback passed 49 applicable plus one build-j-only skip; a valid-hash build-j artifact with all three boss event routes removed failed only the dedicated cue-routing criterion"
-    public_release: "complete_verified: PR #23 merged as 8616036ad60c89e98e32c755360067ccb71fc99f; main Quality 30697200815, ordered Pages 30697200836, and same-SHA legacy run 30697200464 succeeded; public build j/artifact afad352f passed independent 50/50"
+    public_release: "complete_verified: PR #23 merged as 8616036ad60c89e98e32c755360067ccb71fc99f; main Quality 30697200815, ordered Pages 30697200836, and same-SHA legacy run 30697200464 succeeded; public build j/artifact afad352f passed independent 50/50 and cloud-browser start/error checks"
 
 reference_benchmark:
   path: "AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md"
@@ -47,7 +47,7 @@ reference_benchmark:
     - "Gunfire Reborn / Mobile: FPS roguelite combat, enemy roles, and upgrade synergy"
     - "Call of Duty: Mobile: touch controls, HUD hierarchy, visibility, and scalable mobile presentation"
   intentionally_excluded: "Open world, exploration, story, characters, factions, quests, narrative choices, inventory, loot rarity, multiplayer, and monetization are not active concept elements."
-  evidence_status: "complete_verified for source selection, build-i deterministic handoff and target captures, and public build-j boss charge/break/core-impact routing, critical-voice reserve, negative/rollback probes, workflows, and public artifact; prepared_not_executed for recorded-phone audio, direct gameplay footage, blind, expert, fresh-viewer, and physical-phone comparison"
+  evidence_status: "complete_verified for source selection, build-i deterministic handoff and target captures, and public build-j boss charge/break/core-impact routing, critical-voice reserve, negative/rollback probes, workflows, public artifact, and cloud-browser start/error check; prepared_not_executed for recorded-phone audio, direct gameplay footage, blind, expert, fresh-viewer, and physical-phone comparison"
   last_change: "2026-08-01: retained the reference set and publicly verified build j's distinct procedural boss charge-start, charge-break, and core-impact identities plus critical-voice reserve; no concept or reference was superseded."
 
 execution:
@@ -61,7 +61,7 @@ execution:
     build_id: "2026.08.01-j"
     tests: "complete_verified: source/candidate 50/50; build-i rollback 49 applicable + 1 not_applicable; PR #23 Quality/Pages runs 30697163067/30697163083; main Quality/Pages runs 30697200815/30697200836; independently fetched public artifact 50/50"
     deployment: "complete_verified: Pages run 30697200836 waited for successful same-SHA legacy run 30697200464, passed test and deploy jobs, deployed artifact afad352f, and completed without rollback"
-    public_surface: "complete_verified: cache-busted fetch returned artifact afad352fb846fd4134d64f2c6076008d813ec9ad25177b3e7cb9ea7f5b78a6af/build j and passed 50/50"
+    public_surface: "complete_verified: cache-busted fetch returned artifact afad352fb846fd4134d64f2c6076008d813ec9ad25177b3e7cb9ea7f5b78a6af/build j and passed 50/50; cloud Chrome returned the same artifact, entered playing mode through SIGNAL START, exposed FIRE/DASH, and logged no game-origin errors"
   modified_but_unverified: []
   current_blockers:
     - "External verification blocker for benchmark completion: no physical iPhone/Android, fresh-viewer motion review, or direct matched-reference gameplay review is available."
@@ -73,7 +73,7 @@ execution:
     - "GitHub's legacy branch-based Pages publisher cannot be disabled with the exposed connector; the smallest available defense is to run the tested custom deployment after every main push."
     - "Build-j cue routing and procedural signatures are deterministic and source-audited, but no physical-phone recording or listener comparison is available in this run."
   review_findings:
-    - "PR #23 runs 30697163067/30697163083 and main runs 30697200815/30697200836/30697200464 passed; independent public retrieval verified artifact afad352f at 50/50. The three cue routes, distinct recipes, 10/14 general/critical voice limits, rollback applicability, and missing-routing negative all remain enforced."
+    - "PR #23 runs 30697163067/30697163083 and main runs 30697200815/30697200836/30697200464 passed; independent public retrieval verified artifact afad352f at 50/50. Cloud Chrome returned the same artifact, entered playing mode through SIGNAL START, exposed FIRE/DASH, and logged no game-origin errors; extension-only errors were excluded. The three cue routes, distinct recipes, 10/14 general/critical voice limits, rollback applicability, and missing-routing negative all remain enforced."
     - "Build j routes boss charge start, successful break, and failed charge/core impact through bossCharge, bossBreak, and bossImpact respectively. Source/candidate passed 50/50; the public build-i rollback passed 49 applicable plus one build-j-only skip; a valid-hash build-j artifact with the three route calls removed failed only the new assertion. Procedural signatures use separate pitch contours and reserve voices 11–14 for critical cues, but physical audibility is not claimed."
     - "PR #21 runs 30696277713/30696277719 and main runs 30696328392/30696328359/30696328033 passed; independent public retrieval verified artifact d9e7db13 at 49/49. Cloud Chrome returned the same artifact, started from SIGNAL START into playing mode, and logged no game-origin errors; its background clock was throttled and did not naturally advance the 15-second transition."
     - "Build i changes the loop boundary from a generic RECORDED card to a three-level handoff naming LOOP 01 RECORDED, ECHO 01 ARMED / NEXT LOOP 02, then ECHO REPLAY with the active path count. Source passes 49/49; exact 320×568/375×667 recorded/replay captures show no page, renderer, shell-overflow, control-overlap, undersized-button, narrow-text, or invariant failures. Visual review shortened the entrance from 520 ms to 260 ms and strengthened contrast; a valid-hash old-handoff artifact fails the new test."
@@ -95,10 +95,10 @@ execution:
   exact_next_action: "Complete the Round 2 state/benchmark checkpoint delivery, then start Round 3 from the resulting latest main and raise small-screen menu/result secondary labels to a 12px minimum with exact target-size visual verification."
 
 floor:
-  last_check: "complete_verified for delivered build j: F1 reconciled main 8616036/public afad352f; F2 checkpoint current; F3 source/candidate/PR/main/public each 50/50 and prior build-i rollback 49 applicable plus one skip; F4 accurate; F5 Level C event/priority review and valid-hash negative passed; F6 main run 30697200836 plus independent public fetch passed; F7 audio evidence mapped without claiming phone audibility; F8 physical audio/reference limits recorded; F9 F6/revert active, F2/F3/F5 required-merge enforcement absent"
+  last_check: "complete_verified for delivered build j: F1 reconciled main 8616036/public afad352f; F2 checkpoint current; F3 source/candidate/PR/main/public each 50/50 and prior build-i rollback 49 applicable plus one skip; F4 accurate; F5 Level C event/priority review and valid-hash negative passed; F6 main run 30697200836 plus independent public fetch and cloud-browser start/error check passed; F7 audio evidence mapped without claiming phone audibility; F8 physical audio/reference limits recorded; F9 F6/revert active, F2/F3/F5 required-merge enforcement absent"
   independence_level_used: "C"
   review_outcome: "complete_verified"
-  reviewed_changes_digest: "9129e0814780a4947621880709090238ae8a5030b7ef019f3e5c3bc60356c745"
+  reviewed_changes_digest: "f6443992609a02effc11eb0cd1cb499864d1cdc2fdcbd87ebec020b683f802b8"
   skips:
     - "F8 | F5 STRICT prefers Level A/B | Level C used because no separately permitted independent reviewer is available in this run; exact pre/post browser evidence, a falsifying old-behavior artifact, candidate/rollback tests, and capture metrics strengthen the substitute; revisit if A/B becomes available."
     - "F8 | physical-phone interaction, audio, and GPU/font rendering | exact 320×568/375×667 headless Chromium WebGL/Canvas evidence is complete, but no physical iPhone/Android is available; revisit on physical Safari and Chrome."
@@ -116,10 +116,10 @@ floor:
       mechanism: "Build-j source, assembled candidate, PR #23, main, and independently fetched public artifact passed 50/50; verified build-i rollback passed 49 applicable plus one build-j-only skip. Required-merge enforcement remains unavailable."
     f5_review_record_check:
       status: "complete_verified"
-      mechanism: "Level C mapped the three real boss branches to distinct procedural signatures, verified the four-voice critical reserve, confirmed source/candidate/rollback/public passes, and confirmed a valid-hash candidate with those routes removed fails only the dedicated test; governed digest 9129e0814780a4947621880709090238ae8a5030b7ef019f3e5c3bc60356c745 recorded. Required-merge enforcement remains unavailable."
+      mechanism: "Level C mapped the three real boss branches to distinct procedural signatures, verified the four-voice critical reserve, confirmed source/candidate/rollback/public/browser passes, and confirmed a valid-hash candidate with those routes removed fails only the dedicated test; governed digest f6443992609a02effc11eb0cd1cb499864d1cdc2fdcbd87ebec020b683f802b8 recorded. Required-merge enforcement remains unavailable."
     f6_public_revision_check:
       status: "complete_verified"
-      mechanism: "Run 30697200836 waited for successful same-SHA legacy run 30697200464, passed test/deploy jobs, and published build j; independent cache-busted retrieval verified artifact afad352f at 50/50."
+      mechanism: "Run 30697200836 waited for successful same-SHA legacy run 30697200464, passed test/deploy jobs, and published build j; independent cache-busted retrieval verified artifact afad352f at 50/50, and cloud Chrome confirmed SIGNAL START to playing mode with visible FIRE/DASH and no game-origin errors."
     revert_mechanism:
       status: "complete_verified"
       mechanism: "Legacy restoration passed run 30685438086 and content-addressed restoration passed run 30687824398. Build-j run 30697200836 assembled and executed the verified build-i rollback at 49 applicable plus one build-j-only skip before publishing j; no rollback fired."
@@ -178,11 +178,11 @@ remote:
   pull_request: "complete_verified product delivery: #23 merged as 8616036ad60c89e98e32c755360067ccb71fc99f; this containing state/benchmark checkpoint may advance main without product changes"
   main_revision: "8616036ad60c89e98e32c755360067ccb71fc99f (verified product revision; the containing state/benchmark checkpoint may advance main without product changes)"
   deployed_revision: "complete_verified: artifact afad352fb846fd4134d64f2c6076008d813ec9ad25177b3e7cb9ea7f5b78a6af, build 2026.08.01-j"
-  verified_public_revision: "complete_verified: artifact afad352fb846fd4134d64f2c6076008d813ec9ad25177b3e7cb9ea7f5b78a6af passed 50/50"
+  verified_public_revision: "complete_verified: artifact afad352fb846fd4134d64f2c6076008d813ec9ad25177b3e7cb9ea7f5b78a6af passed 50/50 plus cloud-browser start/error checks"
   public_url: "https://bachikoljunior-blip.github.io/Gptgame/"
-  status: "complete_verified: build j merged, all PR/main workflows passed, and public artifact afad352f passed independent 50/50"
+  status: "complete_verified: build j merged, all PR/main workflows passed, and public artifact afad352f passed independent 50/50 plus cloud-browser start/error checks"
   open_pull_requests: []
   repository_permissions: "complete_verified: connected GitHub app reports admin/push permissions"
 
-updated_at: "2026-08-01T20:15:16+09:00"
-reconciliation_status: "complete_verified: main 8616036 and public build j/artifact afad352f passed PR/main gates, ordered deployment, independent 50/50, rollback applicability, and the valid-hash negative probe"
+updated_at: "2026-08-01T20:17:00+09:00"
+reconciliation_status: "complete_verified: main 8616036 and public build j/artifact afad352f passed PR/main gates, ordered deployment, independent 50/50, cloud-browser start/error checks, rollback applicability, and the valid-hash negative probe"
