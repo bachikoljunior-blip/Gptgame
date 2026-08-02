@@ -134,6 +134,17 @@ async function performActions(actions) {
   await webdriver(sessionPath('/actions'), { method: 'DELETE' }).catch(() => {});
 }
 
+const WEB_ELEMENT_KEY = 'element-6066-11e4-a52e-4f735466cecf';
+
+async function clickElement(selector) {
+  const element = await webdriver(sessionPath('/element'), {
+    body: { using: 'css selector', value: selector },
+  });
+  const id = element?.[WEB_ELEMENT_KEY] || element?.ELEMENT;
+  if (!id) throw new Error(`Safari did not resolve element: ${selector}`);
+  await webdriver(sessionPath(`/element/${encodeURIComponent(id)}/click`), { body: {} });
+}
+
 function finger(id, actions) {
   return { type: 'pointer', id, parameters: { pointerType: 'touch' }, actions };
 }
@@ -193,6 +204,9 @@ try {
           'appium:newCommandTimeout': 300,
           'appium:safariAllowPopups': true,
           'appium:includeSafariInWebviews': true,
+          'appium:safariInitialUrl': baseUrl,
+          'appium:webviewConnectTimeout': 120000,
+          'appium:webviewConnectRetries': 20,
           'appium:simulatorStartupTimeout': 300000,
           'appium:wdaLaunchTimeout': 180000,
           'appium:wdaStartupRetries': 3,
@@ -262,10 +276,9 @@ try {
   check(layout.documentWidth <= layout.viewportWidth, 'menu has no horizontal overflow', JSON.stringify(layout));
   check([layout.begin, layout.how, layout.settings].every((item) => item.width >= 44 && item.height >= 44), 'menu controls meet 44 CSS px target', JSON.stringify(layout));
 
-  await tap(layout.begin.x + layout.begin.width / 2, layout.begin.y + layout.begin.height / 2);
+  await clickElement('#beginButton');
   await waitForScript("return !document.getElementById('tutorialOverlay').hidden;", 10000);
-  const tutorialStart = await execute(`var r = document.getElementById('tutorialStartButton').getBoundingClientRect(); return {x:r.x+r.width/2,y:r.y+r.height/2};`);
-  await tap(tutorialStart.x, tutorialStart.y);
+  await clickElement('#tutorialStartButton');
   await waitForScript(`return ['countdown','playing'].indexOf(window.__E7_TEST__.snapshot().mode) >= 0;`, 10000);
   check(true, 'trusted Safari taps start the first run', url.href);
 
@@ -303,7 +316,7 @@ try {
 
   const dashX = controls.dash.x + controls.dash.width / 2;
   const dashY = controls.dash.y + controls.dash.height / 2;
-  await tap(dashX, dashY);
+  await clickElement('#dashButton');
   await new Promise((done) => setTimeout(done, 250));
   const dashEvidence = await execute(`
     var snapshot = window.__E7_TEST__.snapshot();
@@ -317,18 +330,16 @@ try {
   report.interaction.dash = dashEvidence;
   check(dashEvidence.found, 'trusted DASH tap is recorded', JSON.stringify(dashEvidence));
 
-  const pauseButton = await execute(`var r=document.getElementById('pauseButton').getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};`);
-  await tap(pauseButton.x, pauseButton.y);
+  await clickElement('#pauseButton');
   await waitForScript(`return window.__E7_TEST__.snapshot().mode === 'paused';`, 10000);
   const paused = await execute('return window.__E7_TEST__.snapshot();');
   await screenshot(pausePath);
   check(!paused.controlsVisible, 'trusted pause tap freezes and hides controls', JSON.stringify(paused));
-  const resumeButton = await execute(`var r=document.getElementById('resumeButton').getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};`);
-  await tap(resumeButton.x, resumeButton.y);
+  await clickElement('#resumeButton');
   await waitForScript(`return window.__E7_TEST__.snapshot().mode === 'playing';`, 10000);
   check(await execute('return window.__E7_TEST__.snapshot().controlsVisible;'), 'trusted resume tap restores controls', 'controls visible');
 
-  await tap(pauseButton.x, pauseButton.y);
+  await clickElement('#pauseButton');
   await waitForScript(`return window.__E7_TEST__.snapshot().mode === 'paused';`, 10000);
   const preReloadErrors = await execute('return (window.__e7IosErrors || []).slice();');
   report.errors.push(...preReloadErrors);
