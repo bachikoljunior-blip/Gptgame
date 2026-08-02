@@ -94,6 +94,18 @@ with `pause`. The harness now positions both pointers first and then performs th
 bounded simultaneous move/FIRE hold. This is a harness-compatibility repair, not a
 gameplay pass; a clean exact-head rerun remains mandatory before merge.
 
+Corrective run `30727377791` accepted that two-source W3C action and again created the
+exact Xcode 26.2/iOS 26.2 iPhone SE 3 Mobile Safari session. It passed the 375×549/DPR 2
+device surface, five touch points, Safari UA, WebGL, layout, first-run journey, a
+right-side look drag, and pause. The report then showed zero movement and manual shots,
+and native WebDriver clicks did not activate DASH or resume. The retained Appium log
+confirmed that WDA accepted the commands: the remaining error was coordinate-space
+translation, because W3C pointer actions consume real-screen coordinates while the
+harness supplied web-viewport CSS coordinates. The harness now calls Appium's
+`mobile: calibrateWebToRealCoordinatesTranslation`, records its measured offsets and
+ratios, transforms every action coordinate, and uses calibrated W3C taps for all
+pointer-only controls. This is still `complete_unverified` until that exact head passes.
+
 ## Explicit non-claims
 
 The simulator does not measure physical GPU speed, thermal throttling, memory-pressure

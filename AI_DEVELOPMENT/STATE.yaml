@@ -38,7 +38,7 @@ objective:
     public_release: "complete_verified: PR #25 merged as 56d616c88c6a075234cc6098ccb954e4f14a7c49; main Quality 30697884517, ordered Pages 30697884506, and same-SHA legacy run 30697884185 succeeded; public build k/artifact 69f72f7b passed independent 51/51, live computed-type checks, and start-to-LIVE-RECORDING-countdown verification"
     deterministic_suite: "complete_verified on the reconciled automation tree: continuity passed, all 51 deterministic tests passed, and the full iPhone SE 3 harness passed in Chromium surrogate mode with zero failures"
     playwright_webkit: "complete_verified: PR #28 Pages run 30700429788 passed the corrected target WebKit sequence against the reviewed baseline at 1.298% visual difference; Quality run 30700429834 also passed"
-    ios_mobile_safari: "complete_unverified: corrective PR #29 run 30726583430 created a real Xcode 26.2/iOS 26.2 Mobile Safari session, verified 375×549/DPR 2, five touch points, Mobile Safari UA, WebGL, layout and first-run trusted taps, then correctly failed because WebDriverAgent rejects a second W3C pointer sequence beginning with pause; all four project harnesses now position both pointers before waiting and require a clean rerun"
+    ios_mobile_safari: "complete_unverified: corrective PR #29 run 30727377791 created the exact Xcode 26.2/iOS 26.2 Mobile Safari session and passed device, renderer, layout, first-run, right-side look-drag and pause checks. It then exposed that W3C actions consume real-screen coordinates while the harness supplied web-viewport coordinates: movement/FIRE remained zero and native DASH/resume clicks did not drive the pointer-only controls. The harness now uses Appium's Safari web-to-real coordinate calibration and calibrated W3C taps for every control; an exact-head rerun remains mandatory."
     publication_chain: "complete_unverified: PR #28 merged as 0aa981dfc4110811044876dbf5746239147e06a7; legacy Pages run 30719617989 published while custom run 30719618371 later failed before Safari. A cache-busted public fetch is byte-identical to main index.html, artifact 69f72f7b/build k, and passes 51/51, but the corrective pre-merge Safari gate and a new ordered deployment remain open"
     physical_only_limit: "complete_verified: README, PROJECT_MEMORY.md, benchmark criteria, and this state distinguish automated browser coverage from physical-only performance and feel"
 
@@ -69,11 +69,11 @@ execution:
     public_surface: "complete_verified for the baseline: cache-busted fetch returned artifact 69f72f7b1c8ee9a6b6603687d10d838376384df0741abec70e51edcb9606a6f7/build k and passed 51/51 plus computed-type, width, and start-to-countdown checks"
   modified_but_unverified:
     - ".github/workflows/pages.yml: Mobile Safari now runs on PR and push, with Xcode 26.2 paired to iOS 26.2"
-    - "tools/test-ios-safari.mjs: WDA startup timeout/retries, Xcode logging, WebView attachment, WebDriver element activation, and WDA-compatible two-pointer ordering"
+    - "tools/test-ios-safari.mjs: WDA startup timeout/retries, Xcode logging, WebView attachment, WDA-compatible two-pointer ordering, Appium Safari web-to-real coordinate calibration, and calibrated W3C taps for pointer-only controls"
     - "AI_DEVELOPMENT/iphone-se3-automation-evidence.md: #28 merge, first main failure, publication-order finding, and corrective plan"
     - "AI_DEVELOPMENT/STATE.yaml: reconciled remote/deployment state and corrective continuation"
   current_blockers:
-    - "The corrective PR must rerun the WDA-compatible two-pointer sequence and pass every Mobile Safari trusted-touch/runtime check before merge."
+    - "The corrective PR must rerun the coordinate-calibrated WDA two-pointer sequence and calibrated control taps, then pass every Mobile Safari trusted-touch/runtime check before merge."
     - "After merge, the ordered main workflow must pass WebKit, Mobile Safari, custom Pages deployment, public revision verification, and public 51/51."
   current_uncertainty:
     - "No physical iPhone or Android visual pass is available in this Work run."
@@ -113,16 +113,16 @@ execution:
     - "Level C run-history comparison found that merely triggering the custom deploy on every main push was insufficient because the legacy publisher has sometimes completed after the custom workflow; the deploy now discovers and waits for that same-SHA legacy run before publishing."
     - "The content-addressed identifier complements PR #10 by making raw and tested deployments carry the same verifiable HTML identity; no comparison may rely only on workflow ordering."
     - "Combined execution found that treating every ROLLBACK_ARTIFACT as pre-visual weakened current build-f criteria and failed the HUD assertion; the retained build-aware rule applies all current criteria to build f and only skips the feature-specific visual check for older build e."
-  exact_next_action: "Require PR #29 to pass the corrected WDA-compatible two-pointer Mobile Safari journey on Xcode 26.2/iOS 26.2, then merge and verify the repeated main WebKit/Safari gate, ordered Pages run, exact public artifact, and public 51/51 journey."
+  exact_next_action: "Require PR #29 to pass the coordinate-calibrated WDA Mobile Safari journey on Xcode 26.2/iOS 26.2, then merge and verify the repeated main WebKit/Safari gate, ordered Pages run, exact public artifact, and public 51/51 journey."
 
 floor:
-  last_check: "complete_unverified for the post-#28 corrective delivery: F1 reconciled main 0aa981d and PR #29; F2 updated; F3 Quality/WebKit passed and Mobile Safari run 30726583430 created the exact simulator session and passed device/layout/first-run checks before exposing WDA's rejection of a leading-pause second pointer; the action sequence is corrected and awaiting rerun; F4 accurate; F5 Level C failure-path review recorded; F6 current public baseline verified but corrective merge/deploy is open; F7 incomplete; F8 physical/required-check limits recorded; F9 pre-merge Safari active but required-merge enforcement absent"
+  last_check: "complete_unverified for the post-#28 corrective delivery: F1 reconciled main 0aa981d and PR #29; F2 updated; F3 Quality/WebKit passed and Mobile Safari run 30727377791 created the exact simulator session and passed device/render/layout/first-run/look/pause checks before exposing web-to-real coordinate drift and pointer-only native-click gaps; official calibration plus calibrated W3C taps are implemented and awaiting an exact-head rerun; F4 accurate; F5 Level C failure-path review recorded; F6 current public baseline verified but corrective merge/deploy is open; F7 incomplete; F8 physical/required-check limits recorded; F9 pre-merge Safari active but required-merge enforcement absent"
   independence_level_used: "C"
   review_outcome: "complete_verified"
-  reviewed_changes_digest: "809e2bf7314ef67c419bbc5002d28e47357ffd2918825088466bd4714e97be75"
+  reviewed_changes_digest: "87995d29f9b08064d1474768168bf56fd4f539f87f309508d1c128b9177d35cf"
   skips:
     - "F8 | F5 STRICT prefers Level A/B | Level C used because no separately permitted independent reviewer is available in this run; exact pre/post browser evidence, a falsifying old-behavior artifact, candidate/rollback tests, and capture metrics strengthen the substitute; revisit if A/B becomes available."
-    - "F8 | iOS Simulator Mobile Safari | PR run 30726583430 proved the exact Xcode/iOS/session/device surface and first-run taps, then failed on a WDA action-shape incompatibility; the corrected two-pointer sequence remains open and must pass before merge."
+    - "F8 | iOS Simulator Mobile Safari | PR run 30727377791 proved the exact Xcode/iOS/session/device surface plus first-run, look and pause actions, then exposed web-to-real coordinate drift and native-click gaps for pointer-only controls; the calibrated W3C journey remains open and must pass before merge."
     - "F8 | physical-only GPU/thermal/memory/reach/haptic/speaker/audio-latency evidence | the user replaced this routine gate with WebKit plus iOS Simulator; keep the facts unmeasured and non-blocking, revisit only for a later concrete device defect or tuning request."
     - "F8 | loop-motion/fresh-viewer/direct-reference review | current still captures cannot validate causal readability over time and no independent viewer or reference gameplay is available; revisit with recorded transitions and a fresh viewer."
     - "F8 | natural public-browser 15-second transition review | the public cloud tab started correctly but its background animation clock was throttled; the independently fetched public HTML passed the deterministic handoff test, but revisit natural timing on a foreground physical browser."
@@ -135,10 +135,10 @@ floor:
       mechanism: "Build-k PR #25, checkpoint PR #26, and both main Quality runs passed with canonical state updates; scripts/verify-floor.mjs retains the synthetic state-omission rejection. Required-merge enforcement remains unavailable."
     f3_execution_check:
       status: "complete_unverified"
-      mechanism: "PR #28 corrected WebKit and Quality passed. PR #29 run 30726583430 passed deterministic/WebKit, created the exact Xcode 26.2/iOS 26.2 Safari session, and passed device/layout/first-run checks; it then failed because WDA requires every pointer source to begin with pointerMove. The second pointer now moves before its bounded wait and the exact revision must rerun before merge. Deploy remains main-only and depends on both. Required-merge enforcement remains unavailable."
+      mechanism: "PR #28 corrected WebKit and Quality passed. PR #29 run 30727377791 passed deterministic/WebKit, created the exact Xcode 26.2/iOS 26.2 Safari session, and passed device/render/layout/first-run/look/pause checks; it then proved that WDA actions require calibrated real-screen coordinates and pointer-only controls require W3C taps. Appium's Safari calibration is now applied to all coordinates and the exact revision must rerun before merge. Deploy remains main-only and depends on both. Required-merge enforcement remains unavailable."
     f5_review_record_check:
       status: "complete_verified"
-      mechanism: "Level C reproduced the Appium failures from logs, separated Xcode/runtime selection, simulator startup, WebView attachment, HTTP transport, element activation, and WDA action normalization, retained full diagnostics, corrected both touch sources to begin with pointerMove, and recorded governed digest 809e2bf7314ef67c419bbc5002d28e47357ffd2918825088466bd4714e97be75. Required-merge enforcement remains unavailable."
+      mechanism: "Level C reproduced the Appium failures from reports, screenshots and logs, separated Xcode/runtime selection, simulator startup, WebView attachment, HTTP transport, action normalization, coordinate-space translation and pointer-only activation, retained full diagnostics, applied Appium's measured Safari web-to-real transform to W3C actions, and recorded governed digest 87995d29f9b08064d1474768168bf56fd4f539f87f309508d1c128b9177d35cf. Required-merge enforcement remains unavailable."
     f6_public_revision_check:
       status: "complete_verified"
       mechanism: "Checkpoint run 30698191992 waited for successful same-SHA legacy run 30698191735, passed test/deploy jobs, and retained build k; independent cache-busted retrieval verified artifact 69f72f7b at 51/51, while cloud Chrome confirmed the exact build/artifact, seven 12px computed targets, width invariants, and start-to-LIVE-RECORDING countdown. Natural countdown completion remained throttled and is recorded under F8."
@@ -165,7 +165,7 @@ floor:
       - "Build-k type-floor gate: a valid-hash build-k artifact restoring 9–11px menu/result labels and wider mission-value tracking failed only the dedicated 12px/truncation criterion."
       - "iPhone WebKit gate: E7_REQUIRE_BASELINE=1 rejected the absent WebKit-generated loop-2 baseline and emitted the exact promotion candidate path."
       - "iOS Safari gate: direct execution without IOS_SIMULATOR_UDID rejected before creating any session."
-      - "iOS Safari W3C action gate: PR #29 run 30726583430 rejected a second touch source beginning with pause after device, layout, renderer and first-run trusted-tap checks passed; both touch sources now begin with pointerMove and require a clean rerun."
+      - "iOS Safari coordinate gate: PR #29 run 30727377791 accepted the W3C sequence and passed device, layout, renderer, first-run, right-drag and pause checks, but uncalibrated web coordinates produced zero movement/FIRE and native clicks did not drive DASH/resume; official Safari calibration plus calibrated W3C taps now require a clean rerun."
     unenforced_items:
       - "F2/F3/F5 are not verified required merge checks because branch-protection capability is not exposed; they are configured to block Pages deployment."
     unattended_allowed: false
@@ -201,13 +201,13 @@ recovery:
 remote:
   repository: "bachikoljunior-blip/Gptgame"
   working_branch: "agent/premerge-ios-gate (local corrective branch from 0aa981dfc4110811044876dbf5746239147e06a7)"
-  pull_request: "prepared_not_applied: corrective PR not yet opened; PR #28 is merged"
+  pull_request: "open: corrective PR #29; PR #28 is merged"
   main_revision: "0aa981dfc4110811044876dbf5746239147e06a7 (PR #28 merged; WebKit verified, first main Safari failed before session)"
   deployed_revision: "complete_verified: artifact 69f72f7b1c8ee9a6b6603687d10d838376384df0741abec70e51edcb9606a6f7, build 2026.08.01-k"
   verified_public_revision: "complete_verified: artifact 69f72f7b1c8ee9a6b6603687d10d838376384df0741abec70e51edcb9606a6f7 passed 51/51 plus cloud-browser computed-type, width-invariant, and start-to-countdown checks"
   public_url: "https://bachikoljunior-blip.github.io/Gptgame/"
   status: "complete_unverified for the automation delivery: current public artifact remains byte-exact build k at 51/51, but the #28 main Safari/deploy chain failed before session and the corrective PR is pending"
-  open_pull_requests: []
+  open_pull_requests: [29]
   repository_permissions: "complete_verified: connected GitHub app reports admin/push permissions"
 
 updated_at: "2026-08-02T09:07:00+09:00"
