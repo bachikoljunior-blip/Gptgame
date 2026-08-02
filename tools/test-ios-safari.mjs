@@ -8,7 +8,7 @@
  * GPU speed, heat, memory pressure, hardware touch, haptics, or audio latency.
  */
 
-import { createServer } from 'node:http';
+import { createServer, request as httpRequest } from 'node:http';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -81,12 +81,27 @@ async function waitForHttp(url, waitMs = 60000) {
 }
 
 async function webdriver(pathname, { method = 'POST', body } = {}) {
-  const response = await fetch(new URL(pathname.replace(/^\//, ''), appiumUrl), {
-    method,
-    headers: body === undefined ? undefined : { 'content-type': 'application/json' },
-    body: body === undefined ? undefined : JSON.stringify(body),
+  const url = new URL(pathname.replace(/^\//, ''), appiumUrl);
+  const encoded = body === undefined ? '' : JSON.stringify(body);
+  const response = await new Promise((resolveRequest, rejectRequest) => {
+    const request = httpRequest(url, {
+      method,
+      headers: body === undefined ? undefined : {
+        'content-type': 'application/json',
+        'content-length': Buffer.byteLength(encoded),
+      },
+    }, (incoming) => {
+      let text = '';
+      incoming.setEncoding('utf8');
+      incoming.on('data', (chunk) => { text += chunk; });
+      incoming.on('end', () => resolveRequest({ ok: incoming.statusCode >= 200 && incoming.statusCode < 300, status: incoming.statusCode, text }));
+    });
+    request.setTimeout(900000, () => request.destroy(new Error(`WebDriver ${method} ${pathname} exceeded 15 minutes`)));
+    request.on('error', rejectRequest);
+    if (encoded) request.write(encoded);
+    request.end();
   });
-  const text = await response.text();
+  const text = response.text;
   let payload;
   try { payload = text ? JSON.parse(text) : {}; }
   catch { payload = { value: text }; }
@@ -97,8 +112,22 @@ async function webdriver(pathname, { method = 'POST', body } = {}) {
 }
 
 let sessionId = '';
+let webToReal = { offsetX: 0, offsetY: 0, pixelRatioX: 1, pixelRatioY: 1 };
 const sessionPath = (suffix = '') => `session/${sessionId}${suffix}`;
 const execute = (script, args = []) => webdriver(sessionPath('/execute/sync'), { body: { script, args } });
+
+async function calibrateCoordinates() {
+  const value = await execute('mobile: calibrateWebToRealCoordinatesTranslation', [{}]);
+  const calibrated = {
+    offsetX: Number(value?.offsetX), offsetY: Number(value?.offsetY),
+    pixelRatioX: Number(value?.pixelRatioX), pixelRatioY: Number(value?.pixelRatioY),
+  };
+  if (!Object.values(calibrated).every(Number.isFinite) || calibrated.pixelRatioX <= 0 || calibrated.pixelRatioY <= 0) {
+    throw new Error(`Appium returned an invalid Safari coordinate calibration: ${JSON.stringify(value)}`);
+  }
+  webToReal = calibrated;
+  report.coordinateTransform = calibrated;
+}
 
 async function waitForScript(script, waitMs = 30000) {
   const deadline = Date.now() + waitMs;
@@ -123,13 +152,29 @@ function finger(id, actions) {
   return { type: 'pointer', id, parameters: { pointerType: 'touch' }, actions };
 }
 
-const move = (x, y, duration = 0) => ({ type: 'pointerMove', duration, x: Math.round(x), y: Math.round(y), origin: 'viewport' });
+const move = (x, y, duration = 0) => ({
+  type: 'pointerMove', duration,
+  x: Math.round(webToReal.offsetX + x * webToReal.pixelRatioX),
+  y: Math.round(webToReal.offsetY + y * webToReal.pixelRatioY),
+  origin: 'viewport',
+});
 const down = () => ({ type: 'pointerDown', button: 0 });
 const up = () => ({ type: 'pointerUp', button: 0 });
 const pause = (duration) => ({ type: 'pause', duration });
 
 async function tap(x, y) {
   await performActions([finger(`tap-${Date.now()}`, [move(x, y), down(), pause(90), up()])]);
+}
+
+async function tapElement(selector) {
+  const point = await execute(`
+    var node = document.querySelector(arguments[0]);
+    if (!node) return null;
+    var r = node.getBoundingClientRect();
+    return {x:r.x+r.width/2,y:r.y+r.height/2,width:r.width,height:r.height};
+  `, [selector]);
+  if (!point || point.width <= 0 || point.height <= 0) throw new Error(`Safari did not resolve a visible element: ${selector}`);
+  await tap(point.x, point.y);
 }
 
 async function screenshot(path) {
@@ -178,6 +223,14 @@ try {
           'appium:newCommandTimeout': 300,
           'appium:safariAllowPopups': true,
           'appium:includeSafariInWebviews': true,
+          'appium:safariInitialUrl': baseUrl,
+          'appium:webviewConnectTimeout': 120000,
+          'appium:webviewConnectRetries': 20,
+          'appium:simulatorStartupTimeout': 300000,
+          'appium:wdaLaunchTimeout': 180000,
+          'appium:wdaStartupRetries': 3,
+          'appium:wdaStartupRetryInterval': 10000,
+          'appium:showXcodeLog': true,
         },
         firstMatch: [{}],
       },
@@ -191,6 +244,7 @@ try {
   if (!sessionId) throw new Error('Appium did not return a session id');
 
   await webdriver(sessionPath('/orientation'), { body: { orientation: 'PORTRAIT' } });
+  await calibrateCoordinates();
   const url = new URL(baseUrl);
   url.searchParams.set('e7test', '1');
   await webdriver(sessionPath('/url'), { body: { url: url.href } });
@@ -220,6 +274,7 @@ try {
   check(device.viewport.width === 375, 'iPhone SE 3 portrait width', JSON.stringify(device.viewport));
   check(device.viewport.height >= 500 && device.viewport.height <= 667, 'Mobile Safari portrait height', JSON.stringify(device.viewport));
   check(device.dpr === 2, 'iPhone SE 3 DPR', `dpr=${device.dpr}`);
+  check(true, 'Safari web coordinates are calibrated to the real screen', JSON.stringify(report.coordinateTransform));
   check(device.maxTouchPoints > 0 && device.coarse && device.portrait, 'portrait touch surface is active', JSON.stringify(device));
   check(/Safari\//.test(device.userAgent) && /Mobile\//.test(device.userAgent), 'actual Mobile Safari user agent is active', device.userAgent);
   check(device.renderer === 'webgl-3d' || device.renderer === 'canvas-2d', 'renderer initializes in Safari', `renderer=${device.renderer}`);
@@ -242,10 +297,9 @@ try {
   check(layout.documentWidth <= layout.viewportWidth, 'menu has no horizontal overflow', JSON.stringify(layout));
   check([layout.begin, layout.how, layout.settings].every((item) => item.width >= 44 && item.height >= 44), 'menu controls meet 44 CSS px target', JSON.stringify(layout));
 
-  await tap(layout.begin.x + layout.begin.width / 2, layout.begin.y + layout.begin.height / 2);
+  await tapElement('#beginButton');
   await waitForScript("return !document.getElementById('tutorialOverlay').hidden;", 10000);
-  const tutorialStart = await execute(`var r = document.getElementById('tutorialStartButton').getBoundingClientRect(); return {x:r.x+r.width/2,y:r.y+r.height/2};`);
-  await tap(tutorialStart.x, tutorialStart.y);
+  await tapElement('#tutorialStartButton');
   await waitForScript(`return ['countdown','playing'].indexOf(window.__E7_TEST__.snapshot().mode) >= 0;`, 10000);
   check(true, 'trusted Safari taps start the first run', url.href);
 
@@ -260,8 +314,8 @@ try {
   const fireX = controls.fire.x + controls.fire.width / 2;
   const fireY = controls.fire.y + controls.fire.height / 2;
   await performActions([
-    finger('move-thumb', [move(moveStartX, moveStartY), down(), move(moveStartX + 6, moveStartY - 70, 350), pause(0), pause(0), pause(700), up()]),
-    finger('fire-thumb', [pause(0), pause(0), pause(350), move(fireX, fireY), down(), pause(700), up()]),
+    finger('move-thumb', [move(moveStartX, moveStartY), down(), move(moveStartX + 6, moveStartY - 70, 350), pause(700), up()]),
+    finger('fire-thumb', [move(fireX, fireY), pause(350), down(), pause(700), up()]),
   ]);
   await new Promise((done) => setTimeout(done, 250));
   const after = await execute('return window.__E7_TEST__.snapshot();');
@@ -283,7 +337,7 @@ try {
 
   const dashX = controls.dash.x + controls.dash.width / 2;
   const dashY = controls.dash.y + controls.dash.height / 2;
-  await tap(dashX, dashY);
+  await tapElement('#dashButton');
   await new Promise((done) => setTimeout(done, 250));
   const dashEvidence = await execute(`
     var snapshot = window.__E7_TEST__.snapshot();
@@ -297,18 +351,16 @@ try {
   report.interaction.dash = dashEvidence;
   check(dashEvidence.found, 'trusted DASH tap is recorded', JSON.stringify(dashEvidence));
 
-  const pauseButton = await execute(`var r=document.getElementById('pauseButton').getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};`);
-  await tap(pauseButton.x, pauseButton.y);
+  await tapElement('#pauseButton');
   await waitForScript(`return window.__E7_TEST__.snapshot().mode === 'paused';`, 10000);
   const paused = await execute('return window.__E7_TEST__.snapshot();');
   await screenshot(pausePath);
   check(!paused.controlsVisible, 'trusted pause tap freezes and hides controls', JSON.stringify(paused));
-  const resumeButton = await execute(`var r=document.getElementById('resumeButton').getBoundingClientRect();return{x:r.x+r.width/2,y:r.y+r.height/2};`);
-  await tap(resumeButton.x, resumeButton.y);
+  await tapElement('#resumeButton');
   await waitForScript(`return window.__E7_TEST__.snapshot().mode === 'playing';`, 10000);
   check(await execute('return window.__E7_TEST__.snapshot().controlsVisible;'), 'trusted resume tap restores controls', 'controls visible');
 
-  await tap(pauseButton.x, pauseButton.y);
+  await tapElement('#pauseButton');
   await waitForScript(`return window.__E7_TEST__.snapshot().mode === 'paused';`, 10000);
   const preReloadErrors = await execute('return (window.__e7IosErrors || []).slice();');
   report.errors.push(...preReloadErrors);
