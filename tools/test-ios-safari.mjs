@@ -178,6 +178,7 @@ try {
           'appium:newCommandTimeout': 300,
           'appium:safariAllowPopups': true,
           'appium:includeSafariInWebviews': true,
+          'appium:simulatorStartupTimeout': 300000,
           'appium:wdaLaunchTimeout': 180000,
           'appium:wdaStartupRetries': 3,
           'appium:wdaStartupRetryInterval': 10000,

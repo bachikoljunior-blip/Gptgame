@@ -77,6 +77,14 @@ main-only and depends on deterministic/WebKit plus Safari. A cache-busted public
 after the failed custom run is byte-identical to `origin/main:index.html`, remains artifact
 `69f72f7b` / build k, and independently passes 51/51.
 
+PR #29 run `30724796112` then passed Quality and the required-baseline WebKit journey.
+Its simulator selection and boot step also passed with the exact Xcode 26.2/iOS 26.2
+pairing, but Appium session creation reached its separate default 120-second simulator
+startup ceiling. No browser session or gameplay assertion existed in that failed job.
+The retry sets `appium:simulatorStartupTimeout` to a bounded 300 seconds while retaining
+the existing 180-second WDA launch budget and diagnostic logs; it remains a blocking
+pre-merge check rather than being reclassified as success.
+
 ## Explicit non-claims
 
 The simulator does not measure physical GPU speed, thermal throttling, memory-pressure

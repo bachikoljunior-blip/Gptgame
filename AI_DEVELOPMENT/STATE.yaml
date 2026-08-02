@@ -113,13 +113,13 @@ execution:
     - "Level C run-history comparison found that merely triggering the custom deploy on every main push was insufficient because the legacy publisher has sometimes completed after the custom workflow; the deploy now discovers and waits for that same-SHA legacy run before publishing."
     - "The content-addressed identifier complements PR #10 by making raw and tested deployments carry the same verifiable HTML identity; no comparison may rely only on workflow ordering."
     - "Combined execution found that treating every ROLLBACK_ARTIFACT as pre-visual weakened current build-f criteria and failed the HUD assertion; the retained build-aware rule applies all current criteria to build f and only skips the feature-specific visual check for older build e."
-  exact_next_action: "Update the governed digest, open the corrective PR from origin/main 0aa981d, require Quality, WebKit, and a real Xcode 26.2/iOS 26.2 Mobile Safari session to pass, merge, then verify the ordered main Pages run and exact public artifact/primary journey."
+  exact_next_action: "Require the revised PR #29 run to create an Xcode 26.2/iOS 26.2 Mobile Safari session within the explicit 300-second simulator-startup budget and pass the journey, then merge and verify the ordered main Pages run and exact public artifact/primary journey."
 
 floor:
-  last_check: "complete_unverified for the post-#28 corrective delivery: F1 reconciled main 0aa981d, failed custom run 30719618371, successful legacy publish 30719617989, and byte-exact public artifact 69f72f7b at 51/51; F2 updated; F3 local workflow/code validation executed while real corrective Safari is pending; F4 accurate; F5 Level C workflow/failure-path review recorded; F6 current public baseline reverified but corrective merge/deploy has not happened; F7 objective incomplete; F8 simulator/physical/required-check limits recorded; F9 pre-merge Safari prepared but required-merge enforcement absent"
+  last_check: "complete_unverified for the post-#28 corrective delivery: F1 reconciled main 0aa981d and PR #29; F2 updated; F3 Quality and WebKit passed in run 30724796112 while Mobile Safari exposed a 120-second Appium simulator-startup ceiling after the workflow boot check and is being retried with an explicit 300-second capability; F4 accurate; F5 Level C failure-path review recorded; F6 current public baseline reverified but corrective merge/deploy has not happened; F7 objective incomplete; F8 physical/required-check limits recorded; F9 pre-merge Safari prepared but required-merge enforcement absent"
   independence_level_used: "C"
   review_outcome: "complete_verified"
-  reviewed_changes_digest: "fb6e2cc601f67ac8be39c56657d450ef918d2ce3ab38c7775e0417f9e8a97e44"
+  reviewed_changes_digest: "43ca4f3913486e3bc382b3c78d4fa04594d43048a930386b2aab2a62398b41d3"
   skips:
     - "F8 | F5 STRICT prefers Level A/B | Level C used because no separately permitted independent reviewer is available in this run; exact pre/post browser evidence, a falsifying old-behavior artifact, candidate/rollback tests, and capture metrics strengthen the substitute; revisit if A/B becomes available."
     - "F8 | iOS Simulator Mobile Safari | the first main attempt executed but failed before session creation because Xcode 16.4 was paired with iOS 26.2; the corrective Xcode 26.2/iOS 26.2 PR run remains open and must be revisited before merge."
@@ -135,10 +135,10 @@ floor:
       mechanism: "Build-k PR #25, checkpoint PR #26, and both main Quality runs passed with canonical state updates; scripts/verify-floor.mjs retains the synthetic state-omission rejection. Required-merge enforcement remains unavailable."
     f3_execution_check:
       status: "complete_unverified"
-      mechanism: "PR #28 corrected WebKit and Quality passed, but main Mobile Safari failed before a session because the runner mixed Xcode 16.4 with iOS 26.2. The corrective pages.yml runs deterministic/WebKit then Xcode 26.2/iOS 26.2 Safari on the PR; deploy remains non-PR and depends on both. Required-merge enforcement remains unavailable."
+      mechanism: "PR #28 corrected WebKit and Quality passed. PR #29 run 30724796112 passed deterministic/WebKit on Xcode-pinned source, then Appium stopped at its default 120-second simulator-startup ceiling despite the workflow boot check; the harness now sets simulatorStartupTimeout=300000 and must pass before merge. Deploy remains non-PR and depends on both. Required-merge enforcement remains unavailable."
     f5_review_record_check:
       status: "complete_verified"
-      mechanism: "Level C reproduced the main failure from Appium logs, verified the Xcode 16.4/iOS 26.2 mismatch and legacy-publication race, reviewed the PR/main job ordering, pinned Xcode 26.2 to iOS 26.2, retained missing-UDID rejection and full WDA diagnostics, and recorded governed digest fb6e2cc601f67ac8be39c56657d450ef918d2ce3ab38c7775e0417f9e8a97e44. Required-merge enforcement remains unavailable."
+      mechanism: "Level C reproduced both Appium failures from logs, separated the corrected Xcode/runtime pairing from the later 120-second simulator-startup ceiling, reviewed the PR/main ordering, retained missing-UDID rejection and full WDA diagnostics, added the bounded 300-second startup capability, and recorded governed digest 43ca4f3913486e3bc382b3c78d4fa04594d43048a930386b2aab2a62398b41d3. Required-merge enforcement remains unavailable."
     f6_public_revision_check:
       status: "complete_verified"
       mechanism: "Checkpoint run 30698191992 waited for successful same-SHA legacy run 30698191735, passed test/deploy jobs, and retained build k; independent cache-busted retrieval verified artifact 69f72f7b at 51/51, while cloud Chrome confirmed the exact build/artifact, seven 12px computed targets, width invariants, and start-to-LIVE-RECORDING countdown. Natural countdown completion remained throttled and is recorded under F8."
