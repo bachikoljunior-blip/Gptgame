@@ -7,6 +7,8 @@
     "test": "node --test tests/game-core.test.mjs",
     "test:iphone-webkit": "node tools/test-iphone-webkit.mjs",
     "test:ios-safari": "node tools/test-ios-safari.mjs",
+    "round:iphone": "npm run test:iphone-webkit && node .kit/tools/compare-round.mjs --config=iphone-se3-round.config.json",
+    "round:iphone:selftest": "node .kit/tools/compare-round.mjs --selftest",
     "test:continuity": "node scripts/verify-continuity.mjs",
     "gate:floor": "node scripts/verify-floor.mjs",
     "release:prepare": "node scripts/prepare-release.mjs index.html _site/index.html",

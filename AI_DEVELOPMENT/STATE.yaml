@@ -68,6 +68,9 @@ execution:
     deployment: "complete_verified for the baseline: checkpoint Pages run 30698191992 waited for successful same-SHA legacy run 30698191735, retained artifact 69f72f7b, and completed without rollback"
     public_surface: "complete_verified for the baseline: cache-busted fetch returned artifact 69f72f7b1c8ee9a6b6603687d10d838376384df0741abec70e51edcb9606a6f7/build k and passed 51/51 plus computed-type, width, and start-to-countdown checks"
   modified_but_unverified:
+    - ".github/workflows/iphone-se3-round.yml | iPhone SE 3 round comparison. Verified: vendored kit 0.4.0 matches its ledger, compare-round --selftest 11/11 including the must-pass control, YAML parses, and the adoption path was measured on a report shaped like this harness output -- green while no bar is recorded, and naming timings.bootMs as what will block once one is. NOT verified: any run on the WebKit apparatus CI will use. This harness samples frame gaps but never measures boot time, and load time is half of what a round is for, so bootMs is declared required and the round reports INCOMPARABLE naming it until the harness wraps its boot wait in Date.now(). Tolerances are declared, not measured; game2 KIT-VARIANCE arm 1 measured an art capture rig and says nothing about bootMs or frame gap, so none was changed on its numbers."
+    - "iphone-se3-round.config.json | the metric declarations above; bootMs/median/p95 required."
+    - "package.json | round:iphone and round:iphone:selftest scripts only."
     - ".github/workflows/pages.yml"
     - ".github/workflows/quality.yml"
     - "tools/test-iphone-webkit.mjs"
@@ -131,8 +134,9 @@ floor:
   last_check: "complete_unverified for reconciled iPhone automation: F1 preserved origin/main ea0a90e and public build-k artifact 69f72f7b; F2 checkpoint current through initial PR evidence; F3 continuity, 51/51, corrected Chromium surrogate, Quality, and initial target WebKit executed while the corrected WebKit rerun/iOS remain open; F4 accurate; F5 Level C negative probes plus inspected target baseline and runner-diagnostic repair recorded; F6 n/a until task merge/deploy; F7 not complete; F8 target-runner and physical-only limitations recorded; F9 Pages blocks on deterministic/WebKit/iOS and retains F6/revert, required-merge enforcement absent"
   independence_level_used: "C"
   review_outcome: "complete_verified"
-  reviewed_changes_digest: "e1497cf4687674e276b2004fdb0a4c0b786f1659e891010e58f8ef8cdebd5fd0"
+  reviewed_changes_digest: "08f0f6d8c5c790a40a6bc11f020f8a83272b13ea066ecf25e7baea7ca69c3fa7"
   skips:
+    - "F8 | iPhone SE 3 round comparison reviewed at Level C on the vendored tree only | verified: kit ledger intact, compare-round --selftest 11/11 with its must-pass control, YAML parses, and the adoption path measured on a report shaped like this harness output. NOT verified: any run on the WebKit apparatus CI uses, and the declared tolerances, which are not measured anywhere; revisit when a WebKit variance arm exists."
     - "F8 | F5 STRICT prefers Level A/B | Level C used because no separately permitted independent reviewer is available in this run; exact pre/post browser evidence, a falsifying old-behavior artifact, candidate/rollback tests, and capture metrics strengthen the substitute; revisit if A/B becomes available."
     - "F8 | iOS Simulator Mobile Safari | the initial Playwright WebKit evidence run executed on GitHub and its reviewed baseline is promoted, but the corrected WebKit rerun and macOS/Xcode/Appium simulator surface remain open; local Chromium remains only a harness surrogate; revisit before objective completion."
     - "F8 | physical-only GPU/thermal/memory/reach/haptic/speaker/audio-latency evidence | the user replaced this routine gate with WebKit plus iOS Simulator; keep the facts unmeasured and non-blocking, revisit only for a later concrete device defect or tuning request."
