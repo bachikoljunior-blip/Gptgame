@@ -1,13 +1,13 @@
 # iPhone SE 3 automation checkpoint
 
 Date: 2026-08-01 (Asia/Tokyo)
-Branch: `agent/iphone-se3-automation`
-Base: `ea0a90e9c53a20d45c5caf3dfb829e9a1078f17e` (`origin/main`)
+Corrective branch: `agent/premerge-ios-gate`
+Corrective base: `0aa981dfc4110811044876dbf5746239147e06a7` (`origin/main`)
 
-Overall status: `complete_unverified`. Implementation, local surrogate checks, and the
-first target Playwright WebKit evidence run are complete. The inspected WebKit baseline
-is promoted; the corrected PR rerun, iOS Simulator Mobile Safari, merge, and deployment
-remain open.
+Overall status: `complete_unverified`. PR #28 is merged and target Playwright WebKit is
+verified. The first main Mobile Safari attempt failed before session creation because the
+runner paired default Xcode 16.4 with an iOS 26.2 simulator; the corrective pre-merge
+Safari run, ordered deployment, and final public verification remain open.
 
 ## Release path prepared
 
@@ -16,8 +16,8 @@ The existing `.github/workflows/pages.yml` now orders:
 1. continuity/floor checks and all 51 deterministic tests;
 2. Playwright WebKit with the iPhone SE (3rd generation) portrait descriptor at
    `375×667 / DPR 2`, including a required WebKit-generated visual baseline;
-3. on non-PR candidates, Appium/XCUITest trusted touch in actual Mobile Safari on the
-   matching iOS Simulator;
+3. on PR and main candidates, Appium/XCUITest trusted touch in actual Mobile Safari on
+   the matching iOS Simulator;
 4. only then, the existing content-addressed Pages candidate, public revision check, and
    automatic restoration path.
 
@@ -59,9 +59,23 @@ driver 12.1.3 are Apache-2.0 and accept the workflow's Node 22/npm 10+ runtime.
 - The corrected harness plus promoted baseline passed locally in Chromium surrogate mode
   with zero failures and a `0.01298` visual-diff ratio.
 
-Chromium is not counted as target WebKit or Mobile Safari evidence. The initial target
-WebKit run is accepted as execution evidence but not a passing release gate; the corrected
-target rerun and main-only Mobile Safari gate remain open.
+Chromium is not counted as target WebKit or Mobile Safari evidence. Corrected PR #28 run
+`30700429788` passed the target WebKit gate against the reviewed baseline with a `0.01298`
+(1.298%) visual-diff ratio; Quality run `30700429834` also passed. PR #28 was then
+squash-merged as `0aa981dfc4110811044876dbf5746239147e06a7`.
+
+The first main custom Pages run `30719618371` rebuilt and passed WebKit, then failed before
+Mobile Safari existed. Its Appium log shows an iPhone SE (3rd generation) on iOS 26.2 was
+driven with default Xcode 16.4; WebDriverAgent never opened port 8100, so this is neither a
+game pass nor a game failure. Same-SHA legacy Pages run `30719617989` had already reported
+successful publication, proving that a main-only Safari job cannot enforce ordering.
+
+The corrective delivery runs Mobile Safari on PRs as well as main, pins
+`/Applications/Xcode_26.2.app/Contents/Developer` to the iOS 26.2 runtime, raises WDA
+startup to 180 seconds with three attempts, and records full Xcode output. Deploy remains
+main-only and depends on deterministic/WebKit plus Safari. A cache-busted public fetch
+after the failed custom run is byte-identical to `origin/main:index.html`, remains artifact
+`69f72f7b` / build k, and independently passes 51/51.
 
 ## Explicit non-claims
 
