@@ -21,8 +21,16 @@ import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 
 const REPO = dirname(dirname(fileURLToPath(import.meta.url)));
+/**
+ * The revision to compare against, pinned rather than tracking `origin/main`.
+ *
+ * `0aa981d` is the last commit before the kit integration landed. Once the integration
+ * merged, `origin/main` became the *new* gate, so a floating base would compare this file
+ * against itself and print a confident 33/33 that means nothing. Override with `--base` only
+ * if you know what you are comparing.
+ */
 const argv = process.argv.slice(2);
-const BASE = argv.includes('--base') ? argv[argv.indexOf('--base') + 1] : 'origin/main';
+const BASE = argv.includes('--base') ? argv[argv.indexOf('--base') + 1] : '0aa981d';
 
 const STATE = 'AI_DEVELOPMENT/STATE.yaml';
 const PROTOCOL = 'AI_DEVELOPMENT/PROTOCOL.md';
@@ -60,7 +68,10 @@ const MUTATIONS = [
   // `active: true` under a different key, and a bare replace hits that one — leaving
   // logical_session untouched and reporting agreement on a check never exercised.
   ['logical session no longer active', STATE,
-    (t) => t.replace(/(^logical_session:\n(?:[ \t]+.*\n)*?[ \t]+active: )true$/m, '$1false')],
+    (t) => t.replace(/(^logical_session:\n(?:[ \t]+.*\n)*?[ \t]+active: )true$/m, '$1false'),
+    'STRICTER: the old gate matched `active: true` anywhere after `logical_session:`, so any '
+    + 'later prose field containing that literal satisfied it with the session inactive. The '
+    + 'new gate is anchored to the block, so it fires where the old one passed.'],
   ['a GitHub token pasted into the state', STATE, (t) => `${t}\nleaked: "ghp_0123456789abcdefghijklmnopqrstuvwxyz"\n`],
 
   // --- REFERENCE_BENCHMARKS.md ----------------------------------------------------------
@@ -101,6 +112,11 @@ const oldSource = execFileSync('git', ['show', `${BASE}:scripts/verify-continuit
   { cwd: REPO, encoding: 'utf8' });
 writeFileSync(join(base, 'scripts', 'verify-continuity-old.mjs'), oldSource);
 
+// A base that resolves to the current file makes every comparison vacuous.
+if (oldSource === readFileSync(join(REPO, 'scripts/verify-continuity.mjs'), 'utf8')) {
+  throw new Error(`base ${BASE} holds the same gate as the working tree — there is nothing to compare`);
+}
+
 const FILES = [STATE, PROTOCOL, BENCH, AGENTS, START];
 for (const f of FILES) {
   if (!existsSync(join(base, f))) throw new Error(`battery fixture missing: ${f}`);
@@ -108,8 +124,9 @@ for (const f of FILES) {
 const originals = Object.fromEntries(FILES.map((p) => [p, readFileSync(join(base, p), 'utf8')]));
 
 let agree = 0;
+let expectedDivergences = 0;
 const rows = [];
-for (const [name, file, transform] of MUTATIONS) {
+for (const [name, file, transform, expectedDivergence] of MUTATIONS) {
   for (const [p, text] of Object.entries(originals)) writeFileSync(join(base, p), text);
   if (file) {
     const mutated = transform(originals[file]);
@@ -121,14 +138,25 @@ for (const [name, file, transform] of MUTATIONS) {
   const newVerdict = verdict(base, 'scripts/verify-continuity.mjs');
   const same = oldVerdict === newVerdict;
   if (same) agree++;
-  rows.push([same ? 'ok  ' : 'DIFF', name, oldVerdict, newVerdict]);
+
+  // A divergence is only acceptable when it was declared in advance AND runs in the strict
+  // direction: the new gate fires where the old one passed. The reverse — new passes where
+  // old fired — is a lost check, and no annotation may excuse it.
+  const strictDirection = oldVerdict === 'pass' && newVerdict === 'fail';
+  const excused = !same && Boolean(expectedDivergence) && strictDirection;
+  if (excused) expectedDivergences++;
+
+  rows.push([same ? 'ok  ' : excused ? 'STRICT' : 'DIFF', name, oldVerdict, newVerdict, expectedDivergence]);
 }
 
-for (const [mark, name, o, n] of rows) {
-  console.log(`${mark} ${name.padEnd(48)} old=${o.padEnd(6)} new=${n}`);
+for (const [mark, name, o, n, note] of rows) {
+  console.log(`${mark.padEnd(6)} ${name.padEnd(48)} old=${o.padEnd(6)} new=${n}`);
+  if (mark !== 'ok  ' && note) console.log(`       ${note}`);
 }
+const unexplained = rows.filter((r) => r[0] === 'DIFF');
 console.log(`\n${agree}/${MUTATIONS.length} mutations reach the same verdict in both gates (base ${BASE})`);
-console.log(`${rows.filter((r) => r[2] === 'fail').length}/${MUTATIONS.length - 1} deliberate breakages actually fired in the old gate`);
+console.log(`${expectedDivergences} declared strictness gain(s); ${unexplained.length} unexplained divergence(s)`);
+console.log(`${rows.filter((r) => r[2] === 'fail').length}/${MUTATIONS.length - 1} deliberate breakages fired in the old gate`);
 
 rmSync(base, { recursive: true, force: true });
-process.exit(agree === MUTATIONS.length ? 0 : 1);
+process.exit(unexplained.length === 0 ? 0 : 1);

@@ -131,7 +131,7 @@ floor:
   last_check: "complete_unverified for reconciled iPhone automation: F1 preserved origin/main ea0a90e and public build-k artifact 69f72f7b; F2 checkpoint current through initial PR evidence; F3 continuity, 51/51, corrected Chromium surrogate, Quality, and initial target WebKit executed while the corrected WebKit rerun/iOS remain open; F4 accurate; F5 Level C negative probes plus inspected target baseline and runner-diagnostic repair recorded; F6 n/a until task merge/deploy; F7 not complete; F8 target-runner and physical-only limitations recorded; F9 Pages blocks on deterministic/WebKit/iOS and retains F6/revert, required-merge enforcement absent"
   independence_level_used: "C"
   review_outcome: "complete_verified"
-  reviewed_changes_digest: "d50e4522cc70c5431e7b7fc3c2ac479952204300764ada5c07aba3a90c915009"
+  reviewed_changes_digest: "e1497cf4687674e276b2004fdb0a4c0b786f1659e891010e58f8ef8cdebd5fd0"
   skips:
     - "F8 | F5 STRICT prefers Level A/B | Level C used because no separately permitted independent reviewer is available in this run; exact pre/post browser evidence, a falsifying old-behavior artifact, candidate/rollback tests, and capture metrics strengthen the substitute; revisit if A/B becomes available."
     - "F8 | iOS Simulator Mobile Safari | the initial Playwright WebKit evidence run executed on GitHub and its reviewed baseline is promoted, but the corrected WebKit rerun and macOS/Xcode/Appium simulator surface remain open; local Chromium remains only a harness surrogate; revisit before objective completion."

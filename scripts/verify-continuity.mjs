@@ -132,7 +132,13 @@ export function verifyContinuity({ root = ROOT, read } = {}) {
   // noticed. Same loosening, kept: the id is not pinned to a value, it just has to be there.
   must(state, /objective:\s*\n\s+id: "[^"]+"/, 'STATE.yaml has lost the active objective id');
   must(state, /reference_benchmark:[\s\S]*?path: "AI_DEVELOPMENT\/REFERENCE_BENCHMARKS\.md"/, 'STATE.yaml has lost the reference benchmark path');
-  must(state, /logical_session:[\s\S]*?active: true/, 'STATE.yaml no longer records an active logical session');
+  // Anchored, for the same reason as the objective id above — and this one was caught the
+  // hard way. The unanchored form matches `active: true` anywhere after `logical_session:`,
+  // so writing that literal string into a later prose field of STATE.yaml was enough to
+  // satisfy the check with the session marked inactive. The gate was passing on the text of
+  // a note describing the bug. This is stricter than the version on 0aa981d, deliberately.
+  must(state, /^logical_session:\n(?:[ \t]+.*\n)*?[ \t]+active: true$/m,
+    'STATE.yaml no longer records an active logical session');
   must(state, /exact_next_action: "[^"]+"/, 'STATE.yaml exact_next_action is empty');
   must(state, 'modules_activated: []', 'STATE.yaml must record no activated modules');
   must(state, 'unattended_allowed: false', 'unattended work must remain disabled');
@@ -225,6 +231,14 @@ export function selfTestCases({ root = ROOT } = {}) {
       name: 'the objective losing its id entirely',
       evaluate: () => run(withEdit('AI_DEVELOPMENT/STATE.yaml',
         (t) => t.replace(/(objective:\s*\n\s+)id: "[^"]+"\n/, '$1'))),
+    },
+    {
+      // The check this drives was vacuous until it was anchored: writing the literal
+      // "active: true" into any later field of STATE.yaml satisfied it while the session was
+      // marked inactive. Without this case that would have gone on passing silently.
+      name: 'the logical session marked inactive',
+      evaluate: () => run(withEdit('AI_DEVELOPMENT/STATE.yaml',
+        (t) => t.replace(/(^logical_session:\n(?:[ \t]+.*\n)*?[ \t]+active: )true$/m, '$1false'))),
     },
     {
       name: 'a reference title dropped from the benchmark record',
