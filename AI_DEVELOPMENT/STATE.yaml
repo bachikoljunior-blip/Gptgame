@@ -64,7 +64,7 @@ remote:
 
 user_instructions_2026_08_02:
   - "External runtime assets, CDNs, hosted services and network calls are allowed; the zero-external-asset constraint is withdrawn."
-  - "The reference works are not limited to principles; their content may be used directly."
+  - "A reference work is not only a source of principles: it is also the bar this product is measured against. Its content must still never be reproduced, and no reference is named in what ships."
 
 unattended_allowed: false
 

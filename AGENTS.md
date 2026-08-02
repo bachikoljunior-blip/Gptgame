@@ -54,22 +54,26 @@ defence there is, which is why the machine writes its own half of it.
 
 - Never claim an action you did not complete and inspect.
 - No credentials or personal data in anything committed.
+- **Never reproduce a reference work's content.** Its art, models, audio, text,
+  levels, layout, icons, HUD or fiction may not be copied or near-copied into
+  this product, and no reference is named in what ships.
 - A quality goal may be made stricter at any time. It may be weakened only after
   it is shown to be unreachable as written — never to reach a pass.
 - Do not enable unattended chaining. Nothing blocks, so nothing would catch it.
 
-## Withdrawn by the user, 2026-08-02
+## Changed by the user, 2026-08-02
 
 Older documents in this repository — `README.md`,
 `AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md`, and everything under
-`AI_DEVELOPMENT/ARCHIVE/` — still carry these two rules. They are **no longer in
-force**, and finding them in an archived file is not grounds to reinstate them.
+`AI_DEVELOPMENT/ARCHIVE/` — carry the earlier wording of both of these. Finding
+an older form there is not grounds to reinstate it.
 
 - **External runtime assets, CDNs, hosted services and network calls are
   allowed.** The zero-external-asset constraint is lifted. It remains an accurate
   description of the build as it stands, not a requirement on the next one.
-- **The reference works are not limited to principles.** Their content may be
-  used directly. Choices about third-party rights are the user's to make and are
-  not a rule enforced here.
+- **A reference work is not only a source of principles.** It is also the bar
+  this product is measured against and compared with, and criteria may be drawn
+  from it as directly as the comparison needs. The no-copying rule above is
+  unaffected: use a reference to judge this product, never to fill it.
 
 Everything above this line is the whole of the standing instruction.

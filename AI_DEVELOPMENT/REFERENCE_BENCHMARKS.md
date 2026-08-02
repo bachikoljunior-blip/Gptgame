@@ -1,12 +1,16 @@
 # ECHO//SEVEN — Element Reference Benchmarks
 
-> **The copying limits in this file are withdrawn — user instruction, 2026-08-02.**
-> Every "Deliberate limits" cell below, and clause 3 of the update rule, was written
-> under a principles-only rule that no longer applies. The reference works may be used
-> directly, content included. Those cells are kept because they still describe what each
-> reference is and is not useful *for*; read them as scope notes, not as prohibitions.
-> `AGENTS.md` is the authority. The zero-external-asset constraint is likewise lifted, so
-> a criterion below may now be met with an external asset or a network call.
+> **User instruction, 2026-08-02 — two clarifications. `AGENTS.md` is the authority.**
+>
+> 1. **The copying limits below stand.** Every "Deliberate limits" cell that forbids
+>    copying a reference's art, layout, HUD, levels, audio, characters or fiction is in
+>    force, as is the rule that no reference is named in the shipped product.
+> 2. **What is lifted is the "principles only" framing.** A reference here is also the
+>    bar this product is measured against and compared with; criteria may be drawn from
+>    it as directly as that comparison needs. Use a reference to judge this product,
+>    never to fill it.
+> 3. **The zero-external-asset constraint is withdrawn**, so a criterion below may now be
+>    met with an external asset, a CDN, a hosted service or a network call.
 
 Status date: 2026-08-01 (Asia/Tokyo)
 
