@@ -1,0 +1,27 @@
+{
+  "_comment": [
+    "The comparison step of one iPhone SE 3 review round. See .kit/lib/mobile/roundCompare.mjs.",
+    "Run tools/test-iphone-webkit.mjs first; it writes the report this judges.",
+    "ECHO//SEVEN's phone surface is portrait, which is a product decision and stays one — the",
+    "shared module carries both orientations.",
+    "This harness samples frame gaps but records no boot timing, and load time is half of what",
+    "a round is for. timings.bootMs is therefore declared *required*: until the harness wraps",
+    "its boot wait in Date.now() and writes the elapsed milliseconds, the round reports",
+    "INCOMPARABLE and names the missing measurement, rather than passing on the metrics it does",
+    "happen to have. It starts being compared the moment it exists, with no change here.",
+    "Nothing here is evidence about a physical iPhone SE 3."
+  ],
+  "surface": "portrait",
+  "current": "test-results/iphone-webkit/report.json",
+  "baseline": "tests/baselines/iphone-se3-round.json",
+  "out": "test-results/iphone-webkit/round-comparison.json",
+  "metrics": [
+    { "key": "bootMs", "path": "timings.bootMs", "direction": "lower-is-better", "required": true },
+    { "key": "medianFrameGapMs", "path": "soak.medianFrameGapMs", "direction": "lower-is-better", "required": true },
+    { "key": "p95FrameGapMs", "path": "soak.p95FrameGapMs", "direction": "lower-is-better", "required": true },
+    { "key": "maxFrameGapMs", "path": "soak.maximumFrameGapMs", "direction": "lower-is-better", "required": false, "tolerance": { "relative": 0.5 } },
+    { "key": "soakSamples", "path": "soak.samples", "direction": "higher-is-better", "required": false, "tolerance": { "relative": 0.4 } },
+    { "key": "triangles", "path": "soak.triangles", "direction": "lower-is-better", "required": false, "tolerance": { "relative": 0.1 } },
+    { "key": "visualDiffRatio", "path": "visualRegression.diffRatio", "direction": "lower-is-better", "required": false, "tolerance": { "relative": 0.5, "absolute": 0.01 } }
+  ]
+}
