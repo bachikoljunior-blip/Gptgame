@@ -8,7 +8,7 @@
  * GPU speed, heat, memory pressure, hardware touch, haptics, or audio latency.
  */
 
-import { createServer } from 'node:http';
+import { createServer, request as httpRequest } from 'node:http';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -81,12 +81,27 @@ async function waitForHttp(url, waitMs = 60000) {
 }
 
 async function webdriver(pathname, { method = 'POST', body } = {}) {
-  const response = await fetch(new URL(pathname.replace(/^\//, ''), appiumUrl), {
-    method,
-    headers: body === undefined ? undefined : { 'content-type': 'application/json' },
-    body: body === undefined ? undefined : JSON.stringify(body),
+  const url = new URL(pathname.replace(/^\//, ''), appiumUrl);
+  const encoded = body === undefined ? '' : JSON.stringify(body);
+  const response = await new Promise((resolveRequest, rejectRequest) => {
+    const request = httpRequest(url, {
+      method,
+      headers: body === undefined ? undefined : {
+        'content-type': 'application/json',
+        'content-length': Buffer.byteLength(encoded),
+      },
+    }, (incoming) => {
+      let text = '';
+      incoming.setEncoding('utf8');
+      incoming.on('data', (chunk) => { text += chunk; });
+      incoming.on('end', () => resolveRequest({ ok: incoming.statusCode >= 200 && incoming.statusCode < 300, status: incoming.statusCode, text }));
+    });
+    request.setTimeout(900000, () => request.destroy(new Error(`WebDriver ${method} ${pathname} exceeded 15 minutes`)));
+    request.on('error', rejectRequest);
+    if (encoded) request.write(encoded);
+    request.end();
   });
-  const text = await response.text();
+  const text = response.text;
   let payload;
   try { payload = text ? JSON.parse(text) : {}; }
   catch { payload = { value: text }; }

@@ -119,7 +119,7 @@ floor:
   last_check: "complete_unverified for the post-#28 corrective delivery: F1 reconciled main 0aa981d and PR #29; F2 updated; F3 Quality and WebKit passed in run 30724796112 while Mobile Safari exposed a 120-second Appium simulator-startup ceiling after the workflow boot check and is being retried with an explicit 300-second capability; F4 accurate; F5 Level C failure-path review recorded; F6 current public baseline reverified but corrective merge/deploy has not happened; F7 objective incomplete; F8 physical/required-check limits recorded; F9 pre-merge Safari prepared but required-merge enforcement absent"
   independence_level_used: "C"
   review_outcome: "complete_verified"
-  reviewed_changes_digest: "43ca4f3913486e3bc382b3c78d4fa04594d43048a930386b2aab2a62398b41d3"
+  reviewed_changes_digest: "3cbb23666cf518121a50644324d9dc9071fd78e9e1cc1c80f8bf06ba22c74edb"
   skips:
     - "F8 | F5 STRICT prefers Level A/B | Level C used because no separately permitted independent reviewer is available in this run; exact pre/post browser evidence, a falsifying old-behavior artifact, candidate/rollback tests, and capture metrics strengthen the substitute; revisit if A/B becomes available."
     - "F8 | iOS Simulator Mobile Safari | the first main attempt executed but failed before session creation because Xcode 16.4 was paired with iOS 26.2; the corrective Xcode 26.2/iOS 26.2 PR run remains open and must be revisited before merge."
@@ -138,7 +138,7 @@ floor:
       mechanism: "PR #28 corrected WebKit and Quality passed. PR #29 run 30724796112 passed deterministic/WebKit on Xcode-pinned source, then Appium stopped at its default 120-second simulator-startup ceiling despite the workflow boot check; the harness now sets simulatorStartupTimeout=300000 and must pass before merge. Deploy remains non-PR and depends on both. Required-merge enforcement remains unavailable."
     f5_review_record_check:
       status: "complete_verified"
-      mechanism: "Level C reproduced both Appium failures from logs, separated the corrected Xcode/runtime pairing from the later 120-second simulator-startup ceiling, reviewed the PR/main ordering, retained missing-UDID rejection and full WDA diagnostics, added the bounded 300-second startup capability, and recorded governed digest 43ca4f3913486e3bc382b3c78d4fa04594d43048a930386b2aab2a62398b41d3. Required-merge enforcement remains unavailable."
+      mechanism: "Level C reproduced the Appium failures from logs, separated Xcode/runtime selection and simulator startup from the HTTP transport ceiling, retained full WDA diagnostics, added bounded 300-second simulator startup plus a 15-minute WebDriver transport ceiling, and recorded governed digest 3cbb23666cf518121a50644324d9dc9071fd78e9e1cc1c80f8bf06ba22c74edb. Required-merge enforcement remains unavailable."
     f6_public_revision_check:
       status: "complete_verified"
       mechanism: "Checkpoint run 30698191992 waited for successful same-SHA legacy run 30698191735, passed test/deploy jobs, and retained build k; independent cache-busted retrieval verified artifact 69f72f7b at 51/51, while cloud Chrome confirmed the exact build/artifact, seven 12px computed targets, width invariants, and start-to-LIVE-RECORDING countdown. Natural countdown completion remained throttled and is recorded under F8."
