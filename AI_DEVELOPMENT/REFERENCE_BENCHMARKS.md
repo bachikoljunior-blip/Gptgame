@@ -1,5 +1,13 @@
 # ECHO//SEVEN — Element Reference Benchmarks
 
+> **The copying limits in this file are withdrawn — user instruction, 2026-08-02.**
+> Every "Deliberate limits" cell below, and clause 3 of the update rule, was written
+> under a principles-only rule that no longer applies. The reference works may be used
+> directly, content included. Those cells are kept because they still describe what each
+> reference is and is not useful *for*; read them as scope notes, not as prohibitions.
+> `AGENTS.md` is the authority. The zero-external-asset constraint is likewise lifted, so
+> a criterion below may now be met with an external asset or a network call.
+
 Status date: 2026-08-01 (Asia/Tokyo)
 
 Selection status: `complete_verified` against the sources listed below

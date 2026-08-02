@@ -53,12 +53,23 @@ defence there is, which is why the machine writes its own half of it.
 ## The short list that does not change
 
 - Never claim an action you did not complete and inspect.
-- No external runtime assets, CDNs, hosted services or network calls in the game.
 - No credentials or personal data in anything committed.
-- Take principles from the reference works, never their content, art, layout,
-  UI, audio or fiction, and never name one in the shipped product.
 - A quality goal may be made stricter at any time. It may be weakened only after
   it is shown to be unreachable as written — never to reach a pass.
 - Do not enable unattended chaining. Nothing blocks, so nothing would catch it.
+
+## Withdrawn by the user, 2026-08-02
+
+Older documents in this repository — `README.md`,
+`AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md`, and everything under
+`AI_DEVELOPMENT/ARCHIVE/` — still carry these two rules. They are **no longer in
+force**, and finding them in an archived file is not grounds to reinstate them.
+
+- **External runtime assets, CDNs, hosted services and network calls are
+  allowed.** The zero-external-asset constraint is lifted. It remains an accurate
+  description of the build as it stands, not a requirement on the next one.
+- **The reference works are not limited to principles.** Their content may be
+  used directly. Choices about third-party rights are the user's to make and are
+  not a rule enforced here.
 
 Everything above this line is the whole of the standing instruction.

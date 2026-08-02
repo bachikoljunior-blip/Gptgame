@@ -62,6 +62,10 @@ remote:
   deployed_artifact: "69f72f7b1c8ee9a6b6603687d10d838376384df0741abec70e51edcb9606a6f7 (build 2026.08.01-k)"
   open_pull_requests: [28]
 
+user_instructions_2026_08_02:
+  - "External runtime assets, CDNs, hosted services and network calls are allowed; the zero-external-asset constraint is withdrawn."
+  - "The reference works are not limited to principles; their content may be used directly."
+
 unattended_allowed: false
 
 updated_at: "2026-08-02"
