@@ -8,6 +8,7 @@
     "test:iphone-webkit": "node tools/test-iphone-webkit.mjs",
     "test:ios-safari": "node tools/test-ios-safari.mjs",
     "test:continuity": "node scripts/verify-continuity.mjs",
+    "measure": "node scripts/measure.mjs",
     "gate:floor": "node scripts/verify-floor.mjs",
     "release:prepare": "node scripts/prepare-release.mjs index.html _site/index.html",
     "release:verify": "node scripts/verify-public-revision.mjs",

@@ -170,3 +170,72 @@ Run the prepared WebKit workflow, promote its first WebKit-generated visual base
 1. Promote the WebKit-generated `375×667 / DPR 2` baseline and make the fast gate green.
 2. Inspect the iOS Simulator Safari video/report for simultaneous move+look+FIRE+DASH, pause/resume, reload restoration, stress state, layout, and runtime errors.
 3. Tune wave/boss balance or physical-only behavior only if later optional device evidence identifies a concrete defect.
+
+## Verified-round history moved out of STATE.yaml — 2026-08-02
+
+The active record now carries only what the next run needs. These findings and migration
+validations were verified when written and are preserved here verbatim.
+
+### Round and review findings
+
+~~~yaml
+  review_findings:
+    - "PR #28 Quality run 30699678924 passed. Initial target WebKit run 30699678903 reached the LOOP 02 gameplay capture at 375×667/DPR 2 with zero runtime/network errors; it rejected the missing baseline and Linux WebKit's maxTouchPoints=0 diagnostic. The Playwright profile itself hasTouch/isMobile, coarse pointer is true, and real tap() interactions succeeded, so the harness now evaluates that observable emulation contract without spoofing navigator state. The reviewed 750×1334 baseline SHA-256 is 00ee1ebe02a4897186c696864cbe0504ff8cdda7201b6319ad37f3bbb21e990a."
+    - "Tooling-only change, no product change: the shared kit v0.2.0 was vendored into .kit/ with its nine skills, and scripts/verify-continuity.mjs was rewritten over .kit/lib/state/ primitives instead of carrying its own copy of assertions that existed in four repositories. REBUILT on this main rather than merged onto it, and re-measured here: the earlier 19/19 was taken against the pre-0aa981d main and is void. scripts/equivalence-continuity.mjs now runs 33 deliberate mutations of PROTOCOL.md, STATE.yaml, REFERENCE_BENCHMARKS.md, AGENTS.md and START_HERE.md through both gates as subprocesses (main's copy has no CLI guard and runs on import); 33/33 reach the same verdict and 31 of the 32 breakages fire, the one that does not being the objective-id change main deliberately made legal. --selftest reports 15/15 including a control that must not fire. index.html and the game itself were not touched; the suite is 51/51."
+    - "Two defects found while rebuilding, both in assertions main added or kept, neither caused by the kit swap. 0aa981d loosened the objective-id assertion to /objective:[\\s\\S]*?id: \"[^\"]+\"/, which matches any quoted id later in the file — deleting the objective id outright still satisfied it. The same shape let a bare 'active: true' check pass against a different key's value. Both are now anchored to their own block; main's intent (do not pin the id to a value) is preserved."
+    - "Checkpoint PR #26 Quality 30698167084 and checkpoint main Quality/Pages/legacy runs 30698192000/30698191992/30698191735 passed; the cache-busted public artifact remained 69f72f7b at 51/51."
+    - "PR #25 runs 30697849726/30697849727 and main runs 30697884517/30697884506/30697884185 passed; independent public retrieval verified artifact 69f72f7b at 51/51. Public cloud Chrome returned build k/artifact 69f72f7b, computed mission index/description, stat label, verdict, diagnostic label/value, and copy status at exactly 12px, measured root 1363/1363 plus menu 560/560 without horizontal overflow, and moved SIGNAL START into the correct LIVE RECORDING countdown. Its background animation clock remained throttled, so the later playing/FIRE/DASH state was not claimed."
+    - "Build k raises phase indices/descriptions, stat labels, result verdict, diagnostics labels/values, and copy status to 12px. Fourteen exact 320×568/375×667 captures cover collapsed menu/result, expanded diagnostics top, and scrolled action bottom across WebGL, Canvas, and reduced motion where applicable; metrics found no sub-12px visible text, document/shell horizontal overflow, undersized/overlapping buttons, page/renderer errors, or invariant failures. Initial review caught REPEAT ×7 truncation at 320px and the final 0.015em value tracking restores it."
+    - "M4_INDEPENDENT_USER_SURFACE_TESTING was activated for the interactive Round 3 UI change. Exact target menu/result, expanded-diagnostics top, and scrolled action-bottom cases were exercised; its stop condition was met, so no module remains active at this checkpoint."
+    - "Public cloud Chrome returned build-j artifact afad352f, moved from SIGNAL START to playing mode with FIRE and DASH visible, and logged no game-origin errors; only unrelated Chrome-extension errors were observed."
+    - "PR #23 runs 30697163067/30697163083 and main runs 30697200815/30697200836/30697200464 passed; independent public retrieval verified artifact afad352f at 50/50. The three cue routes, distinct recipes, 10/14 general/critical voice limits, rollback applicability, and missing-routing negative all remain enforced."
+    - "Build j routes boss charge start, successful break, and failed charge/core impact through bossCharge, bossBreak, and bossImpact respectively. Source/candidate passed 50/50; the public build-i rollback passed 49 applicable plus one build-j-only skip; a valid-hash build-j artifact with the three route calls removed failed only the new assertion. Procedural signatures use separate pitch contours and reserve voices 11–14 for critical cues, but physical audibility is not claimed."
+    - "Prepared target-browser gates cover first-run taps, two-thumb move/FIRE, look, DASH, pause/resume, same-tab reload restoration, stress invariants, layout, screenshots, and runtime errors; the iOS gate uses W3C trusted touch actions rather than JavaScript event synthesis."
+    - "The existing content-addressed Pages candidate, public revision check, and automatic restoration remain in place; deployment now depends on successful iOS Safari after successful deterministic and WebKit gates."
+    - "PR #21 runs 30696277713/30696277719 and main runs 30696328392/30696328359/30696328033 passed; independent public retrieval verified artifact d9e7db13 at 49/49. Cloud Chrome returned the same artifact, started from SIGNAL START into playing mode, and logged no game-origin errors; its background clock was throttled and did not naturally advance the 15-second transition."
+    - "Build i changes the loop boundary from a generic RECORDED card to a three-level handoff naming LOOP 01 RECORDED, ECHO 01 ARMED / NEXT LOOP 02, then ECHO REPLAY with the active path count. Source passes 49/49; exact 320×568/375×667 recorded/replay captures show no page, renderer, shell-overflow, control-overlap, undersized-button, narrow-text, or invariant failures. Visual review shortened the entrance from 520 ms to 260 ms and strengthened contrast; a valid-hash old-handoff artifact fails the new test."
+    - "PR #19 runs 30695240153/30695240154 and main runs 30695280123/30695280118/30695279819 passed; independent public retrieval verified artifact 93298f8c at 48/48, and live public Chrome confirmed the repaired heading focus, top scroll position, and non-overflowing overlay."
+    - "Exact 320×568 build-g reproduction showed tutorial autofocus landing at the scroll bottom and hiding TACTICAL BRIEF, the title, and step 1. Build h resets scrollTop before and after focus and requests preventScroll; repaired top and independently scrolled bottom captures verify the full reading path at 320×568 and 375×667."
+    - "The build-h matrix contains 40 exact-size captures across WebGL, Canvas, and reduced motion with zero document/shell horizontal overflow, undersized buttons, button overlaps, page errors, renderer errors, or invariant failures; the targeted crosshair state was present at both sizes."
+    - "A Level C negative probe mechanically restored the old focus behavior in an otherwise build-h artifact and the dedicated overlay reading-order test failed, while the repaired source and candidate passed 48/48."
+    - "Official reference screenshots were applied only as criteria: ECHO keeps a much smaller touch-action set than the denser Call of Duty: Mobile/Gunfire Mobile HUDs and retains its own navy/coral/lime geometric separation rather than copying SUPERHOT; still frames cannot verify Lemnis Gate-derived echo causality."
+    - "PR #17 runs 30693098586/30693098590 and main runs 30693147860/30693147854/30693147533 verified the monotonic rollback applicability repair; the main Pages path now executes current build g at 47/47 before publishing."
+    - "Main Pages run 30692907767 passed continuity, floor, source 47/47, and rollback assembly, then failed its rollback execution: declared build g made verifyingPreVisualRollback true because the predicate was declaredBuildId !== build-f. The failing HUD assertion required the pre-f Canvas font even though g correctly contains the f-and-later HUD."
+    - "The focused repair uses lexically ordered fixed-format build IDs for f-and-later and g-and-later applicability. Local source, rollback assembled from f44c273, and independently fetched public g each passed 47/47, directly falsifying the failed path."
+    - "Post-delivery cloud Chrome found overlay client/scroll width 560/560 and displayed the complete title inside the panel. The h1 scroll box retained a 2 px decorative pseudo-element extent, but the visible title and overlay did not overflow; this did not falsify the acceptance criterion."
+    - "Cloud Chrome measured the public build-f menu title at client/scroll width 414/511 px and its overlay at 560/584 px; the visible title crossed the panel edge. Build g caps title size at 50 px, scales it from 28 px at narrow widths, tightens spacing, removes the 36 px override, and prevents horizontal overlay scrolling."
+    - "Level C width analysis projects positive title-content margins at 320, 375, 480, and the observed 560 px shell; the negative probe deliberately restored build-f CSS and the criterion rejected it. Exact 320×568/375×667 captures are now complete; 480-width and physical-phone review remain."
+    - "Post-delivery reconciliation found that the state-only merge 4a61bbe still triggered GitHub's legacy Pages publisher and temporarily replaced the revision-stamped artifact with raw index.html; rerunning custom deployment job 91333277431 restored 045d253 and the public 45/45 result."
+    - "Level C run-history comparison found that merely triggering the custom deploy on every main push was insufficient because the legacy publisher has sometimes completed after the custom workflow; the deploy now discovers and waits for that same-SHA legacy run before publishing."
+    - "The content-addressed identifier complements PR #10 by making raw and tested deployments carry the same verifiable HTML identity; no comparison may rely only on workflow ordering."
+    - "Combined execution found that treating every ROLLBACK_ARTIFACT as pre-visual weakened current build-f criteria and failed the HUD assertion; the retained build-aware rule applies all current criteria to build f and only skips the feature-specific visual check for older build e."
+~~~
+
+### 2.2 migration validation
+
+~~~yaml
+migration:
+  source: "Legacy AGENTS.md delivery policy plus PROJECT_MEMORY.md product/continuity record"
+  status: "complete_verified"
+  pre_migration_checkpoint: "AI_DEVELOPMENT/ARCHIVE/PRE_MIGRATION_2026-08-01.yaml"
+  legacy_authority_scope: "Legacy records remain evidence; conflicting operating mechanics are superseded by the validated Adaptive 2.2 loader now on main."
+  modules_installed: "complete_verified: nine separate Layer 3 files pass shape and non-activation checks"
+  modules_activated: []
+  review_findings:
+    - "Level C found that the deploy job lacked checkout/setup for its verifier; repaired and syntax/execution checked."
+    - "Level C found that an unattended Pages failure had no automatic restoration; added a separate verified rollback artifact, failure-triggered redeploy, and post-rollback runtime check."
+    - "Remote PR run 30685270293 falsified the rollback-source assumption under actions/checkout depth 1; repaired the test job to fetch full history before rollback assembly."
+    - "Main run 30685438086 deliberately failed F6, automatically redeployed e7199d1, and passed both its restoration harness and an independent public 44/44 recheck."
+    - "Later dynamic Pages run 30685827875 exposed that the commit-marker mechanism was not durable against the repository's second deployment path; content-addressed repair is in progress."
+  validation:
+    canonical_files: "complete_verified"
+    loader_discovery: "complete_verified"
+    fresh_run_resumption: "complete_verified"
+    rollback_recovery: "complete_verified: legacy run 30685438086 and content-addressed run 30687824398"
+    normal_delivery: "complete_verified: build-k product run 30697884506, checkpoint run 30698191992, independent public artifact 69f72f7b at 51/51, and live computed-type/start-to-countdown checks"
+    product_regression: "complete_verified: build-k source/candidate/PR/main/public 51/51, build-j rollback 50 applicable + 1 not_applicable, valid-hash old-type negative rejected, and 14 exact target captures reviewed"
+    non_conflicting_instructions_preserved: "complete_verified"
+    modules_inactive: "complete_verified: M4 was activated for the Round 3 user-surface pass, reached its stop condition after the relevant exact-target cases were exercised, and returned inactive; all nine module files are currently inactive"
+    accidental_publication_or_regression: "complete_verified: build k intentionally replaced build j after PR/main/public checks; only menu/result type sizing and mission-value tracking changed while the full gameplay suite passed"
+
+~~~

@@ -1,9 +1,64 @@
-# Gptgame repository loader
+# ECHO//SEVEN — standing instructions
 
-These instructions apply only to `bachikoljunior-blip/Gptgame`.
+What the product is: `README.md`.
+What "good" means, element by element: `AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md`.
 
-At the start of every Work run, read `START_HERE.md`, then load the minimum relevant portion of `AI_DEVELOPMENT/STATE.yaml` and verify it against actual repository, runtime, remote, and deployment reality. Load `AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md` whenever selecting, implementing, or judging user-visible quality. Apply the mandatory floor in `AI_DEVELOPMENT/PROTOCOL.md` in full and use the lowest sufficient rigor above it.
+Those two are the goal. This file says what must be **true when you stop**. It
+does not say how to get there.
 
-Load protocol detail and files under `AI_DEVELOPMENT/MODULES/` only when the active work reaches them. `PROJECT_MEMORY.md` is retained product history, not the canonical active-state authority.
+## How you work is yours
 
-Before ending a run that touched the project, update `AI_DEVELOPMENT/STATE.yaml` and include the compact floor-check line required by Section 0.3. Follow the standing delivery authorization in Protocol Section 14; verified implementation work is not complete until its applicable PR, merge, Pages deployment, and public revision checks have actually completed.
+There is no reading order, no iteration loop, no step sequence, no rigor tier and
+no required ceremony in this repository. Pick your own method, change it whenever
+a better one appears, and do not explain the method unless asked. Nothing here is
+judged on process.
+
+## What must be true when you stop
+
+1. **The record matches reality.** Branch, commit, build, deployment and open
+   work in `AI_DEVELOPMENT/STATE.yaml` are what a fresh check would find.
+2. **Anything called done was actually run.** Not written, not read, not
+   plausible — executed, with the result inspected.
+3. **Anything called published was fetched back.** The bytes served to a visitor
+   were retrieved and matched against the intended build. A green deploy is not
+   this.
+4. **Every quality goal reads `satisfied`, `not satisfied` or `not measured`.**
+   Those three words, nothing else, and never a word stronger than the evidence.
+   `not measured` is a normal, respectable answer. Guessing is not.
+5. **No secrets anywhere** — files, records, logs, screenshots, commits.
+6. **The next action is one readable line** in `STATE.yaml`, good enough for
+   someone who was not here.
+7. **What you could not do is written down as not done**, with the reason, in
+   the same place. Silence reads as success and is the one failure that
+   compounds.
+
+## Two records, two authors
+
+- **`AI_DEVELOPMENT/MEASURED.md` — the machine writes this.** Produced by
+  `npm run measure`. Never edit it by hand; an edit is detected and fails the
+  continuity check. It is the only place a measurement counts.
+- **`AI_DEVELOPMENT/STATE.yaml` — you write this.** Objective, judgement, plan,
+  blockers, the one-line next action.
+
+**If the two disagree, `MEASURED.md` is right.** Read it before deciding
+anything, including before believing your own previous run.
+
+## Nothing is blocked
+
+The checks run and report. They do not stop a merge and they do not stop a
+publish. That is deliberate: a broken page is cheap to fix, while work built on
+a false belief costs rounds. It also means the honesty of the record is the only
+defence there is, which is why the machine writes its own half of it.
+
+## The short list that does not change
+
+- Never claim an action you did not complete and inspect.
+- No external runtime assets, CDNs, hosted services or network calls in the game.
+- No credentials or personal data in anything committed.
+- Take principles from the reference works, never their content, art, layout,
+  UI, audio or fiction, and never name one in the shipped product.
+- A quality goal may be made stricter at any time. It may be weakened only after
+  it is shown to be unreachable as written — never to reach a pass.
+- Do not enable unattended chaining. Nothing blocks, so nothing would catch it.
+
+Everything above this line is the whole of the standing instruction.

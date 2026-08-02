@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
-import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
+
+import { checkMeasuredSeal } from "./measured-digest.mjs";
 
 const root = process.cwd();
 const stateRelative = "AI_DEVELOPMENT/STATE.yaml";
@@ -10,9 +11,7 @@ const statePath = path.resolve(root, process.env.STATE_FILE || stateRelative);
 
 const governedFiles = [
   "AGENTS.md",
-  "START_HERE.md",
   "AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md",
-  "AI_DEVELOPMENT/PROTOCOL.md",
   "AI_DEVELOPMENT/F9_DEPLOY_PROBE",
   "index.html",
   "package.json",
@@ -20,39 +19,10 @@ const governedFiles = [
 ];
 const governedDirectories = [
   ".github/workflows",
-  "AI_DEVELOPMENT/MODULES",
   "scripts",
   "tests",
   "tools",
 ];
-
-function walk(relative) {
-  const absolute = path.join(root, relative);
-  if (!fs.existsSync(absolute)) return [];
-  const stat = fs.statSync(absolute);
-  if (stat.isFile()) return [relative.replaceAll("\\", "/")];
-  return fs.readdirSync(absolute).sort().flatMap((entry) => walk(path.join(relative, entry)));
-}
-
-function governedManifestDigest() {
-  const files = [...governedFiles, ...governedDirectories.flatMap(walk)]
-    .filter((file) => fs.existsSync(path.join(root, file)))
-    .sort();
-  const hash = crypto.createHash("sha256");
-  for (const file of files) {
-    const contents = fs.readFileSync(path.join(root, file));
-    hash.update(file);
-    hash.update("\0");
-    hash.update(crypto.createHash("sha256").update(contents).digest("hex"));
-    hash.update("\n");
-  }
-  return hash.digest("hex");
-}
-
-if (process.argv.includes("--print-digest")) {
-  console.log(governedManifestDigest());
-  process.exit(0);
-}
 
 function git(args, fallback = "") {
   try {
@@ -118,20 +88,28 @@ if (governedCommits.length) {
   console.log("F2 gate not applicable: range has no governed commit");
 }
 
+// The second half used to demand a review record: an independence level of A, B or C, an
+// outcome of complete_verified, and a digest of the governed tree. All three were about how
+// the work was reviewed, and all three were written by the same party the record judges.
+//
+// What replaces them is the goal underneath: a change to the governed tree must come with a
+// fresh, unedited measurement of that change — not a measurement of the state three commits
+// ago, and not one improved afterwards by hand.
 if (rangeTouchesGoverned) {
-  const level = process.env.FLOOR_TEST_INVALID_REVIEW === "1"
-    ? "prepared_not_executed"
-    : state.match(/independence_level_used: "([^"]+)"/)?.[1];
-  const outcome = process.env.FLOOR_TEST_INVALID_REVIEW === "1"
-    ? "prepared_not_executed"
-    : state.match(/review_outcome: "([^"]+)"/)?.[1];
-  const recordedDigest = process.env.FLOOR_TEST_INVALID_REVIEW === "1"
-    ? "invalid"
-    : state.match(/reviewed_changes_digest: "([^"]+)"/)?.[1];
-  assert.ok(["A", "B", "C"].includes(level), "F5 failed: review independence must be A, B, or C, got " + level);
-  assert.equal(outcome, "complete_verified", "F5 failed: review_outcome is " + outcome);
-  assert.equal(recordedDigest, governedManifestDigest(), "F5 failed: review digest does not match the governed tree");
-  console.log("F5 gate passed: Level " + level + " review matches governed tree");
+  const measuredRelative = "AI_DEVELOPMENT/MEASURED.md";
+  const measuredPath = path.resolve(root, measuredRelative);
+
+  assert.ok(
+    rangeFiles.includes(measuredRelative),
+    "measurement failed: governed files changed without " + measuredRelative
+      + " — run `npm run measure` and commit the result",
+  );
+  assert.ok(fs.existsSync(measuredPath), "measurement failed: " + measuredRelative + " is missing");
+
+  const seal = checkMeasuredSeal(fs.readFileSync(measuredPath, "utf8"));
+  assert.ok(seal.ok, "measurement failed: " + seal.reason);
+
+  console.log("measurement gate passed: this change set carries its own sealed measurement");
 } else {
-  console.log("F5 gate not applicable: range does not change governed files");
+  console.log("measurement gate not applicable: range does not change governed files");
 }
