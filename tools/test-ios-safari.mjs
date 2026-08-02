@@ -293,8 +293,8 @@ try {
   const fireX = controls.fire.x + controls.fire.width / 2;
   const fireY = controls.fire.y + controls.fire.height / 2;
   await performActions([
-    finger('move-thumb', [move(moveStartX, moveStartY), down(), move(moveStartX + 6, moveStartY - 70, 350), pause(0), pause(0), pause(700), up()]),
-    finger('fire-thumb', [pause(0), pause(0), pause(350), move(fireX, fireY), down(), pause(700), up()]),
+    finger('move-thumb', [move(moveStartX, moveStartY), down(), move(moveStartX + 6, moveStartY - 70, 350), pause(700), up()]),
+    finger('fire-thumb', [move(fireX, fireY), pause(350), down(), pause(700), up()]),
   ]);
   await new Promise((done) => setTimeout(done, 250));
   const after = await execute('return window.__E7_TEST__.snapshot();');

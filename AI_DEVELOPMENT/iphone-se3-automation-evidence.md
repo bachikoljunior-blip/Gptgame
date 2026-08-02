@@ -85,6 +85,15 @@ The retry sets `appium:simulatorStartupTimeout` to a bounded 300 seconds while r
 the existing 180-second WDA launch budget and diagnostic logs; it remains a blocking
 pre-merge check rather than being reclassified as success.
 
+Corrective PR #29 run `30726583430` then created the exact Xcode 26.2/iOS 26.2
+iPhone SE 3 Mobile Safari session. It verified a 375×549 CSS viewport at DPR 2,
+five reported touch points, Mobile Safari, WebGL, menu layout and first-run trusted
+element taps. The next W3C two-pointer command failed because WebDriverAgent requires
+each pointer source to begin with `pointerMove`, while the delayed FIRE pointer began
+with `pause`. The harness now positions both pointers first and then performs the
+bounded simultaneous move/FIRE hold. This is a harness-compatibility repair, not a
+gameplay pass; a clean exact-head rerun remains mandatory before merge.
+
 ## Explicit non-claims
 
 The simulator does not measure physical GPU speed, thermal throttling, memory-pressure
