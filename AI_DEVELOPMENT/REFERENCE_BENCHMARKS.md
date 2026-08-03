@@ -1,7 +1,7 @@
 # ECHO//SEVEN — Element Reference Benchmarks
 
-> **Governed by `AGENTS.md`.** The standing rules it carries — never reproduce a reference's
-> content, never name one in what ships, a criterion may be made stricter freely and weakened
+> **Governed by `AGENTS.md`.** The standing rules it carries — never build a reference's
+> content into the game, never name one in what ships, a criterion may be made stricter freely and weakened
 > only on proof it is unreachable, external assets and network calls are allowed — are **not
 > restated here**. Read them there.
 >

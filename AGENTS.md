@@ -91,9 +91,10 @@ which is why the machine writes its own half of it.
 ## The short list that does not change
 
 - Never claim an action you did not complete and inspect.
-- **Never reproduce a reference work's content.** Its art, models, audio, text,
-  levels, layout, icons, HUD or fiction may not be copied or near-copied into
-  this product, and no reference is named in what ships.
+- **Never build a reference work's content into the game.** Its art, models,
+  audio, text, levels, layout, icons, HUD or fiction may not be copied or
+  near-copied into what ships, and no reference is named there. Holding that
+  material and comparing against it is fine — that is what it is for.
 - A quality goal may be made stricter at any time. It may be weakened only after
   it is shown to be unreachable as written — never to reach a pass.
 - Do not enable unattended chaining. Nothing blocks, so nothing would catch it.
@@ -109,7 +110,7 @@ is not grounds to reinstate it.
   description of the build as it stands, not a requirement on the next one.
 - **A reference work is not only a source of principles.** It is also the bar
   this product is measured against and compared with, and criteria may be drawn
-  from it as directly as the comparison needs. The no-copying rule above is
-  unaffected: use a reference to judge this product, never to fill it.
+  from it as directly as the comparison needs. The rule above is unaffected: it
+  bans building a reference into the game, not comparing against one.
 
 Everything above this line is the whole of the standing instruction.

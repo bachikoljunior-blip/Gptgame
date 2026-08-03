@@ -34,7 +34,7 @@ objective:
 reference_benchmark:
   path: "AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md"
   status: "not measured"
-  note: "The rules are in the file itself and in AGENTS.md; not restated here. Nothing below that file's new section has been re-derived under it yet."
+  note: "The copying ban covers building a reference into the game, not comparing against one. The rules are in the file itself and in AGENTS.md; not restated here. Nothing below that file's new section has been re-derived under it yet."
   open:
     - "not measured: the eight elements have not been re-derived as parts of the concept | route: derive them from the concept at a granularity that can be compared; needs nothing not already here"
     - "not measured: the element set has never been read back against the concept as a set, so whether anything the concept asks for is uncovered is unknown | route: name which element covers each part of the concept; more than the minimum is fine, missing is not"
