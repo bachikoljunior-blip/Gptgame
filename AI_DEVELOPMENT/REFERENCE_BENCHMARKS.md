@@ -19,6 +19,10 @@ Selection status: **`not measured` against the four axes below.** The current se
 from official descriptions and review aggregates before those axes existed, and has never
 been re-checked against them.
 
+Essentials-to-elements coverage: **`not measured` — no such list exists.** The eight elements
+below were never derived from a written list of what the concept cannot exist without, so
+whether they cover it is unknown, and any gap between them is currently undetectable.
+
 Blind comparison, per element: **`not measured` — never run for any element.** Under the rule
 below this makes every element's criterion `not satisfied` or `not measured`, including the
 ones this file previously recorded as verified. Those records remain accurate about what was
@@ -44,10 +48,16 @@ element only if this build and a reference can be set beside each other on it, a
 video or text. A split too fine or too vague to judge that way is merged upward or restated
 until it can be.
 
+**The divisions must together cover every essential.** Nothing the concept cannot exist
+without may fall outside every element — not between two divisions, and not in a gap left
+because some part was awkward to split. Deriving the elements therefore starts by listing the
+essentials and ends by showing which element carries each one. **An essential with no element
+is an unfinished derivation, not a gap to be noticed later.**
+
 Granularity is what measurability decides — never coverage. An essential that no division
-makes comparable stays on the list and reads `not measured`, naming what is missing. It is
-not dropped for being hard to judge, and the list is not drawn from how the code happens to
-be organised.
+makes comparable still gets an element, which reads `not measured` and names what is missing.
+It is not dropped for being hard to judge, and the list is not drawn from how the code
+happens to be organised.
 
 ### Selecting a reference work for each element
 
