@@ -28,8 +28,12 @@ objective:
 
 reference_benchmark:
   path: "AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md"
-  status: "satisfied for reference selection and its recorded exclusions"
-  unmeasured: "Direct matched-footage, blind, expert, fresh-viewer and physical-phone comparison against the four references have never been run."
+  status: "not measured"
+  note: "The 2026-08-02 instruction set how elements are derived, how a reference is chosen, and that each element is judged by blind comparison. Nothing in the file below that section has been re-derived under it yet."
+  open:
+    - "not measured: the eight elements have not been re-derived as what the concept cannot exist without"
+    - "not measured: the four references have never been checked against the four selection axes"
+    - "not measured: no blind comparison has been run for any element, so no element criterion can read satisfied"
 
 execution:
   active_work: "PR #28 carries the reconciled target-browser gates on origin/main ea0a90e. Quality passed; the first target WebKit run completed all product checks and stopped for review of the missing baseline plus a runner-only touch-point diagnostic. The inspected baseline and descriptor-based touch contract are prepared for the corrected rerun."
@@ -50,7 +54,7 @@ execution:
     - "Exact target captures use headless Chromium with software WebGL; Japanese glyphs were unavailable in that browser, so geometry and font-size metrics hold but glyph appearance does not."
     - "The connected GitHub tools expose no branch-protection or ruleset mutation, and local gh is absent. Nothing blocks a merge or a publish; the sealed MEASURED.md is what stands in for that."
     - "GitHub's legacy branch-based Pages publisher cannot be disabled with the exposed connector; the available defence is running the tested custom deployment after every main push."
-  exact_next_action: "Commit the goal-only instruction rewrite, run npm run measure and node scripts/verify-continuity.mjs --selftest on the branch, then publish the inspected baseline and touch-contract repair to PR #28 and merge once its WebKit rerun passes."
+  exact_next_action: "Re-derive the elements from the current concept as what it cannot exist without, then re-check each reference against the four axes; only after that is a blind comparison worth building. The PR #28 WebKit rerun is unrelated and still open."
 
 recovery:
   last_known_good: "source ea0a90e9c53a20d45c5caf3dfb829e9a1078f17e / public artifact 69f72f7b1c8ee9a6b6603687d10d838376384df0741abec70e51edcb9606a6f7"
@@ -65,6 +69,7 @@ remote:
 user_instructions_2026_08_02:
   - "External runtime assets, CDNs, hosted services and network calls are allowed; the zero-external-asset constraint is withdrawn."
   - "A reference work is not only a source of principles: it is also the bar this product is measured against. Its content must still never be reproduced, and no reference is named in what ships."
+  - "Elements are what the concept cannot exist without, re-derived when the concept changes; each element gets its own reference chosen on four axes (element quality, expert and player reception, long-term reputation, fit to concept — device class and production scale deliberately excluded); each element is judged by blind comparison against the real reference using images, video and text, then repaired and re-compared."
 
 unattended_allowed: false
 

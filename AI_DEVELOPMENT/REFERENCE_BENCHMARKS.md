@@ -1,38 +1,105 @@
 # ECHO//SEVEN — Element Reference Benchmarks
 
-> **User instruction, 2026-08-02 — two clarifications. `AGENTS.md` is the authority.**
+> **User instruction, 2026-08-02. `AGENTS.md` is the authority.**
 >
-> 1. **The copying limits below stand.** Every "Deliberate limits" cell that forbids
->    copying a reference's art, layout, HUD, levels, audio, characters or fiction is in
->    force, as is the rule that no reference is named in the shipped product.
-> 2. **What is lifted is the "principles only" framing.** A reference here is also the
->    bar this product is measured against and compared with; criteria may be drawn from
->    it as directly as that comparison needs. Use a reference to judge this product,
->    never to fill it.
-> 3. **The zero-external-asset constraint is withdrawn**, so a criterion below may now be
->    met with an external asset, a CDN, a hosted service or a network call.
+> The section "Authority, elements, selection, and comparison" below was set by that
+> instruction and governs this file. **Everything after it predates the instruction and has
+> not yet been re-derived under it** — the eight elements, the four references, and every
+> criterion. Read them as the previous state, not as the current answer.
+>
+> 1. **Elements are what the concept cannot exist without**, re-derived whenever the
+>    concept changes.
+> 2. **Each element gets its own reference, chosen on four axes** — element quality,
+>    expert and player reception, long-term reputation, fit to concept. Device class and
+>    production scale are deliberately excluded.
+> 3. **Each element is judged by blind comparison against the real reference**, using
+>    images, video and text, and the findings are repaired and re-compared.
+> 4. **The copying limits below stand.** Every "Deliberate limits" cell forbidding the
+>    copying of a reference's art, layout, HUD, levels, audio, characters or fiction is in
+>    force, as is the rule that no reference is named in the shipped product. Use a
+>    reference to judge this product, never to fill it.
+> 5. **The zero-external-asset constraint is withdrawn**, so a criterion below may now be
+>    met with an external asset, a CDN, a hosted service or a network call — and reference
+>    material may be fetched for the comparison.
 
-Status date: 2026-08-01 (Asia/Tokyo)
+Status date: 2026-08-02 (Asia/Tokyo)
 
-Selection status: `complete_verified` against the sources listed below
+Selection status: **`not measured` against the four axes below.** The current set was chosen
+from official descriptions and review aggregates before those axes existed, and has never
+been re-checked against them.
 
-Direct side-by-side gameplay comparison: `prepared_not_executed`
+Blind comparison, per element: **`not measured` — never run for any element.** Under the rule
+below this makes every element's criterion `not satisfied` or `not measured`, including the
+ones this file previously recorded as verified. Those records remain accurate about what was
+measured; they were never a comparison against a reference.
 
 Routine iPhone browser gate: `prepared_not_executed` — Playwright WebKit at `375×667 / DPR 2`, then iPhone SE (3rd generation) iOS Simulator Mobile Safari through Appium
 
 Physical-phone-only properties: explicitly unmeasured and non-blocking for routine delivery; GPU speed, thermals, memory pressure, hand reach, haptics, speakers, and audio latency must never be inferred from either automated runner
 
-## Authority and update rule
+## Authority, elements, selection, and comparison
 
-The user's latest explicit game concept is always authoritative. This file converts that concept into a small set of element-specific reference works and review criteria; it does not replace the concept or authorize copying.
+Set by user instruction on 2026-08-02. The user's latest explicit game concept is always
+authoritative. This file converts that concept into elements, one reference work per element,
+and the criteria each becomes. It never replaces the concept and never authorizes copying.
 
-When the concept changes:
+### What counts as an element
 
-1. update only the affected concept clauses, elements, references, and criteria;
-2. preserve unaffected requirements and verified evidence;
-3. replace a reference only when it no longer fits and the replacement has equal or better evidence and applicability;
-4. never lower a criterion to make the current implementation pass;
-5. record what changed and why in `AI_DEVELOPMENT/STATE.yaml`.
+**An element is something the concept cannot exist without.** If the concept still stands with
+the thing removed, it is not an element: no reference, no criterion, no comparison.
+
+Elements come from the concept — not from how the code happens to be organised, and not from
+what happens to be easy to measure.
+
+### Selecting a reference work for each element
+
+Every element gets its own reference: the shipped work that sets the bar for **that element
+alone**. Four axes, and a replacement must be at least as strong on all four.
+
+1. **The quality of that element** in that work.
+2. **Expert and player reception.**
+3. **Long-term reputation.**
+4. **Fit to this concept.**
+
+**Device class and production scale are deliberately not axes.** The bar is what the element
+should be, not what is convenient to reach here. A reference out of reach at this scale is a
+recorded gap, never a reason to pick a weaker reference.
+
+Change a reference only when it stops fitting the concept — never because another title became
+interesting. Record the reason.
+
+### Blind comparison is how an element is judged
+
+An element's criterion is `satisfied` only after a blind comparison was actually run **and its
+findings were repaired**.
+
+- **Material.** The real reference work and the build under development, as **images, video and
+  text**. Not recollection, not an official description, not a review score, not a pixel metric
+  standing in for a comparison. Fetching reference material for this purpose is allowed.
+- **Blind.** The judge is not told which side is which. Filenames, watermarks, resolution, UI
+  language and aspect ratio are levelled first, or the comparison is refused rather than run
+  with a tell in it.
+- **The question.** Shown these unlabelled, which is stronger on this element alone, and why.
+- **Repair.** A comparison that produced findings and no repair leaves the element
+  `not satisfied` — never `satisfied with notes`.
+- **Re-compare.** The repair is judged by a fresh blind pass, not by whoever made it.
+
+A comparison that could not be run is `not measured`, naming what was missing. That is a normal
+outcome. Calling a recollection, an official screenshot, or an automated pixel check a blind
+comparison is not.
+
+### When the concept changes
+
+1. **Re-derive the elements.** What is essential to the concept may have moved.
+2. An element that left the concept is **retired**, and its reference and criteria go with it.
+   **Retiring is not weakening** and needs no unreachability proof — record which instruction
+   removed it.
+3. For each surviving element, re-check whether its reference still fits. Change it only under
+   the four axes above.
+4. Re-derive the affected criteria. Making one stricter is free.
+5. **Weakening a surviving criterion still requires proof it is unreachable as written**, stored
+   as evidence. Never weaken one to reach a pass.
+6. Record what changed, why, and under which instruction, in `AI_DEVELOPMENT/STATE.yaml`.
 
 ## Current concept
 

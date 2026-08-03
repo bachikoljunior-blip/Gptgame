@@ -6,6 +6,20 @@ What "good" means, element by element: `AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md`.
 Those two are the goal. This file says what must be **true when you stop**. It
 does not say how to get there.
 
+## Who decides
+
+**The user's latest explicit instruction outranks everything here, including this
+file and both goal files.** A stated concept replaces the recorded one; it
+is not merged with it.
+
+Then, in order: verified reality — what the repository, runtime and public surface
+actually do; then the recorded goal; then what a previous run wrote down.
+**A repeated assumption never becomes a fact.**
+
+This is an operating agreement, not a product brief. **It never authorizes
+inventing an objective, feature, technology or release target.** Do not invent
+scope, rewrite working systems for preference, or overwrite unrelated work.
+
 ## How you work is yours
 
 There is no reading order, no iteration loop, no step sequence, no rigor tier and
@@ -45,10 +59,10 @@ anything, including before believing your own previous run.
 
 ## Nothing is blocked
 
-The checks run and report. They do not stop a merge and they do not stop a
-publish. That is deliberate: a broken page is cheap to fix, while work built on
-a false belief costs rounds. It also means the honesty of the record is the only
-defence there is, which is why the machine writes its own half of it.
+The checks run and report. They stop neither a merge nor a publish. That is
+deliberate: a broken page is cheap to fix, while work built on a false belief
+costs rounds. It also makes the record's honesty the only defence there is —
+which is why the machine writes its own half of it.
 
 ## The short list that does not change
 
@@ -63,10 +77,9 @@ defence there is, which is why the machine writes its own half of it.
 
 ## Changed by the user, 2026-08-02
 
-Older documents in this repository — `README.md`,
-`AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md`, and everything under
-`AI_DEVELOPMENT/ARCHIVE/` — carry the earlier wording of both of these. Finding
-an older form there is not grounds to reinstate it.
+`README.md`, `AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md` and everything under
+`AI_DEVELOPMENT/ARCHIVE/` carry the earlier wording. Finding an older form there
+is not grounds to reinstate it.
 
 - **External runtime assets, CDNs, hosted services and network calls are
   allowed.** The zero-external-asset constraint is lifted. It remains an accurate
