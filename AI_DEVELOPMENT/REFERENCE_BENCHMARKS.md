@@ -132,17 +132,13 @@ back on our side.
 - **Blind.** The judge is not told which side is which. Filenames, watermarks, resolution, UI
   language and aspect ratio are levelled first, or the comparison is refused rather than run
   with a tell in it.
-- **The question.** Shown these unlabelled, which is stronger on this element alone, and why.
+- **The question.** Shown these unlabelled, which is stronger on this element alone. **The
+  judge is not asked to explain the answer.**
 - **The verdict.** **The judge picking the reference is the only failing answer.** Ours, or a
-  tie, and the element is `satisfied` — there is nothing to repair, and nothing to re-compare.
-- **When the reference wins, its "why" is the finding list.** Repair those, then re-compare.
-  A comparison that produced findings and no repair leaves the element `not satisfied` —
-  never `satisfied with notes`.
-- **Re-compare.** The repair is judged by a fresh blind pass, not by whoever made it.
-- **Findings.** What happens to them is the `critic` skill in this repository: a separate pass
-  tries to refute each finding and only survivors are kept, with FAIL as the default verdict.
-  That covers findings. It does not cover how several judges' answers become one verdict —
-  see the status line above.
+  tie, and the element is `satisfied`.
+
+Working out what to change when the reference wins is your job, not the judge's. The
+comparison returns a side, and nothing else.
 
 A comparison that could not be run is `not measured`, naming what was missing **and the route
 that would settle it**. Calling a recollection, an official screenshot, or an automated pixel
