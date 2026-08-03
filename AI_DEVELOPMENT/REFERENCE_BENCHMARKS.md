@@ -73,11 +73,11 @@ be covered by some element.
 - **Too few is a defect.** If the concept asks for something and no element covers it, the
   list is unfinished — not something to notice later.
 - **Too many is fine.** An element finer than strictly needed, or one that also covers
-  something next to it, is not a fault. An extra element costs one comparison. A missing one
-  costs whatever nobody looked at.
+  something next to it, is not a fault.
 
-Rule 2 decides how the parts are cut. It never decides which parts are on the list. A part
-that resists every way of cutting it still gets an element, and that element says so.
+Rule 2 decides how the parts are cut. It never decides which parts are on the list. **A part
+that resists the obvious cuts is not written off as uncomparable** — devising the comparison
+is the work, and "Devising a comparison that does not exist yet" below is where it goes.
 
 `AGENTS.md` says `not measured` is not the end. **For an element that means it carries the
 route that would settle it** — what material is needed, how it would be presented, and what

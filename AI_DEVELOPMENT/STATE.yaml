@@ -13,8 +13,9 @@ project:
   public_url: "https://bachikoljunior-blip.github.io/Gptgame/"
 
 work:
-  unit: "one blind comparison, from running it to its verdict"
-  units_requested: 1   # set by the user. A number, or "until_all_satisfied". Never chosen by the agent.
+  unit: "starts when a blind comparison is launched, ends when that comparison has its verdict"
+  units_requested: 1   # the user's dial. A number, or "continuous". Nothing else about pacing is set here:
+                       # what to repair, in what order, and when a comparison is worth launching are the agent's.
 
 logical_session:
   id: "gptgame-continuation-2026-08-01"

@@ -34,12 +34,16 @@ to satisfied is method, and method is yours.**
 
 ## One unit of work
 
-**A unit is one blind comparison, from running it to its verdict.** It is not
-finished until that comparison has a verdict, however long that takes.
+**A unit begins when a blind comparison is launched and ends when that comparison
+has its verdict.** It is not finished before then, however long that takes.
 
-**How many units to run is the user's to set, never yours.** A number, or "until
-every element is satisfied", recorded as `work.units_requested` in `STATE.yaml`.
-With nothing recorded, run one and stop.
+**Everything outside a running comparison is yours.** Aim at `satisfied`: decide
+what to repair, in what order, and **when a comparison is worth launching**. That
+timing is your judgement, not something to wait for.
+
+**The one dial the user holds is how many units to run** — a number, or
+continuously — recorded as `work.units_requested` in `STATE.yaml`. With nothing
+recorded, run one and stop.
 
 ## Real hardware is out; the phone gates stand in for it
 
