@@ -20,12 +20,17 @@ from official descriptions and review aggregates before those axes existed.
 **Route:** re-check each of the four titles against each of the four axes using published
 material; where one fails an axis, name a candidate that does not.
 
-Essentials-to-elements coverage: **`not measured` — no such list exists.** The eight elements
-below were never derived from a written list of what the concept cannot exist without, so
-whether they account for it is unknown, and anything they leave unclaimed is currently
-undetectable.
-**Route:** read the concept in `## Current concept` a clause at a time, write the list, and
-name which element claims each entry. Needs nothing that is not already here.
+Does the element set match the concept: **`not measured`.** The eight elements below were
+never read back against the concept as a set, so whether anything the concept asks for is
+uncovered is unknown.
+**Route:** read `## Current concept` against the list and name which element covers each part
+of it. Needs nothing that is not already here.
+
+How a blind comparison's answers become a verdict: **`not measured` — no rule exists.** The
+`critic` skill covers what happens to a finding once made — a separate pass tries to refute
+it, only survivors are kept, FAIL is the default. It does not say how many judges see a
+comparison, or what to do when they disagree.
+**Route:** decide it before the first comparison runs, not after seeing its answers.
 
 Blind comparison, per element: **`not measured` — never run for any element.** Under the rule
 below this makes every element's criterion `not satisfied` or `not measured`, including the
@@ -38,10 +43,8 @@ build. Both are obtainable — neither has been requested.
 
 Routine iPhone browser gate: `prepared_not_executed` — Playwright WebKit at `375×667 / DPR 2`, then iPhone SE (3rd generation) iOS Simulator Mobile Safari through Appium
 
-Physical hardware behaviour — GPU speed, thermals, memory pressure, hand reach, haptics,
-speakers, audio latency: **out of scope** by user instruction. Not an open item, not a route,
-and **never inferred from either automated runner**. Phone behaviour is worked on through the
-WebKit and iOS Simulator gates only.
+Physical hardware behaviour: **out of scope**, per `AGENTS.md`. Not an open item and not a
+route.
 
 ## Authority, elements, selection, and comparison
 
@@ -51,37 +54,35 @@ and the criteria each becomes. It never replaces the concept and never authorize
 
 ### What counts as an element
 
-**An element is something the concept cannot exist without.** If the concept still stands with
-the thing removed, it is not an element: no reference, no criterion, no comparison.
+**An element is a part of the concept, held against a reference.** It is drawn from the stated
+concept and has to fit it — not from the genre, and not from the build, where what exists is
+evidence of what was made rather than of what the concept asks for.
 
-**The essentials are read out of the concept itself.** Take the stated concept a clause at a
-time and ask of each: does the concept survive without this? What survives its removal is not
-essential. The list is not brainstormed from the genre, and it is not read off the build —
-what exists today is evidence of what was made, not of what the concept requires.
+**The test is the whole set, not the single entry.** Read the finished list back against the
+concept and ask whether the list, taken together, matches it. The two ways that fails are not
+symmetrical:
 
-**Divide those essentials at a granularity that can actually be compared.** A division is an
-element only if this build and a reference can be set beside each other on it, as images,
-video or text. A split too fine or too vague to judge that way is merged upward or restated
-until it can be.
+- **Anything the concept asks for that no element covers is a defect.** The derivation is
+  unfinished, not something to be noticed later.
+- **Having more than the minimum is fine.** An element finer than the concept strictly needs,
+  or one that reaches something adjacent, is not a fault. Over-covering costs a comparison.
+  Under-covering costs the thing nobody looked at.
 
-**The divisions must together account for every essential.** Nothing the concept cannot exist
-without may be left unclaimed — not by falling between two divisions, and not by being set
-aside because it was awkward to split. Deriving the elements therefore starts from the list
-of essentials and ends by naming which element claims each one. **An essential no element
-claims means the derivation is unfinished**, not something to be noticed later.
+**Divide at a granularity that can actually be compared.** A division is an element only if
+this build and a reference can be set beside each other on it, as images, video or text. A
+split too fine or too vague to judge that way is merged upward or restated until it can be.
 
-Every word in this section is about the list of elements. None of it refers to the game's
-space, geometry or level layout.
+Granularity is what measurability decides — never what the list covers. A part of the concept
+that no division makes comparable still gets an element. It is not left out for being hard to
+judge, and the list is not drawn from how the code happens to be organised.
 
-Granularity is what measurability decides — never coverage. An essential no division makes
-comparable still gets an element. It is not dropped for being hard to judge, and the list is
-not drawn from how the code happens to be organised.
+This section is about the list of elements. Nothing in it refers to the game's space,
+geometry or level layout.
 
-**`not measured` is an honest status and never a resting place.** Every one of them carries
-the route that would settle it: what material is needed, how it would be presented, and what
-question the judge would answer. **Where no route exists yet, inventing one is the work** —
-not a reason to record the element and move on. An element whose `not measured` carries no
-route is unfinished in the same way an unclaimed essential is.
+`AGENTS.md` says `not measured` is not the end. **For an element that means it carries the
+route that would settle it** — what material is needed, how it would be presented, and what
+question the judge would answer. **Where no route exists yet, inventing one is the work**, not
+a reason to record the element and move on.
 
 ### Selecting a reference work for each element
 
@@ -100,28 +101,25 @@ recorded shortfall, never a reason to pick a weaker reference.
 Change a reference only when it stops fitting the concept — never because another title became
 interesting. Record the reason.
 
-### The loop
+### When the work is finished
 
-This repeats, and it is the shape of ordinary quality work here.
+**After a blind comparison, an element that is not `satisfied` keeps the work open.** Nothing
+finishes while any element is unmet — not when the round feels done, not when the findings
+get smaller, and not when the ones left over look hard.
 
-1. **Repair.** Change the build so an unmet element moves.
-2. **Compare.** Run the blind comparison for every element the change could affect.
-3. **Judge.** Each of those elements reads `satisfied`, `not satisfied` or `not measured`.
-4. **Anything not `satisfied` sends you back to step 1.**
+**How you get from there to `satisfied` is yours.** There is no prescribed order and no
+required number of passes.
 
-**The loop ends when every element reads `satisfied`** — not when the round feels finished,
-not when the findings get smaller, and not when the ones left over look hard. A round that
-ends with an unmet element and no next repair has stopped, not finished.
+### What runs once, and not every time
 
-### What runs once, and not every loop
-
-**Deriving the elements and choosing their references is not part of the loop.** It runs:
+**Deriving the elements and choosing their references is not part of ordinary quality work.**
+It runs:
 
 - **once**, the first time this section is applied to the repository; and
 - **again only when the concept changes**, under "When the concept changes" below.
 
-A loop that re-opens the element list or swaps a reference because a comparison went badly has
-moved the target instead of the build. Keeping the two apart is what stops that.
+Re-opening the element list or swapping a reference because a comparison went badly moves the
+target instead of the build. Keeping the two apart is what stops that.
 
 ### Blind comparison is how an element is judged
 
@@ -138,6 +136,10 @@ findings were repaired**.
 - **Repair.** A comparison that produced findings and no repair leaves the element
   `not satisfied` — never `satisfied with notes`.
 - **Re-compare.** The repair is judged by a fresh blind pass, not by whoever made it.
+- **Findings.** What happens to them is the `critic` skill in this repository: a separate pass
+  tries to refute each finding and only survivors are kept, with FAIL as the default verdict.
+  That covers findings. It does not cover how several judges' answers become one verdict —
+  see the status line above.
 
 A comparison that could not be run is `not measured`, naming what was missing **and the route
 that would settle it**. Calling a recollection, an official screenshot, or an automated pixel
@@ -164,9 +166,8 @@ form was awkward is the failure this replaces.
 5. Only if all four fail: record `not measured` **together with all four routes and why each
    one fails**. That is a result the next run can act on. A bare `not measured` is not.
 
-**Physical hardware is not part of the work.** GPU speed, thermals, memory pressure, hand
-reach, haptics, speaker behaviour and audio latency are out of scope by user instruction —
-not open items, not routes, and never inferred from the gates in route 4.
+Physical hardware is out of the work; `AGENTS.md` carries that rule. Nothing here reads route
+4 as evidence about a real device.
 
 ### When the concept changes
 

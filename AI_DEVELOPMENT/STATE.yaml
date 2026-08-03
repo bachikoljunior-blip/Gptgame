@@ -31,9 +31,10 @@ reference_benchmark:
   status: "not measured"
   note: "The rules are in the file itself and in AGENTS.md; not restated here. Nothing below that file's new section has been re-derived under it yet."
   open:
-    - "not measured: the eight elements have not been re-derived as what the concept cannot exist without | route: read the concept clause by clause and re-derive; needs nothing not already here"
-    - "not measured: no list of the essentials exists, so whether the elements account for them is unknown | route: write the list from the concept and name which element claims each entry"
+    - "not measured: the eight elements have not been re-derived as parts of the concept | route: derive them from the concept at a granularity that can be compared; needs nothing not already here"
+    - "not measured: the element set has never been read back against the concept as a set, so whether anything the concept asks for is uncovered is unknown | route: name which element covers each part of the concept; more than the minimum is fine, missing is not"
     - "not measured: the four references have never been checked against the four selection axes | route: check each title against each axis from published material, name a replacement where one fails"
+    - "not measured: no rule exists for turning several judges answers into one verdict; the critic skill covers findings only | route: decide it before the first comparison runs, not after seeing its answers"
     - "not measured: no blind comparison has been run for any element | route: our side is already capturable at matched framings; reference material and a judge who has not seen the build are both obtainable and neither has been requested"
 
 execution:
@@ -55,7 +56,7 @@ execution:
     - "Exact target captures use headless Chromium with software WebGL; Japanese glyphs were unavailable in that browser, so geometry and font-size metrics hold but glyph appearance does not."
     - "The connected GitHub tools expose no branch-protection or ruleset mutation, and local gh is absent. Nothing blocks a merge or a publish; the sealed MEASURED.md is what stands in for that."
     - "GitHub's legacy branch-based Pages publisher cannot be disabled with the exposed connector; the available defence is running the tested custom deployment after every main push."
-  exact_next_action: "Run the once-only half: read the current concept a clause at a time, write the list of what it cannot exist without, derive elements at a granularity that can be compared and name which element claims each entry, then check each reference against the four axes. After that the repair-compare-repair loop is what runs, and this half does not run again until the concept changes. The PR #28 WebKit rerun is unrelated and still open."
+  exact_next_action: "Run the once-only half: derive the elements as parts of the current concept at a granularity that can be compared, read the finished set back against the concept and name which element covers each part of it, then check each reference against the four axes. This half does not run again until the concept changes. The PR #28 WebKit rerun is unrelated and still open."
 
 recovery:
   last_known_good: "source ea0a90e9c53a20d45c5caf3dfb829e9a1078f17e / public artifact 69f72f7b1c8ee9a6b6603687d10d838376384df0741abec70e51edcb9606a6f7"

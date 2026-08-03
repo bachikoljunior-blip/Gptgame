@@ -27,15 +27,16 @@ ceremony in this repository. Pick your own method, change it whenever a better o
 appears, and do not explain the method unless asked. Nothing here is judged on
 process.
 
-**One exception, set by the user.** Quality work runs the loop in
-`AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md`: repair, compare blind, and repair again
-while any element is unmet. Deriving the elements and choosing their references
-sits outside that loop and runs only once, and again when the concept changes.
-How you repair is still yours.
+**One exception, set by the user.** After the blind comparison in
+`AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md`, an element that is not `satisfied` keeps
+the work open. Nothing finishes while any element is unmet. **Getting from there
+to satisfied is method, and method is yours.**
 
 **Physical hardware is out of the work.** Phone behaviour is reached through the
 repository's Playwright WebKit and iOS Simulator Mobile Safari gates, and their
-output is never read as evidence about a real device.
+output is never read as evidence about a real device. GPU speed, thermals, memory
+pressure, hand reach, haptics, speakers and audio latency are out of scope: not
+open items and not routes.
 
 ## What must be true when you stop
 
