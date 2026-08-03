@@ -8,17 +8,17 @@ This file is the authority for what was measured. AI_DEVELOPMENT/STATE.yaml is t
 authority for judgement and plan. Where they disagree, this file is right.
 -->
 
-taken: 2026-08-03T07:05:55.792Z
+taken: 2026-08-03T07:13:59.806Z
 branch: claude/repo-instructions-constraints-r0070m
-commit: 671e0711d62701b8a3c59274f7bb90fc1356d026
+commit: b27931fdd7fe8c8dffbe669ce1a548c3c9c57ec8
 
 | check | verdict | evidence |
 |---|---|---|
-| working tree clean            | `not satisfied` | 3 uncommitted path(s) |
-| deterministic tests executed  | `satisfied` | # duration_ms 19013.431454 |
+| working tree clean            | `not satisfied` | 2 uncommitted path(s) |
+| deterministic tests executed  | `satisfied` | # duration_ms 19710.395826 |
 | vendored kit matches source   | `satisfied` | note: this is an integrity check, not a comparison against the kit — run --check from the kit for that. |
 | local build identity computed | `satisfied` | 69f72f7b1c8ee9a6b6603687d10d838376384df0741abec70e51edcb9606a6f7 |
 | served bytes match this build | `satisfied` | https://bachikoljunior-blip.github.io/Gptgame/ serves 69f72f7b1c8e… |
 
 4 satisfied, 1 not satisfied, 0 not measured.
-digest: 8291bd4f7c26ad0ad804ac2dd57d5e6262b832c37537fb25e7b5922a535da22f
+digest: 23668e965166dd745b64abae99db9f2d88b674332682014d952530a8153580f7

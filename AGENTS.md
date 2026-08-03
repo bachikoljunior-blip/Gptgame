@@ -34,12 +34,12 @@ to satisfied is method, and method is yours.**
 
 ## One unit of work
 
-**A unit begins when a blind comparison is launched and ends when that comparison
-has its verdict.** It is not finished before then, however long that takes.
+**A unit ends when a blind comparison you launched completes.** That verdict is
+the end of the unit, and nothing else ends it.
 
-**Everything outside a running comparison is yours.** Aim at `satisfied`: decide
-what to repair, in what order, and **when a comparison is worth launching**. That
-timing is your judgement, not something to wait for.
+**Everything up to there is yours.** Aim at `satisfied`: decide what to repair, in
+what order, and **when a comparison is worth launching**. Launching one is your
+judgement, not something to wait for permission on.
 
 **The one dial the user holds is how many units to run** — a number, or
 continuously — recorded as `work.units_requested` in `STATE.yaml`. With nothing
