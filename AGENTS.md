@@ -32,11 +32,33 @@ process.
 the work open. Nothing finishes while any element is unmet. **Getting from there
 to satisfied is method, and method is yours.**
 
-**Physical hardware is out of the work.** Phone behaviour is reached through the
-repository's Playwright WebKit and iOS Simulator Mobile Safari gates, and their
-output is never read as evidence about a real device. GPU speed, thermals, memory
-pressure, hand reach, haptics, speakers and audio latency are out of scope: not
-open items and not routes.
+## One unit of work
+
+**A unit is one blind comparison, from running it to its verdict.** It is not
+finished until that comparison has a verdict, however long that takes.
+
+**How many units to run is the user's to set, never yours.** A number, or "until
+every element is satisfied", recorded as `work.units_requested` in `STATE.yaml`.
+With nothing recorded, run one and stop.
+
+## Real hardware is out; the phone gates stand in for it
+
+Playwright WebKit and iOS Simulator Mobile Safari are the phone surface. Three
+kinds of thing, treated differently:
+
+- **What the gates measure** — touch-target size and position, safe-area fit,
+  whether a haptic call fires and for how long, whether audio fires, voice count
+  and level, input-to-sound time in software, and the workload numbers: draw
+  calls, triangles, texture bytes, milliseconds of script per frame. Judged like
+  anything else.
+- **What they cannot measure but can be inferred from what they do** — whether
+  that workload fits a phone's budget, whether the memory footprint fits, whether
+  every control is reachable on a `375×667` screen. **The inference has to satisfy
+  the criterion, and is written as an inference with the numbers it rests on.
+  Never as a measurement.**
+- **Neither measurable nor inferable, and so out of scope** — sustained thermal
+  behaviour, real speaker acoustics, the device's own audio output latency, and
+  how the haptics feel.
 
 ## What must be true when you stop
 

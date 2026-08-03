@@ -12,6 +12,10 @@ project:
   canonical_product_source: "index.html"
   public_url: "https://bachikoljunior-blip.github.io/Gptgame/"
 
+work:
+  unit: "one blind comparison, from running it to its verdict"
+  units_requested: 1   # set by the user. A number, or "until_all_satisfied". Never chosen by the agent.
+
 logical_session:
   id: "gptgame-continuation-2026-08-01"
   active: true
@@ -24,7 +28,7 @@ objective:
   open:
     - "not satisfied: the corrected target WebKit rerun on PR #28 has not passed"
     - "not measured: iOS Simulator Mobile Safari is main-only and cannot run until PR #28 merges"
-    - "out of scope by user instruction: physical hardware behaviour. The WebKit and iOS Simulator gates are the phone surface for all routine work"
+    - "split by user instruction: what the phone gates measure is judged normally; what can be inferred from those numbers is inferred and the inference is judged against the criterion; sustained thermals, speaker acoustics, device audio latency and haptic feel are out of scope"
 
 reference_benchmark:
   path: "AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md"
@@ -52,7 +56,7 @@ execution:
     - "The corrected target WebKit branch rerun must pass before PR #28 can merge."
     - "iOS Simulator Mobile Safari is deliberately main-only and cannot execute until the passing PR is merged."
   unmeasured:
-    - "out of scope by user instruction: physical hardware behaviour (GPU speed, thermals, memory pressure, hand reach, haptics, speakers, audio latency). Phone work goes through the Playwright WebKit and iOS Simulator Safari gates; their output is never read as physical-device evidence"
+    - "not measured: workload-to-phone-budget, memory footprint and reach are inferable from the gates but no inference has been written yet | route: state each inference with the numbers it rests on and judge it against the criterion"
     - "Exact target captures use headless Chromium with software WebGL; Japanese glyphs were unavailable in that browser, so geometry and font-size metrics hold but glyph appearance does not."
     - "The connected GitHub tools expose no branch-protection or ruleset mutation, and local gh is absent. Nothing blocks a merge or a publish; the sealed MEASURED.md is what stands in for that."
     - "GitHub's legacy branch-based Pages publisher cannot be disabled with the exposed connector; the available defence is running the tested custom deployment after every main push."

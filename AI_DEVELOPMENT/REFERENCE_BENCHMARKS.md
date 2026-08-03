@@ -43,8 +43,9 @@ build. Both are obtainable — neither has been requested.
 
 Routine iPhone browser gate: `prepared_not_executed` — Playwright WebKit at `375×667 / DPR 2`, then iPhone SE (3rd generation) iOS Simulator Mobile Safari through Appium
 
-Physical hardware behaviour: **out of scope**, per `AGENTS.md`. Not an open item and not a
-route.
+Phone hardware: split three ways by `AGENTS.md` — what the gates measure, what can be
+inferred from what they measure, and what is neither and so out of scope. **An inference has
+to satisfy the criterion, and is written as an inference with the numbers it rests on.**
 
 ## Authority, elements, selection, and comparison
 
@@ -54,30 +55,29 @@ and the criteria each becomes. It never replaces the concept and never authorize
 
 ### What counts as an element
 
-**An element is a part of the concept, held against a reference.** It is drawn from the stated
-concept and has to fit it — not from the genre, and not from the build, where what exists is
-evidence of what was made rather than of what the concept asks for.
+**An element is one part of the concept, cut so it can be compared against a reference work.**
 
-**The test is the whole set, not the single entry.** Read the finished list back against the
-concept and ask whether the list, taken together, matches it. The two ways that fails are not
-symmetrical:
+Three rules, in order.
 
-- **Anything the concept asks for that no element covers is a defect.** The derivation is
-  unfinished, not something to be noticed later.
-- **Having more than the minimum is fine.** An element finer than the concept strictly needs,
-  or one that reaches something adjacent, is not a fault. Over-covering costs a comparison.
-  Under-covering costs the thing nobody looked at.
+**1. Take the parts from the concept.** Not from the genre, and not from the build — what
+exists in the build is evidence of what was made, not of what the concept asks for.
 
-**Divide at a granularity that can actually be compared.** A division is an element only if
-this build and a reference can be set beside each other on it, as images, video or text. A
-split too fine or too vague to judge that way is merged upward or restated until it can be.
+**2. Cut each part where it can actually be compared.** A part is an element only if this
+build and a reference can be set side by side on it, as images, video or text. Too fine or
+too vague to judge that way, and it gets merged into a larger element or restated until it
+can be judged.
 
-Granularity is what measurability decides — never what the list covers. A part of the concept
-that no division makes comparable still gets an element. It is not left out for being hard to
-judge, and the list is not drawn from how the code happens to be organised.
+**3. Check the finished list against the concept as a whole.** Every part of the concept must
+be covered by some element.
 
-This section is about the list of elements. Nothing in it refers to the game's space,
-geometry or level layout.
+- **Too few is a defect.** If the concept asks for something and no element covers it, the
+  list is unfinished — not something to notice later.
+- **Too many is fine.** An element finer than strictly needed, or one that also covers
+  something next to it, is not a fault. An extra element costs one comparison. A missing one
+  costs whatever nobody looked at.
+
+Rule 2 decides how the parts are cut. It never decides which parts are on the list. A part
+that resists every way of cutting it still gets an element, and that element says so.
 
 `AGENTS.md` says `not measured` is not the end. **For an element that means it carries the
 route that would settle it** — what material is needed, how it would be presented, and what
@@ -166,8 +166,9 @@ form was awkward is the failure this replaces.
 5. Only if all four fail: record `not measured` **together with all four routes and why each
    one fails**. That is a result the next run can act on. A bare `not measured` is not.
 
-Physical hardware is out of the work; `AGENTS.md` carries that rule. Nothing here reads route
-4 as evidence about a real device.
+Route 4 measures what it measures. Reading it as a real device is what `AGENTS.md` forbids;
+reasoning from its numbers to a phone is allowed, and the reasoning is judged like any other
+answer.
 
 ### When the concept changes
 
@@ -360,7 +361,7 @@ Existing browser evidence and the prepared gates are kept distinct. The first wa
 - `complete_verified`: PR #19, main Quality run `30695280123`, ordered Pages run `30695280118`, and legacy same-SHA run `30695279819` succeeded. A cache-busted public artifact passed 48/48; live cloud Chrome returned artifact `93298f8c…`, focused `tutorialTitle`, retained `scrollTop=0`, kept the heading visible, and measured tutorial overlay width 560/560 px.
 - `complete_unverified`: LOOP 01/02 stills and the echo-count HUD show distinct states, but they cannot prove the Lemnis Gate-derived causal-readability criterion. Loop-transition footage and a fresh-viewer explanation check remain necessary.
 - `prepared_not_executed`: target Playwright WebKit and iOS Simulator Mobile Safari runs, full loop-transition footage, fresh-viewer review, blind/expert review, and direct matched-reference gameplay comparison.
-- Out of scope by user instruction, 2026-08-02: physical iPhone/Android GPU/thermal/memory behaviour, hand reach and feel, haptics, speakers, and audio latency. Phone work runs through the Playwright WebKit and iOS Simulator Mobile Safari gates; their output is never read as physical-device evidence.
+- Split by user instruction, 2026-08-02, per `AGENTS.md`. Measured in the gates: touch-target size and position, safe-area fit, haptic call and duration, audio firing, voice count and level, input-to-sound time in software, draw calls, triangles, texture bytes, script milliseconds per frame. Inferred from those, with the inference judged against the criterion: workload against a phone's budget, memory footprint, reach on a 375x667 screen. Out of scope, being neither: sustained thermal behaviour, real speaker acoustics, device audio output latency, how the haptics feel.
 
 ## Evidence sources used for selection
 
