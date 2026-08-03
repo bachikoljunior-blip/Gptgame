@@ -132,13 +132,9 @@ back on our side.
 - **Blind.** The judge is not told which side is which. Filenames, watermarks, resolution, UI
   language and aspect ratio are levelled first, or the comparison is refused rather than run
   with a tell in it.
-- **The question.** Shown these unlabelled, which is stronger on this element alone. **The
-  judge is not asked to explain the answer.**
+- **The question.** Shown these unlabelled, which is stronger on this element alone.
 - **The verdict.** **The judge picking the reference is the only failing answer.** Ours, or a
   tie, and the element is `satisfied`.
-
-Working out what to change when the reference wins is your job, not the judge's. The
-comparison returns a side, and nothing else.
 
 A comparison that could not be run is `not measured`, naming what was missing **and the route
 that would settle it**. Calling a recollection, an official screenshot, or an automated pixel
@@ -146,8 +142,9 @@ check a blind comparison is not an acceptable substitute.
 
 ### Devising a comparison that does not exist yet
 
-Work down this list until something carries the element. Stopping early because the first
-form was awkward is the failure this replaces.
+These are the forms known to carry an element here. Use any of them, in any order, or a
+better one. **What is fixed is only that a comparison gets devised** — stopping because the
+first form was awkward is the failure this exists against.
 
 1. **A still.** Both sides at a matched framing and a matched moment. Enough for anything
    about composition, hierarchy, legibility, type, colour or layout.
@@ -162,8 +159,8 @@ form was awkward is the failure this replaces.
    WebKit at iPhone SE (3rd generation) `375×667 / DPR 2`, and the matching iOS Simulator
    Mobile Safari on macOS driven through Appium. Their screenshots, video, traces and logs
    are the material, and they feed routes 1–3.
-5. Only if all four fail: record `not measured` **together with all four routes and why each
-   one fails**. That is a result the next run can act on. A bare `not measured` is not.
+5. If none of them carries it: record `not measured` **with what was tried and why each
+   failed**. That is a result the next run can act on. A bare `not measured` is not.
 
 Route 4 measures what it measures. Reading it as a real device is what `AGENTS.md` forbids;
 reasoning from its numbers to a phone is allowed, and the reasoning is judged like any other

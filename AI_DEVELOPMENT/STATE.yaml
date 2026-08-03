@@ -39,7 +39,7 @@ reference_benchmark:
     - "not measured: the eight elements have not been re-derived as parts of the concept | route: derive them from the concept at a granularity that can be compared; needs nothing not already here"
     - "not measured: the element set has never been read back against the concept as a set, so whether anything the concept asks for is uncovered is unknown | route: name which element covers each part of the concept; more than the minimum is fine, missing is not"
     - "not measured: the four references have never been checked against the four selection axes | route: check each title against each axis from published material, name a replacement where one fails"
-    - "not measured: a comparison now returns only a side, and no rule exists for turning several judges side-picks into one verdict | route: decide it before the first comparison runs, not after seeing its answers"
+    - "not measured: no rule exists for turning several judges answers into one verdict | route: decide it before the first comparison runs, not after seeing its answers"
     - "not measured: no blind comparison has been run for any element | route: our side is already capturable at matched framings; reference material and a judge who has not seen the build are both obtainable and neither has been requested"
 
 execution:
