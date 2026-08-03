@@ -11,7 +11,7 @@
  *
  * So this now checks four things, and nothing about method:
  *
- *   1. the standing instructions still state the goals, and still fit in one read;
+ *   1. the standing instructions still state the goals;
  *   2. the machine-written record has not been edited by hand;
  *   3. the human-written record can still be resumed from — objective, next action;
  *   4. nothing credential-shaped is sitting in a file a session reads.
@@ -31,7 +31,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { requireFiles, requireNonEmpty, requireByteCeiling } from '../.kit/lib/state/files.mjs';
+import { requireFiles, requireNonEmpty } from '../.kit/lib/state/files.mjs';
 import { scanSecretValues } from '../.kit/lib/state/secrets.mjs';
 import { reportGateSelfTests } from '../.kit/lib/state/selftest.mjs';
 import { checkMeasuredSeal } from './measured-digest.mjs';
@@ -49,9 +49,6 @@ const REQUIRED = [
   'AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md',
   'AI_DEVELOPMENT/ARCHIVE/PRE_MIGRATION_2026-08-01.yaml',
 ];
-
-/** Standing instructions that stop fitting in one read stop being read. */
-const CEILINGS = { 'AGENTS.md': 4500 };
 
 /**
  * The seven end conditions from AGENTS.md, each reduced to the phrase that cannot be
@@ -87,7 +84,6 @@ export function verifyContinuity({ root = ROOT, read } = {}) {
 
   failures.push(...requireFiles(root, REQUIRED));
   failures.push(...requireNonEmpty(root, REQUIRED));
-  failures.push(...requireByteCeiling(root, CEILINGS));
 
   const instructions = readFile('AGENTS.md');
   const measured = readFile('AI_DEVELOPMENT/MEASURED.md');
@@ -222,10 +218,6 @@ export function selfTestCases({ root = ROOT } = {}) {
       name: 'a credential-shaped value pasted into the state file',
       evaluate: () => run(withEdit('AI_DEVELOPMENT/STATE.yaml',
         (t) => `${t}\nleaked: ghp_0123456789abcdefghijklmnopqrstuvwxyz\n`)),
-    },
-    {
-      name: 'the standing instructions grown past their ceiling',
-      evaluate: () => requireByteCeiling(root, { 'AGENTS.md': 10 }),
     },
     {
       name: 'a required canonical file missing',

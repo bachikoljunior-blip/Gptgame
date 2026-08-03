@@ -32,16 +32,16 @@ below this makes every element's criterion `not satisfied` or `not measured`, in
 ones this file previously recorded as verified. Those records remain accurate about what was
 measured; they were never a comparison against a reference.
 **Route:** the escalation under "Devising a comparison that does not exist yet". Our side is
-already capturable at matched framings; what is missing is reference material and a judge who
-has not seen the build. Both are obtainable — neither has been requested.
+already capturable at matched framings, and the WebKit and iOS Simulator gates supply the
+phone-side material; what is missing is reference material and a judge who has not seen the
+build. Both are obtainable — neither has been requested.
 
 Routine iPhone browser gate: `prepared_not_executed` — Playwright WebKit at `375×667 / DPR 2`, then iPhone SE (3rd generation) iOS Simulator Mobile Safari through Appium
 
-Physical-phone-only properties — GPU speed, thermals, memory pressure, hand reach, haptics,
-speakers, audio latency: **`not measured`**, non-blocking for routine delivery, and **never to
-be inferred from either automated runner**.
-**Route:** a recording made on a real device, which is route 4 of the escalation below. This
-is a task nobody has raised, not a permanent limit of the project.
+Physical hardware behaviour — GPU speed, thermals, memory pressure, hand reach, haptics,
+speakers, audio latency: **out of scope** by user instruction. Not an open item, not a route,
+and **never inferred from either automated runner**. Phone behaviour is worked on through the
+WebKit and iOS Simulator gates only.
 
 ## Authority, elements, selection, and comparison
 
@@ -100,6 +100,29 @@ recorded shortfall, never a reason to pick a weaker reference.
 Change a reference only when it stops fitting the concept — never because another title became
 interesting. Record the reason.
 
+### The loop
+
+This repeats, and it is the shape of ordinary quality work here.
+
+1. **Repair.** Change the build so an unmet element moves.
+2. **Compare.** Run the blind comparison for every element the change could affect.
+3. **Judge.** Each of those elements reads `satisfied`, `not satisfied` or `not measured`.
+4. **Anything not `satisfied` sends you back to step 1.**
+
+**The loop ends when every element reads `satisfied`** — not when the round feels finished,
+not when the findings get smaller, and not when the ones left over look hard. A round that
+ends with an unmet element and no next repair has stopped, not finished.
+
+### What runs once, and not every loop
+
+**Deriving the elements and choosing their references is not part of the loop.** It runs:
+
+- **once**, the first time this section is applied to the repository; and
+- **again only when the concept changes**, under "When the concept changes" below.
+
+A loop that re-opens the element list or swaps a reference because a comparison went badly has
+moved the target instead of the build. Keeping the two apart is what stops that.
+
 ### Blind comparison is how an element is judged
 
 An element's criterion is `satisfied` only after a blind comparison was actually run **and its
@@ -134,11 +157,16 @@ form was awkward is the failure this replaces.
    understands or decides. Put both sides' on-screen text in front of a reader who has seen
    neither and ask what they expect next, which they would choose, or what they think just
    happened. A blank answer is a result: nothing was set up.
-4. **A recording from a real device**, when the element only exists there — feel, reach,
-   thermals, speaker behaviour. This material is obtainable by asking for it, and is a task
-   rather than a permanent limitation.
+4. **The repository's phone gates**, when the element only shows on a phone — Playwright
+   WebKit at iPhone SE (3rd generation) `375×667 / DPR 2`, and the matching iOS Simulator
+   Mobile Safari on macOS driven through Appium. Their screenshots, video, traces and logs
+   are the material, and they feed routes 1–3.
 5. Only if all four fail: record `not measured` **together with all four routes and why each
    one fails**. That is a result the next run can act on. A bare `not measured` is not.
+
+**Physical hardware is not part of the work.** GPU speed, thermals, memory pressure, hand
+reach, haptics, speaker behaviour and audio latency are out of scope by user instruction —
+not open items, not routes, and never inferred from the gates in route 4.
 
 ### When the concept changes
 
@@ -331,7 +359,7 @@ Existing browser evidence and the prepared gates are kept distinct. The first wa
 - `complete_verified`: PR #19, main Quality run `30695280123`, ordered Pages run `30695280118`, and legacy same-SHA run `30695279819` succeeded. A cache-busted public artifact passed 48/48; live cloud Chrome returned artifact `93298f8c…`, focused `tutorialTitle`, retained `scrollTop=0`, kept the heading visible, and measured tutorial overlay width 560/560 px.
 - `complete_unverified`: LOOP 01/02 stills and the echo-count HUD show distinct states, but they cannot prove the Lemnis Gate-derived causal-readability criterion. Loop-transition footage and a fresh-viewer explanation check remain necessary.
 - `prepared_not_executed`: target Playwright WebKit and iOS Simulator Mobile Safari runs, full loop-transition footage, fresh-viewer review, blind/expert review, and direct matched-reference gameplay comparison.
-- Explicitly unmeasured and non-blocking: physical iPhone/Android GPU/thermal/memory behavior, real hand reach/feel, haptics, speakers, and audio latency.
+- Out of scope by user instruction, 2026-08-02: physical iPhone/Android GPU/thermal/memory behaviour, hand reach and feel, haptics, speakers, and audio latency. Phone work runs through the Playwright WebKit and iOS Simulator Mobile Safari gates; their output is never read as physical-device evidence.
 
 ## Evidence sources used for selection
 

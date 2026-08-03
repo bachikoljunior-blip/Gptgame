@@ -24,7 +24,7 @@ objective:
   open:
     - "not satisfied: the corrected target WebKit rerun on PR #28 has not passed"
     - "not measured: iOS Simulator Mobile Safari is main-only and cannot run until PR #28 merges"
-    - "not measured: physical GPU speed, heat, memory pressure, hand reach, haptics, speakers and audio latency — deliberately out of scope for routine delivery, never inferred from a runner"
+    - "out of scope by user instruction: physical hardware behaviour. The WebKit and iOS Simulator gates are the phone surface for all routine work"
 
 reference_benchmark:
   path: "AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md"
@@ -51,11 +51,11 @@ execution:
     - "The corrected target WebKit branch rerun must pass before PR #28 can merge."
     - "iOS Simulator Mobile Safari is deliberately main-only and cannot execute until the passing PR is merged."
   unmeasured:
-    - "not measured: no physical iPhone or Android pass in this environment | route: a recording made on a real device, obtainable by asking; a task nobody has raised, not a permanent limit"
+    - "out of scope by user instruction: physical hardware behaviour (GPU speed, thermals, memory pressure, hand reach, haptics, speakers, audio latency). Phone work goes through the Playwright WebKit and iOS Simulator Safari gates; their output is never read as physical-device evidence"
     - "Exact target captures use headless Chromium with software WebGL; Japanese glyphs were unavailable in that browser, so geometry and font-size metrics hold but glyph appearance does not."
     - "The connected GitHub tools expose no branch-protection or ruleset mutation, and local gh is absent. Nothing blocks a merge or a publish; the sealed MEASURED.md is what stands in for that."
     - "GitHub's legacy branch-based Pages publisher cannot be disabled with the exposed connector; the available defence is running the tested custom deployment after every main push."
-  exact_next_action: "Read the current concept a clause at a time and write the list of what it cannot exist without; derive elements from it at a granularity that can be compared, showing which element carries each essential; then re-check each reference against the four axes. A blind comparison is only worth building after that. The PR #28 WebKit rerun is unrelated and still open."
+  exact_next_action: "Run the once-only half: read the current concept a clause at a time, write the list of what it cannot exist without, derive elements at a granularity that can be compared and name which element claims each entry, then check each reference against the four axes. After that the repair-compare-repair loop is what runs, and this half does not run again until the concept changes. The PR #28 WebKit rerun is unrelated and still open."
 
 recovery:
   last_known_good: "source ea0a90e9c53a20d45c5caf3dfb829e9a1078f17e / public artifact 69f72f7b1c8ee9a6b6603687d10d838376384df0741abec70e51edcb9606a6f7"

@@ -22,10 +22,20 @@ scope, rewrite working systems for preference, or overwrite unrelated work.
 
 ## How you work is yours
 
-There is no reading order, no iteration loop, no step sequence, no rigor tier and
-no required ceremony in this repository. Pick your own method, change it whenever
-a better one appears, and do not explain the method unless asked. Nothing here is
-judged on process.
+There is no reading order, no step sequence, no rigor tier and no required
+ceremony in this repository. Pick your own method, change it whenever a better one
+appears, and do not explain the method unless asked. Nothing here is judged on
+process.
+
+**One exception, set by the user.** Quality work runs the loop in
+`AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md`: repair, compare blind, and repair again
+while any element is unmet. Deriving the elements and choosing their references
+sits outside that loop and runs only once, and again when the concept changes.
+How you repair is still yours.
+
+**Physical hardware is out of the work.** Phone behaviour is reached through the
+repository's Playwright WebKit and iOS Simulator Mobile Safari gates, and their
+output is never read as evidence about a real device.
 
 ## What must be true when you stop
 
