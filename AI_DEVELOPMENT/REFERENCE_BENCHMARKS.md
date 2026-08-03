@@ -37,8 +37,9 @@ below this makes every element's criterion `not satisfied` or `not measured`, in
 ones this file previously recorded as verified. Those records remain accurate about what was
 measured; they were never a comparison against a reference.
 **Route:** our side is already capturable at matched framings, and the WebKit and iOS
-Simulator gates supply the phone-side material; what is missing is reference material and a
-judge who has not seen the build. Both are obtainable — neither has been requested.
+Simulator gates supply the phone-side material. What is missing is the reference material —
+**which may be stored in this public repository, by user instruction 2026-08-02** — and a
+judge who cannot tell the sides apart. Neither has been obtained yet.
 
 Routine iPhone browser gate: `prepared_not_executed` — Playwright WebKit at `375×667 / DPR 2`, then iPhone SE (3rd generation) iOS Simulator Mobile Safari through Appium
 

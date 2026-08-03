@@ -40,7 +40,7 @@ reference_benchmark:
     - "not measured: the element set has never been read back against the concept as a set, so whether anything the concept asks for is uncovered is unknown | route: name which element covers each part of the concept; more than the minimum is fine, missing is not"
     - "not measured: the four references have never been checked against the four selection axes | route: check each title against each axis from published material, name a replacement where one fails; each axis carries its definition in the file"
     - "not measured: no rule exists for turning several judges answers into one verdict | route: decide it before the first comparison runs, not after seeing its answers"
-    - "not measured: no blind comparison has been run for any element | route: our side is already capturable at matched framings; reference material and a judge who has not seen the build are both obtainable and neither has been requested"
+    - "not measured: no blind comparison has been run for any element | route: our side is already capturable at matched framings; what is missing is the reference material, which may be stored in this public repository by user instruction 2026-08-02, and a judge who cannot tell the sides apart. Neither has been obtained yet"
 
 execution:
   active_work: "PR #28 carries the reconciled target-browser gates on origin/main ea0a90e. Quality passed; the first target WebKit run completed all product checks and stopped for review of the missing baseline plus a runner-only touch-point diagnostic. The inspected baseline and descriptor-based touch contract are prepared for the corrected rerun."
