@@ -29,7 +29,7 @@ objective:
 reference_benchmark:
   path: "AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md"
   status: "not measured"
-  note: "The 2026-08-02 instruction set how elements are derived, how a reference is chosen, and that each element is judged by blind comparison. Nothing in the file below that section has been re-derived under it yet."
+  note: "The rules are in the file itself and in AGENTS.md; not restated here. Nothing below that file's new section has been re-derived under it yet."
   open:
     - "not measured: the eight elements have not been re-derived as what the concept cannot exist without"
     - "not measured: the four references have never been checked against the four selection axes"
@@ -65,11 +65,6 @@ remote:
   main_revision: "ea0a90e9c53a20d45c5caf3dfb829e9a1078f17e"
   deployed_artifact: "69f72f7b1c8ee9a6b6603687d10d838376384df0741abec70e51edcb9606a6f7 (build 2026.08.01-k)"
   open_pull_requests: [28]
-
-user_instructions_2026_08_02:
-  - "External runtime assets, CDNs, hosted services and network calls are allowed; the zero-external-asset constraint is withdrawn."
-  - "A reference work is not only a source of principles: it is also the bar this product is measured against. Its content must still never be reproduced, and no reference is named in what ships."
-  - "Elements are what the concept cannot exist without, re-derived when the concept changes; each element gets its own reference chosen on four axes (element quality, expert and player reception, long-term reputation, fit to concept — device class and production scale deliberately excluded); each element is judged by blind comparison against the real reference using images, video and text, then repaired and re-compared."
 
 unattended_allowed: false
 

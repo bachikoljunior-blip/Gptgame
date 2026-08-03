@@ -1,26 +1,17 @@
 # ECHO//SEVEN — Element Reference Benchmarks
 
-> **User instruction, 2026-08-02. `AGENTS.md` is the authority.**
+> **Governed by `AGENTS.md`.** The standing rules it carries — never reproduce a reference's
+> content, never name one in what ships, a criterion may be made stricter freely and weakened
+> only on proof it is unreachable, external assets and network calls are allowed — are **not
+> restated here**. Read them there.
 >
-> The section "Authority, elements, selection, and comparison" below was set by that
-> instruction and governs this file. **Everything after it predates the instruction and has
-> not yet been re-derived under it** — the eight elements, the four references, and every
-> criterion. Read them as the previous state, not as the current answer.
+> The section "Authority, elements, selection, and comparison" below was set by user
+> instruction on 2026-08-02 and governs the rest of this file. **Everything after it predates
+> that instruction and has not been re-derived under it** — the eight elements, the four
+> references, and every criterion. Read them as the previous state, not the current answer.
 >
-> 1. **Elements are what the concept cannot exist without**, re-derived whenever the
->    concept changes.
-> 2. **Each element gets its own reference, chosen on four axes** — element quality,
->    expert and player reception, long-term reputation, fit to concept. Device class and
->    production scale are deliberately excluded.
-> 3. **Each element is judged by blind comparison against the real reference**, using
->    images, video and text, and the findings are repaired and re-compared.
-> 4. **The copying limits below stand.** Every "Deliberate limits" cell forbidding the
->    copying of a reference's art, layout, HUD, levels, audio, characters or fiction is in
->    force, as is the rule that no reference is named in the shipped product. Use a
->    reference to judge this product, never to fill it.
-> 5. **The zero-external-asset constraint is withdrawn**, so a criterion below may now be
->    met with an external asset, a CDN, a hosted service or a network call — and reference
->    material may be fetched for the comparison.
+> The "Deliberate limits" cells describe what each reference is and is not useful **for**.
+> They are scope notes, not a second copy of the copying rule.
 
 Status date: 2026-08-02 (Asia/Tokyo)
 
@@ -48,8 +39,15 @@ and the criteria each becomes. It never replaces the concept and never authorize
 **An element is something the concept cannot exist without.** If the concept still stands with
 the thing removed, it is not an element: no reference, no criterion, no comparison.
 
-Elements come from the concept — not from how the code happens to be organised, and not from
-what happens to be easy to measure.
+**Divide those essentials at a granularity that can actually be compared.** A division is an
+element only if this build and a reference can be set beside each other on it, as images,
+video or text. A split too fine or too vague to judge that way is merged upward or restated
+until it can be.
+
+Granularity is what measurability decides — never coverage. An essential that no division
+makes comparable stays on the list and reads `not measured`, naming what is missing. It is
+not dropped for being hard to judge, and the list is not drawn from how the code happens to
+be organised.
 
 ### Selecting a reference work for each element
 
@@ -97,8 +95,8 @@ comparison is not.
 3. For each surviving element, re-check whether its reference still fits. Change it only under
    the four axes above.
 4. Re-derive the affected criteria. Making one stricter is free.
-5. **Weakening a surviving criterion still requires proof it is unreachable as written**, stored
-   as evidence. Never weaken one to reach a pass.
+5. Weakening a surviving criterion is governed by `AGENTS.md`. The proof it demands is stored
+   here as evidence.
 6. Record what changed, why, and under which instruction, in `AI_DEVELOPMENT/STATE.yaml`.
 
 ## Current concept
