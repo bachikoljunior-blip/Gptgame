@@ -13,7 +13,7 @@ project:
   public_url: "https://bachikoljunior-blip.github.io/Gptgame/"
 
 work:
-  unit: "ends when a blind comparison the agent launched completes; everything up to there is the agent's"
+  unit: "starts on the user's instruction, ends when a blind comparison the agent launched completes"
   units_requested: 1   # the user's dial. A number, or "continuous". Nothing else about pacing is set here:
                        # what to repair, in what order, and when a comparison is worth launching are the agent's.
 

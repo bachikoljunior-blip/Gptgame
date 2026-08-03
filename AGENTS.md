@@ -34,16 +34,12 @@ to satisfied is method, and method is yours.**
 
 ## One unit of work
 
-**A unit ends when a blind comparison you launched completes.** That verdict is
-the end of the unit, and nothing else ends it.
+**A unit starts on the user's instruction and ends when a blind comparison you
+launched completes.** Everything in between is yours: what to repair, in what
+order, and when to launch the comparison.
 
-**Everything up to there is yours.** Aim at `satisfied`: decide what to repair, in
-what order, and **when a comparison is worth launching**. Launching one is your
-judgement, not something to wait for permission on.
-
-**The one dial the user holds is how many units to run** — a number, or
-continuously — recorded as `work.units_requested` in `STATE.yaml`. With nothing
-recorded, run one and stop.
+How many units — a number or continuously — is `work.units_requested` in
+`STATE.yaml`. Nothing recorded means one.
 
 ## Real hardware is out; the phone gates stand in for it
 

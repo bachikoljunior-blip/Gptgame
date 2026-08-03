@@ -123,8 +123,8 @@ target instead of the build. Keeping the two apart is what stops that.
 
 ### Blind comparison is how an element is judged
 
-An element's criterion is `satisfied` only after a blind comparison was actually run **and its
-findings were repaired**.
+An element's criterion is `satisfied` only after a blind comparison was actually run and came
+back on our side.
 
 - **Material.** The real reference work and the build under development, as **images, video and
   text**. Not recollection, not an official description, not a review score, not a pixel metric
@@ -133,8 +133,11 @@ findings were repaired**.
   language and aspect ratio are levelled first, or the comparison is refused rather than run
   with a tell in it.
 - **The question.** Shown these unlabelled, which is stronger on this element alone, and why.
-- **Repair.** A comparison that produced findings and no repair leaves the element
-  `not satisfied` — never `satisfied with notes`.
+- **The verdict.** **The judge picking the reference is the only failing answer.** Ours, or a
+  tie, and the element is `satisfied` — there is nothing to repair, and nothing to re-compare.
+- **When the reference wins, its "why" is the finding list.** Repair those, then re-compare.
+  A comparison that produced findings and no repair leaves the element `not satisfied` —
+  never `satisfied with notes`.
 - **Re-compare.** The repair is judged by a fresh blind pass, not by whoever made it.
 - **Findings.** What happens to them is the `critic` skill in this repository: a separate pass
   tries to refute each finding and only survivors are kept, with FAIL as the default verdict.
