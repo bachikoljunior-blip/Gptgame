@@ -32,7 +32,7 @@ reference_benchmark:
   note: "The rules are in the file itself and in AGENTS.md; not restated here. Nothing below that file's new section has been re-derived under it yet."
   open:
     - "not measured: the eight elements have not been re-derived as what the concept cannot exist without"
-    - "not measured: no list of the essentials exists, so whether the elements cover them is unknown and any gap between them is undetectable"
+    - "not measured: no list of the essentials exists, read out of the concept, so whether the elements account for them is unknown and anything left unclaimed is undetectable"
     - "not measured: the four references have never been checked against the four selection axes"
     - "not measured: no blind comparison has been run for any element, so no element criterion can read satisfied"
 
@@ -55,7 +55,7 @@ execution:
     - "Exact target captures use headless Chromium with software WebGL; Japanese glyphs were unavailable in that browser, so geometry and font-size metrics hold but glyph appearance does not."
     - "The connected GitHub tools expose no branch-protection or ruleset mutation, and local gh is absent. Nothing blocks a merge or a publish; the sealed MEASURED.md is what stands in for that."
     - "GitHub's legacy branch-based Pages publisher cannot be disabled with the exposed connector; the available defence is running the tested custom deployment after every main push."
-  exact_next_action: "Write the list of what the current concept cannot exist without; derive elements from it at a granularity that can be compared, showing which element carries each essential; then re-check each reference against the four axes. A blind comparison is only worth building after that. The PR #28 WebKit rerun is unrelated and still open."
+  exact_next_action: "Read the current concept a clause at a time and write the list of what it cannot exist without; derive elements from it at a granularity that can be compared, showing which element carries each essential; then re-check each reference against the four axes. A blind comparison is only worth building after that. The PR #28 WebKit rerun is unrelated and still open."
 
 recovery:
   last_known_good: "source ea0a90e9c53a20d45c5caf3dfb829e9a1078f17e / public artifact 69f72f7b1c8ee9a6b6603687d10d838376384df0741abec70e51edcb9606a6f7"

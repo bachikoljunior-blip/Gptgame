@@ -21,7 +21,8 @@ been re-checked against them.
 
 Essentials-to-elements coverage: **`not measured` — no such list exists.** The eight elements
 below were never derived from a written list of what the concept cannot exist without, so
-whether they cover it is unknown, and any gap between them is currently undetectable.
+whether they account for it is unknown, and anything they leave unclaimed is currently
+undetectable.
 
 Blind comparison, per element: **`not measured` — never run for any element.** Under the rule
 below this makes every element's criterion `not satisfied` or `not measured`, including the
@@ -43,16 +44,24 @@ and the criteria each becomes. It never replaces the concept and never authorize
 **An element is something the concept cannot exist without.** If the concept still stands with
 the thing removed, it is not an element: no reference, no criterion, no comparison.
 
+**The essentials are read out of the concept itself.** Take the stated concept a clause at a
+time and ask of each: does the concept survive without this? What survives its removal is not
+essential. The list is not brainstormed from the genre, and it is not read off the build —
+what exists today is evidence of what was made, not of what the concept requires.
+
 **Divide those essentials at a granularity that can actually be compared.** A division is an
 element only if this build and a reference can be set beside each other on it, as images,
 video or text. A split too fine or too vague to judge that way is merged upward or restated
 until it can be.
 
-**The divisions must together cover every essential.** Nothing the concept cannot exist
-without may fall outside every element — not between two divisions, and not in a gap left
-because some part was awkward to split. Deriving the elements therefore starts by listing the
-essentials and ends by showing which element carries each one. **An essential with no element
-is an unfinished derivation, not a gap to be noticed later.**
+**The divisions must together account for every essential.** Nothing the concept cannot exist
+without may be left unclaimed — not by falling between two divisions, and not by being set
+aside because it was awkward to split. Deriving the elements therefore starts from the list
+of essentials and ends by naming which element claims each one. **An essential no element
+claims means the derivation is unfinished**, not something to be noticed later.
+
+Every word in this section is about the list of elements. None of it refers to the game's
+space, geometry or level layout.
 
 Granularity is what measurability decides — never coverage. An essential that no division
 makes comparable still gets an element, which reads `not measured` and names what is missing.
@@ -71,7 +80,7 @@ alone**. Four axes, and a replacement must be at least as strong on all four.
 
 **Device class and production scale are deliberately not axes.** The bar is what the element
 should be, not what is convenient to reach here. A reference out of reach at this scale is a
-recorded gap, never a reason to pick a weaker reference.
+recorded shortfall, never a reason to pick a weaker reference.
 
 Change a reference only when it stops fitting the concept — never because another title became
 interesting. Record the reason.
