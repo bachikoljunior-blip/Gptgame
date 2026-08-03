@@ -36,17 +36,13 @@ Blind comparison, per element: **`not measured` — never run for any element.**
 below this makes every element's criterion `not satisfied` or `not measured`, including the
 ones this file previously recorded as verified. Those records remain accurate about what was
 measured; they were never a comparison against a reference.
-**Route:** the escalation under "Devising a comparison that does not exist yet". Our side is
-already capturable at matched framings, and the WebKit and iOS Simulator gates supply the
-phone-side material; what is missing is reference material and a judge who has not seen the
-build. Both are obtainable — neither has been requested.
+**Route:** our side is already capturable at matched framings, and the WebKit and iOS
+Simulator gates supply the phone-side material; what is missing is reference material and a
+judge who has not seen the build. Both are obtainable — neither has been requested.
 
 Routine iPhone browser gate: `prepared_not_executed` — Playwright WebKit at `375×667 / DPR 2`, then iPhone SE (3rd generation) iOS Simulator Mobile Safari through Appium
 
-Phone hardware: `AGENTS.md` governs. What the gates measure is judged normally; what can be
-reasoned from those numbers is reasoned, and **the reasoning has to satisfy the criterion and
-is written as reasoning, with the numbers it rests on.** Nothing is ruled permanently out of
-reach.
+Phone hardware: `AGENTS.md` governs.
 
 ## Authority, elements, selection, and comparison
 
@@ -63,41 +59,26 @@ Three rules, in order.
 **1. Take the parts from the concept.** Not from the genre, and not from the build — what
 exists in the build is evidence of what was made, not of what the concept asks for.
 
-**2. Take the largest grouping that can still be compared.** A part is an element only if this
-build and a reference can be set side by side on it, as images, video or text — and among the
-cuts that pass that test, **take the widest one**. Splitting finer than the comparison needs
-buys nothing and costs a comparison each time.
+**2. Take the largest grouping that can still be compared** — this build and a reference set
+side by side on it, as images, video or text.
 
 **3. Check the finished list against the concept as a whole.** Every part of the concept must
 be covered by some element.
 
-- **Too few is a defect.** If the concept asks for something and no element covers it, the
-  list is unfinished — not something to notice later.
-- **Too many is fine.** An element finer than strictly needed, or one that also covers
-  something next to it, is not a fault.
+**Too few is a defect. Too many is fine.**
 
-Rule 2 decides how the parts are cut. It never decides which parts are on the list. **A part
-that resists the obvious cuts is not written off as uncomparable** — devising the comparison
-is the work, and "Devising a comparison that does not exist yet" below is where it goes.
-
-`AGENTS.md` says `not measured` is not the end. **For an element that means it carries what
-would make it comparable.** Where nothing does yet, working that out is the job — not a reason
-to record the element and move on.
+**Where nothing compares an element yet, work out a way to compare it.** That is the job, not
+a reason to leave it.
 
 ### Selecting a reference work for each element
 
 Every element gets its own reference: the shipped work that sets the bar for **that element
 alone**. Four axes, and a replacement must be at least as strong on all four.
 
-1. **The quality of that element in that work** — judged on the element by itself. A
-   celebrated game with an ordinary version of this element does not qualify on its fame.
-2. **Expert and player reception** — what critics and players actually said, from published
-   reviews and aggregates. Reading an aggregate is not playing the game, and the record says
-   so wherever that distinction matters.
-3. **Long-term reputation** — still held up as the bar years later, rather than praised in its
-   launch window and since overtaken.
-4. **Fit to this concept** — that element in that work is solving the same problem this
-   concept has. A brilliant solution to a different problem is not our bar.
+1. **The quality of that element** in that work.
+2. **Expert and player reception.**
+3. **Long-term reputation.**
+4. **Fit to this concept.**
 
 **Device class and production scale are deliberately not axes.** The bar is what the element
 should be, not what is convenient to reach here. A reference out of reach at this scale is a
@@ -134,43 +115,15 @@ back on our side.
 - **Material.** The real reference work and the build under development, as **images, video and
   text**. Not recollection, not an official description, not a review score, not a pixel metric
   standing in for a comparison. Fetching reference material for this purpose is allowed.
-- **Blind.** The judge is in a state where **which side is which cannot be worked out at all**
-  — not merely untold. Filenames, watermarks, resolution, UI language, aspect ratio and
-  anything else that identifies a side are levelled first. If something cannot be levelled,
-  the comparison does not run.
+- **Blind.** The judge is in a state where **which side is which cannot be worked out at
+  all.**
 - **The question.** Shown these unlabelled, which is stronger on this element alone.
 - **The verdict.** **The judge picking the reference is the only failing answer.** Ours, or a
   tie, and the element is `satisfied`.
 
-A comparison that could not be run is `not measured`, naming what was missing **and what would
-make it comparable**. Calling a recollection, an official screenshot, or an automated pixel
-check a blind comparison is not an acceptable substitute.
+A comparison that could not be run is `not measured`, and the job is then to work out a way to
+compare it.
 
-### Devising a comparison that does not exist yet
-
-These are the forms known to carry an element here. Use any of them, in any order, or a
-better one. **What is fixed is only that a comparison gets devised** — stopping because the
-first form was awkward is the failure this exists against.
-
-1. **A still.** Both sides at a matched framing and a matched moment. Enough for anything
-   about composition, hierarchy, legibility, type, colour or layout.
-2. **Video**, when a still cannot carry it — the element is about motion, timing, pacing,
-   response or sound. Matched length, matched moment, sound included where the element is
-   audible.
-3. **Text**, when neither carries it — the element is about what a player expects,
-   understands or decides. Put both sides' on-screen text in front of a reader who has seen
-   neither and ask what they expect next, which they would choose, or what they think just
-   happened. A blank answer is a result: nothing was set up.
-4. **The repository's phone gates**, when the element only shows on a phone — Playwright
-   WebKit at iPhone SE (3rd generation) `375×667 / DPR 2`, and the matching iOS Simulator
-   Mobile Safari on macOS driven through Appium. Their screenshots, video, traces and logs
-   are the material, and they feed routes 1–3.
-5. If none of them carries it: record `not measured` **with what was tried and why each
-   failed**. That is a result the next run can act on. A bare `not measured` is not.
-
-Route 4 measures what it measures. Reading it as a real device is what `AGENTS.md` forbids;
-reasoning from its numbers to a phone is allowed, and the reasoning is judged like any other
-answer.
 
 ### When the concept changes
 

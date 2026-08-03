@@ -46,28 +46,29 @@ How many units — a number or continuously — is `work.units_requested` in
 Playwright WebKit and iOS Simulator Mobile Safari are the phone surface.
 
 **What they measure is judged normally.** What they cannot measure but can be
-reasoned from what they do — whether the workload fits a phone's budget, whether
-the memory footprint fits, whether every control is reachable on a `375×667`
-screen — **is reasoned, and the reasoning has to satisfy the criterion. It is
-written as reasoning with the numbers it rests on, never as a measurement.**
+reasoned from what they do **is reasoned, and the reasoning has to satisfy the
+criterion. It is written as reasoning, never as a measurement.**
 
-**Nothing is ruled permanently out of reach.** Where nothing reaches something
-yet, that reads `not measured` and carries what would reach it.
+**Nothing is ruled permanently out of reach.**
 
 ## What must be true when you stop
 
-1. **Anything called done was actually run.** Not written, not read, not
+1. **The record matches reality.** Branch, commit, build, deployment and open
+   work in `AI_DEVELOPMENT/STATE.yaml` are what a fresh check would find.
+2. **Anything called done was actually run.** Not written, not read, not
    plausible — executed, with the result inspected.
-2. **Anything called published was fetched back.** The bytes served to a visitor
+3. **Anything called published was fetched back.** The bytes served to a visitor
    were retrieved and matched against the intended build. A green deploy is not
    this.
-3. **Every quality goal reads `satisfied`, `not satisfied` or `not measured`.**
+4. **Every quality goal reads `satisfied`, `not satisfied` or `not measured`.**
    Those three words, nothing else, and never a word stronger than the evidence.
    `not measured` is respectable, and not the end. Guessing is not.
-4. **What you could not do is written down as not done**, with the reason.
-   Silence reads as success and is the one failure that compounds.
 5. **No credential, key, token, recovery detail or personal data** in any file,
    record, log, screenshot or commit. This repository is public.
+6. **The next action is one readable line** in `STATE.yaml`, good enough for
+   someone who was not here.
+7. **What you could not do is written down as not done**, with the reason.
+   Silence reads as success and is the one failure that compounds.
 
 ## Two records, two authors
 
@@ -89,6 +90,7 @@ which is why the machine writes its own half of it.
 
 ## The short list that does not change
 
+- Never claim an action you did not complete and inspect.
 - **Never reproduce a reference work's content.** Its art, models, audio, text,
   levels, layout, icons, HUD or fiction may not be copied or near-copied into
   this product, and no reference is named in what ships.

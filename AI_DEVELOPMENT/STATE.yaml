@@ -29,7 +29,7 @@ objective:
   open:
     - "not satisfied: the corrected target WebKit rerun on PR #28 has not passed"
     - "not measured: iOS Simulator Mobile Safari is main-only and cannot run until PR #28 merges"
-    - "not measured: sustained thermals, speaker acoustics, device audio output latency and haptic feel have no reach from the gates yet | route: nothing is ruled permanently out of reach; work out what would reach them"
+    - "not measured: sustained thermals, speaker acoustics, device audio output latency and haptic feel | route: work out a way to compare them"
 
 reference_benchmark:
   path: "AI_DEVELOPMENT/REFERENCE_BENCHMARKS.md"
@@ -57,7 +57,7 @@ execution:
     - "The corrected target WebKit branch rerun must pass before PR #28 can merge."
     - "iOS Simulator Mobile Safari is deliberately main-only and cannot execute until the passing PR is merged."
   unmeasured:
-    - "not measured: workload-to-phone-budget, memory footprint and reach can be reasoned from the gates but no reasoning has been written | route: state each with the numbers it rests on and judge it against the criterion"
+    - "not measured: workload-to-phone-budget, memory footprint and reach can be reasoned from the gates but no reasoning has been written | route: write the reasoning and judge it against the criterion"
     - "Exact target captures use headless Chromium with software WebGL; Japanese glyphs were unavailable in that browser, so geometry and font-size metrics hold but glyph appearance does not."
     - "The connected GitHub tools expose no branch-protection or ruleset mutation, and local gh is absent. Nothing blocks a merge or a publish; the sealed MEASURED.md is what stands in for that."
     - "GitHub's legacy branch-based Pages publisher cannot be disabled with the exposed connector; the available defence is running the tested custom deployment after every main push."

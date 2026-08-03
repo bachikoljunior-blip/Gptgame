@@ -56,10 +56,12 @@ const REQUIRED = [
  * goals are stated, not the wording they are stated in.
  */
 const GOALS = [
+  [/record matches reality/i, 'the record must match reality'],
   [/actually run/i, 'done means actually run'],
   [/fetched back/i, 'published means fetched back'],
   [/`not measured`/, 'the three-word verdict vocabulary'],
   [/written down as not done/i, 'what could not be done is recorded'],
+  [/next action is one readable line/i, 'a resumable next action'],
   [/credential, key, token/i, 'no secrets'],
 ];
 
