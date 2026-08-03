@@ -43,41 +43,31 @@ How many units — a number or continuously — is `work.units_requested` in
 
 ## Real hardware is out; the phone gates stand in for it
 
-Playwright WebKit and iOS Simulator Mobile Safari are the phone surface. Three
-kinds of thing, treated differently:
+Playwright WebKit and iOS Simulator Mobile Safari are the phone surface.
 
-- **What the gates measure** — touch-target size and position, safe-area fit,
-  whether a haptic call fires and for how long, whether audio fires, voice count
-  and level, input-to-sound time in software, and the workload numbers: draw
-  calls, triangles, texture bytes, milliseconds of script per frame. Judged like
-  anything else.
-- **What they cannot measure but can be inferred from what they do** — whether
-  that workload fits a phone's budget, whether the memory footprint fits, whether
-  every control is reachable on a `375×667` screen. **The inference has to satisfy
-  the criterion, and is written as an inference with the numbers it rests on.
-  Never as a measurement.**
-- **Neither measurable nor inferable, and so out of scope** — sustained thermal
-  behaviour, real speaker acoustics, the device's own audio output latency, and
-  how the haptics feel.
+**What they measure is judged normally.** What they cannot measure but can be
+reasoned from what they do — whether the workload fits a phone's budget, whether
+the memory footprint fits, whether every control is reachable on a `375×667`
+screen — **is reasoned, and the reasoning has to satisfy the criterion. It is
+written as reasoning with the numbers it rests on, never as a measurement.**
+
+**Nothing is ruled permanently out of reach.** Where nothing reaches something
+yet, that reads `not measured` and carries what would reach it.
 
 ## What must be true when you stop
 
-1. **The record matches reality.** Branch, commit, build, deployment and open
-   work in `AI_DEVELOPMENT/STATE.yaml` are what a fresh check would find.
-2. **Anything called done was actually run.** Not written, not read, not
+1. **Anything called done was actually run.** Not written, not read, not
    plausible — executed, with the result inspected.
-3. **Anything called published was fetched back.** The bytes served to a visitor
+2. **Anything called published was fetched back.** The bytes served to a visitor
    were retrieved and matched against the intended build. A green deploy is not
    this.
-4. **Every quality goal reads `satisfied`, `not satisfied` or `not measured`.**
+3. **Every quality goal reads `satisfied`, `not satisfied` or `not measured`.**
    Those three words, nothing else, and never a word stronger than the evidence.
    `not measured` is respectable, and not the end. Guessing is not.
-5. **No secrets anywhere** — files, records, logs, screenshots, commits.
-6. **The next action is one readable line** in `STATE.yaml`, good enough for
-   someone who was not here.
-7. **What you could not do is written down as not done**, with the reason, in
-   the same place. Silence reads as success and is the one failure that
-   compounds.
+4. **What you could not do is written down as not done**, with the reason.
+   Silence reads as success and is the one failure that compounds.
+5. **No credential, key, token, recovery detail or personal data** in any file,
+   record, log, screenshot or commit. This repository is public.
 
 ## Two records, two authors
 
@@ -99,8 +89,6 @@ which is why the machine writes its own half of it.
 
 ## The short list that does not change
 
-- Never claim an action you did not complete and inspect.
-- No credentials or personal data in anything committed.
 - **Never reproduce a reference work's content.** Its art, models, audio, text,
   levels, layout, icons, HUD or fiction may not be copied or near-copied into
   this product, and no reference is named in what ships.

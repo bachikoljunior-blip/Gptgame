@@ -51,18 +51,16 @@ const REQUIRED = [
 ];
 
 /**
- * The seven end conditions from AGENTS.md, each reduced to the phrase that cannot be
+ * The end conditions from AGENTS.md, each reduced to the phrase that cannot be
  * dropped without losing the goal. Deliberately matched loosely: this gate defends that the
  * goals are stated, not the wording they are stated in.
  */
 const GOALS = [
-  [/record matches reality/i, 'the record must match reality'],
   [/actually run/i, 'done means actually run'],
   [/fetched back/i, 'published means fetched back'],
   [/`not measured`/, 'the three-word verdict vocabulary'],
-  [/No secrets anywhere/i, 'no secrets'],
-  [/next action is one readable line/i, 'a resumable next action'],
   [/written down as not done/i, 'what could not be done is recorded'],
+  [/credential, key, token/i, 'no secrets'],
 ];
 
 const BENCHMARK_TITLES = ['Lemnis Gate', 'SUPERHOT', 'Gunfire Reborn', 'Call of Duty: Mobile'];

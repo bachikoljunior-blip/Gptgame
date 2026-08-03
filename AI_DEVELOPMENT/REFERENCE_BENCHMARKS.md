@@ -43,9 +43,10 @@ build. Both are obtainable — neither has been requested.
 
 Routine iPhone browser gate: `prepared_not_executed` — Playwright WebKit at `375×667 / DPR 2`, then iPhone SE (3rd generation) iOS Simulator Mobile Safari through Appium
 
-Phone hardware: split three ways by `AGENTS.md` — what the gates measure, what can be
-inferred from what they measure, and what is neither and so out of scope. **An inference has
-to satisfy the criterion, and is written as an inference with the numbers it rests on.**
+Phone hardware: `AGENTS.md` governs. What the gates measure is judged normally; what can be
+reasoned from those numbers is reasoned, and **the reasoning has to satisfy the criterion and
+is written as reasoning, with the numbers it rests on.** Nothing is ruled permanently out of
+reach.
 
 ## Authority, elements, selection, and comparison
 
@@ -62,10 +63,10 @@ Three rules, in order.
 **1. Take the parts from the concept.** Not from the genre, and not from the build — what
 exists in the build is evidence of what was made, not of what the concept asks for.
 
-**2. Cut each part where it can actually be compared.** A part is an element only if this
-build and a reference can be set side by side on it, as images, video or text. Too fine or
-too vague to judge that way, and it gets merged into a larger element or restated until it
-can be judged.
+**2. Take the largest grouping that can still be compared.** A part is an element only if this
+build and a reference can be set side by side on it, as images, video or text — and among the
+cuts that pass that test, **take the widest one**. Splitting finer than the comparison needs
+buys nothing and costs a comparison each time.
 
 **3. Check the finished list against the concept as a whole.** Every part of the concept must
 be covered by some element.
@@ -79,20 +80,24 @@ Rule 2 decides how the parts are cut. It never decides which parts are on the li
 that resists the obvious cuts is not written off as uncomparable** — devising the comparison
 is the work, and "Devising a comparison that does not exist yet" below is where it goes.
 
-`AGENTS.md` says `not measured` is not the end. **For an element that means it carries the
-route that would settle it** — what material is needed, how it would be presented, and what
-question the judge would answer. **Where no route exists yet, inventing one is the work**, not
-a reason to record the element and move on.
+`AGENTS.md` says `not measured` is not the end. **For an element that means it carries what
+would make it comparable.** Where nothing does yet, working that out is the job — not a reason
+to record the element and move on.
 
 ### Selecting a reference work for each element
 
 Every element gets its own reference: the shipped work that sets the bar for **that element
 alone**. Four axes, and a replacement must be at least as strong on all four.
 
-1. **The quality of that element** in that work.
-2. **Expert and player reception.**
-3. **Long-term reputation.**
-4. **Fit to this concept.**
+1. **The quality of that element in that work** — judged on the element by itself. A
+   celebrated game with an ordinary version of this element does not qualify on its fame.
+2. **Expert and player reception** — what critics and players actually said, from published
+   reviews and aggregates. Reading an aggregate is not playing the game, and the record says
+   so wherever that distinction matters.
+3. **Long-term reputation** — still held up as the bar years later, rather than praised in its
+   launch window and since overtaken.
+4. **Fit to this concept** — that element in that work is solving the same problem this
+   concept has. A brilliant solution to a different problem is not our bar.
 
 **Device class and production scale are deliberately not axes.** The bar is what the element
 should be, not what is convenient to reach here. A reference out of reach at this scale is a
@@ -129,15 +134,16 @@ back on our side.
 - **Material.** The real reference work and the build under development, as **images, video and
   text**. Not recollection, not an official description, not a review score, not a pixel metric
   standing in for a comparison. Fetching reference material for this purpose is allowed.
-- **Blind.** The judge is not told which side is which. Filenames, watermarks, resolution, UI
-  language and aspect ratio are levelled first, or the comparison is refused rather than run
-  with a tell in it.
+- **Blind.** The judge is in a state where **which side is which cannot be worked out at all**
+  — not merely untold. Filenames, watermarks, resolution, UI language, aspect ratio and
+  anything else that identifies a side are levelled first. If something cannot be levelled,
+  the comparison does not run.
 - **The question.** Shown these unlabelled, which is stronger on this element alone.
 - **The verdict.** **The judge picking the reference is the only failing answer.** Ours, or a
   tie, and the element is `satisfied`.
 
-A comparison that could not be run is `not measured`, naming what was missing **and the route
-that would settle it**. Calling a recollection, an official screenshot, or an automated pixel
+A comparison that could not be run is `not measured`, naming what was missing **and what would
+make it comparable**. Calling a recollection, an official screenshot, or an automated pixel
 check a blind comparison is not an acceptable substitute.
 
 ### Devising a comparison that does not exist yet
