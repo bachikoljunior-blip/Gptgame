@@ -16,22 +16,32 @@
 Status date: 2026-08-02 (Asia/Tokyo)
 
 Selection status: **`not measured` against the four axes below.** The current set was chosen
-from official descriptions and review aggregates before those axes existed, and has never
-been re-checked against them.
+from official descriptions and review aggregates before those axes existed.
+**Route:** re-check each of the four titles against each of the four axes using published
+material; where one fails an axis, name a candidate that does not.
 
 Essentials-to-elements coverage: **`not measured` — no such list exists.** The eight elements
 below were never derived from a written list of what the concept cannot exist without, so
 whether they account for it is unknown, and anything they leave unclaimed is currently
 undetectable.
+**Route:** read the concept in `## Current concept` a clause at a time, write the list, and
+name which element claims each entry. Needs nothing that is not already here.
 
 Blind comparison, per element: **`not measured` — never run for any element.** Under the rule
 below this makes every element's criterion `not satisfied` or `not measured`, including the
 ones this file previously recorded as verified. Those records remain accurate about what was
 measured; they were never a comparison against a reference.
+**Route:** the escalation under "Devising a comparison that does not exist yet". Our side is
+already capturable at matched framings; what is missing is reference material and a judge who
+has not seen the build. Both are obtainable — neither has been requested.
 
 Routine iPhone browser gate: `prepared_not_executed` — Playwright WebKit at `375×667 / DPR 2`, then iPhone SE (3rd generation) iOS Simulator Mobile Safari through Appium
 
-Physical-phone-only properties: explicitly unmeasured and non-blocking for routine delivery; GPU speed, thermals, memory pressure, hand reach, haptics, speakers, and audio latency must never be inferred from either automated runner
+Physical-phone-only properties — GPU speed, thermals, memory pressure, hand reach, haptics,
+speakers, audio latency: **`not measured`**, non-blocking for routine delivery, and **never to
+be inferred from either automated runner**.
+**Route:** a recording made on a real device, which is route 4 of the escalation below. This
+is a task nobody has raised, not a permanent limit of the project.
 
 ## Authority, elements, selection, and comparison
 
@@ -63,10 +73,15 @@ claims means the derivation is unfinished**, not something to be noticed later.
 Every word in this section is about the list of elements. None of it refers to the game's
 space, geometry or level layout.
 
-Granularity is what measurability decides — never coverage. An essential that no division
-makes comparable still gets an element, which reads `not measured` and names what is missing.
-It is not dropped for being hard to judge, and the list is not drawn from how the code
-happens to be organised.
+Granularity is what measurability decides — never coverage. An essential no division makes
+comparable still gets an element. It is not dropped for being hard to judge, and the list is
+not drawn from how the code happens to be organised.
+
+**`not measured` is an honest status and never a resting place.** Every one of them carries
+the route that would settle it: what material is needed, how it would be presented, and what
+question the judge would answer. **Where no route exists yet, inventing one is the work** —
+not a reason to record the element and move on. An element whose `not measured` carries no
+route is unfinished in the same way an unclaimed essential is.
 
 ### Selecting a reference work for each element
 
@@ -101,9 +116,29 @@ findings were repaired**.
   `not satisfied` — never `satisfied with notes`.
 - **Re-compare.** The repair is judged by a fresh blind pass, not by whoever made it.
 
-A comparison that could not be run is `not measured`, naming what was missing. That is a normal
-outcome. Calling a recollection, an official screenshot, or an automated pixel check a blind
-comparison is not.
+A comparison that could not be run is `not measured`, naming what was missing **and the route
+that would settle it**. Calling a recollection, an official screenshot, or an automated pixel
+check a blind comparison is not an acceptable substitute.
+
+### Devising a comparison that does not exist yet
+
+Work down this list until something carries the element. Stopping early because the first
+form was awkward is the failure this replaces.
+
+1. **A still.** Both sides at a matched framing and a matched moment. Enough for anything
+   about composition, hierarchy, legibility, type, colour or layout.
+2. **Video**, when a still cannot carry it — the element is about motion, timing, pacing,
+   response or sound. Matched length, matched moment, sound included where the element is
+   audible.
+3. **Text**, when neither carries it — the element is about what a player expects,
+   understands or decides. Put both sides' on-screen text in front of a reader who has seen
+   neither and ask what they expect next, which they would choose, or what they think just
+   happened. A blank answer is a result: nothing was set up.
+4. **A recording from a real device**, when the element only exists there — feel, reach,
+   thermals, speaker behaviour. This material is obtainable by asking for it, and is a task
+   rather than a permanent limitation.
+5. Only if all four fail: record `not measured` **together with all four routes and why each
+   one fails**. That is a result the next run can act on. A bare `not measured` is not.
 
 ### When the concept changes
 

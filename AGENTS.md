@@ -38,7 +38,7 @@ judged on process.
    this.
 4. **Every quality goal reads `satisfied`, `not satisfied` or `not measured`.**
    Those three words, nothing else, and never a word stronger than the evidence.
-   `not measured` is a normal, respectable answer. Guessing is not.
+   `not measured` is respectable, and not the end. Guessing is not.
 5. **No secrets anywhere** — files, records, logs, screenshots, commits.
 6. **The next action is one readable line** in `STATE.yaml`, good enough for
    someone who was not here.
