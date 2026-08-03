@@ -75,10 +75,15 @@ a reason to leave it.
 Every element gets its own reference: the shipped work that sets the bar for **that element
 alone**. Four axes, and a replacement must be at least as strong on all four.
 
-1. **The quality of that element** in that work.
-2. **Expert and player reception.**
-3. **Long-term reputation.**
-4. **Fit to this concept.**
+1. **The quality of that element in that work** — judged on the element by itself. A
+   celebrated game with an ordinary version of this element does not qualify on its fame.
+2. **Expert and player reception** — what critics and players actually said, from published
+   reviews and aggregates. Reading an aggregate is not playing the game, and the record says
+   so wherever that distinction matters.
+3. **Long-term reputation** — still held up as the bar years later, rather than praised in its
+   launch window and since overtaken.
+4. **Fit to this concept** — that element in that work is solving the same problem this
+   concept has. A brilliant solution to a different problem is not our bar.
 
 **Device class and production scale are deliberately not axes.** The bar is what the element
 should be, not what is convenient to reach here. A reference out of reach at this scale is a
