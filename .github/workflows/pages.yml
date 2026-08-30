@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: read
   pages: write
   id-token: write
@@ -51,12 +52,54 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy
+      - name: Wait for the branch-based Pages publisher
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pollMs = 3000;
+            const discoveryDeadline = Date.now() + 60000;
+            const completionDeadline = Date.now() + 180000;
+            let legacyRun;
+
+            while (!legacyRun && Date.now() < discoveryDeadline) {
+              const response = await github.rest.actions.listWorkflowRunsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                head_sha: context.sha,
+                per_page: 100,
+              });
+              legacyRun = response.data.workflow_runs.find(
+                (run) => run.name === 'pages build and deployment',
+              );
+              if (!legacyRun) await new Promise((resolve) => setTimeout(resolve, pollMs));
+            }
+
+            if (!legacyRun) {
+              core.notice('No branch-based Pages publisher was found; continuing.');
+              return;
+            }
+
+            while (legacyRun.status !== 'completed') {
+              if (Date.now() >= completionDeadline) {
+                throw new Error(`Timed out waiting for legacy Pages run ${legacyRun.id}`);
+              }
+              core.info(`Waiting for legacy Pages run ${legacyRun.id}: ${legacyRun.status}`);
+              await new Promise((resolve) => setTimeout(resolve, pollMs));
+              const response = await github.rest.actions.getWorkflowRun({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: legacyRun.id,
+              });
+              legacyRun = response.data;
+            }
+
+            core.info(`Legacy Pages run ${legacyRun.id} finished with ${legacyRun.conclusion}.`);
+      - name: Deploy verified artifact after the legacy publisher
         id: deployment
         uses: actions/deploy-pages@v4
       - name: Verify the real public revision and primary surface
@@ -64,9 +107,16 @@ jobs:
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
           EXPECTED_REVISION: ${{ github.sha }}
         run: |
-          for attempt in $(seq 1 30); do
-            curl -fsSL "${PAGE_URL}?revision=${EXPECTED_REVISION}&attempt=${attempt}" -o /tmp/koeda-public.html || true
-            if grep -Fq "content=\"${EXPECTED_REVISION}\"" /tmp/koeda-public.html 2>/dev/null \
+          BASE_URL="${PAGE_URL%/}/"
+          for attempt in $(seq 1 36); do
+            curl -fsSL -H 'Cache-Control: no-cache' \
+              "${BASE_URL}version.json?revision=${EXPECTED_REVISION}&attempt=${attempt}" \
+              -o /tmp/koeda-version.json || true
+            curl -fsSL -H 'Cache-Control: no-cache' \
+              "${BASE_URL}?revision=${EXPECTED_REVISION}&attempt=${attempt}" \
+              -o /tmp/koeda-public.html || true
+            if grep -Fq "${EXPECTED_REVISION}" /tmp/koeda-version.json 2>/dev/null \
+              && grep -Fq "content=\"${EXPECTED_REVISION}\"" /tmp/koeda-public.html 2>/dev/null \
               && grep -Fq 'id="start"' /tmp/koeda-public.html \
               && grep -Fq '<title>声打' /tmp/koeda-public.html; then
               echo "Verified public revision ${EXPECTED_REVISION}"
@@ -74,5 +124,9 @@ jobs:
             fi
             sleep 5
           done
-          echo "Public surface did not serve the expected revision" >&2
+          echo 'Public surface did not serve the expected revision' >&2
+          echo 'version.json:' >&2
+          cat /tmp/koeda-version.json >&2 2>/dev/null || true
+          echo 'app-revision marker:' >&2
+          grep -o 'meta name="app-revision" content="[^"]*"' /tmp/koeda-public.html >&2 2>/dev/null || true
           exit 1
