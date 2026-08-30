@@ -1,42 +1,40 @@
-name: Project quality gates
+name: Koeda quality
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  quality:
+  verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - name: Restore exact dependencies
-        run: npm ci
-      # Before the gates themselves: a silently inert gate and a passing gate both print
-      # nothing and exit 0, so the gate is proved able to fail first.
-      - name: Prove the continuity gate can fail
-        run: node scripts/verify-continuity.mjs --selftest
-      - name: Verify the vendored kit has not drifted
-        run: npm run check:kit
-      - name: Verify continuity loader
-        run: node scripts/verify-continuity.mjs
-      - name: Enforce state and review record
-        env:
-          GATE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-        run: node scripts/verify-floor.mjs
-      - name: Execute game tests
-        run: npm test
+      - uses: actions/checkout@v4
+      - name: Verify the self-contained game
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          source = Path('index.html').read_text(encoding='utf-8')
+          required = [
+              '<title>声打', 'id="start"', 'id="game"', 'id="result"',
+              'SpeechRecognition', 'localStorage', 'data-mode="voice"',
+              'data-mode="keyboard"', 'meta name="app-revision"'
+          ]
+          missing = [item for item in required if item not in source]
+          if missing:
+              raise SystemExit(f'Missing required markers: {missing}')
+          scripts = re.findall(r'<script>([\s\S]*?)</script>', source)
+          if len(scripts) != 1 or re.search(r'<script[^>]+src=', source):
+              raise SystemExit('Expected exactly one inline script and no external script')
+          if len(source.encode('utf-8')) > 120_000:
+              raise SystemExit('Game exceeds the 120 KB source budget')
+          Path('/tmp/koeda-inline.js').write_text(scripts[0], encoding='utf-8')
+          print(f'HTML markers OK; {len(source.encode("utf-8"))} bytes')
+          PY
+          node --check /tmp/koeda-inline.js

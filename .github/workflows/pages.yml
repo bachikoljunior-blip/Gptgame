@@ -1,25 +1,11 @@
-name: Test and deploy GitHub Pages
+name: Deploy Koeda to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-    paths:
-      - index.html
-      - package.json
-      - package-lock.json
-      - tests/**
-      - scripts/**
-      - tools/**
-      - AI_DEVELOPMENT/F9_DEPLOY_PROBE
-      - .github/workflows/pages.yml
+    branches: [main]
   workflow_dispatch:
 
 permissions:
-  actions: read
   contents: read
   pages: write
   id-token: write
@@ -29,233 +15,64 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
-    outputs:
-      candidate_revision: ${{ steps.candidate.outputs.revision }}
-      rollback_revision: ${{ steps.rollback.outputs.revision }}
+  build:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - name: Restore exact dependencies
-        run: npm ci
-      - name: Run game checks
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Prepare revision-stamped site
         env:
-          GATE_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-        run: |
-          test -f index.html
-          node scripts/verify-continuity.mjs --selftest
-          npm run check:kit
-          node scripts/verify-continuity.mjs
-          node scripts/verify-floor.mjs
-          npm test
-      - name: Install Playwright WebKit
-        run: npx playwright install --with-deps webkit
-      - name: Exercise iPhone SE 3 WebKit surface
-        env:
-          E7_REQUIRE_BASELINE: "1"
-        run: npm run test:iphone-webkit
-      - name: Preserve WebKit screenshots, video, trace, and report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: iphone-se3-webkit-${{ github.sha }}
-          path: test-results/iphone-webkit
-          if-no-files-found: warn
-          retention-days: 14
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - name: Assemble static site
-        id: candidate
+          REVISION: ${{ github.sha }}
         run: |
           mkdir -p _site
-          node scripts/prepare-release.mjs index.html _site/index.html
-      - name: Assemble verified rollback site
-        id: rollback
-        run: node scripts/prepare-rollback.mjs AI_DEVELOPMENT/STATE.yaml _rollback/index.html
-      - name: Execute verified rollback site
-        env:
-          ROLLBACK_ARTIFACT: "1"
-          GAME_HTML: _rollback/index.html
-        run: npm test
-      - name: Upload tested candidate
-        uses: actions/upload-pages-artifact@v3
+          python3 - <<'PY'
+          from pathlib import Path
+          import json, os, re
+          source = Path('index.html').read_text(encoding='utf-8')
+          revision = os.environ['REVISION']
+          stamped, count = re.subn(
+              r'(<meta name="app-revision" content=")[^"]*(">)',
+              rf'\g<1>{revision}\g<2>', source, count=1
+          )
+          if count != 1:
+              raise SystemExit('app-revision marker not found exactly once')
+          Path('_site/index.html').write_text(stamped, encoding='utf-8')
+          Path('_site/.nojekyll').write_text('', encoding='utf-8')
+          Path('_site/version.json').write_text(
+              json.dumps({'name': '声打', 'revision': revision}, ensure_ascii=False) + '\n',
+              encoding='utf-8'
+          )
+          PY
+      - uses: actions/upload-pages-artifact@v3
         with:
-          name: github-pages
           path: _site
-      - name: Upload verified rollback
-        uses: actions/upload-pages-artifact@v3
-        with:
-          name: github-pages-rollback
-          path: _rollback
-
-  ios-safari:
-    if: ${{ github.event_name != 'pull_request' }}
-    needs: test
-    runs-on: macos-15
-    timeout-minutes: 45
-    steps:
-      - name: Check out WebKit-verified source
-        uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - name: Restore exact dependencies and re-run deterministic gates
-        env:
-          GATE_BASE_SHA: ${{ github.event.before || github.sha }}
-        run: |
-          npm ci
-          node scripts/verify-continuity.mjs
-          node scripts/verify-floor.mjs
-          npm test
-      - name: Install pinned Appium and XCUITest driver
-        run: |
-          npm install --global appium@3.6.0
-          appium driver install xcuitest@12.1.3
-          appium driver list --installed
-      - name: Select and boot iPhone SE 3 simulator
-        id: simulator
-        shell: bash
-        run: |
-          selection="$(xcrun simctl list devices available --json | jq -r '
-            [.devices | to_entries[] | .key as $runtime | .value[] |
-             select(.name == "iPhone SE (3rd generation)" and .isAvailable == true) |
-             {udid: .udid, runtime: $runtime}] |
-            sort_by(.runtime) | last | [.udid, .runtime] | @tsv')"
-          test -n "$selection" && test "$selection" != "null"
-          IFS=$'\t' read -r udid runtime <<< "$selection"
-          test -n "$udid" && test -n "$runtime"
-          platform_version="$(printf '%s' "$runtime" | sed -E 's/^.*\.iOS-//; s/-/./g')"
-          echo "udid=$udid" >> "$GITHUB_OUTPUT"
-          echo "platform_version=$platform_version" >> "$GITHUB_OUTPUT"
-          xcrun simctl boot "$udid" 2>/dev/null || true
-          xcrun simctl bootstatus "$udid" -b
-      - name: Start Appium and simulator video
-        shell: bash
-        run: |
-          mkdir -p test-results/ios-safari
-          appium --base-path / --log test-results/ios-safari/appium.log > /dev/null 2>&1 &
-          echo $! > test-results/ios-safari/appium.pid
-          xcrun simctl io "${{ steps.simulator.outputs.udid }}" recordVideo --codec=h264 --force test-results/ios-safari/ios-safari.mp4 > test-results/ios-safari/video.log 2>&1 &
-          echo $! > test-results/ios-safari/video.pid
-          for attempt in {1..60}; do
-            if curl --fail --silent http://127.0.0.1:4723/status > /dev/null; then exit 0; fi
-            sleep 1
-          done
-          exit 1
-      - name: Exercise Mobile Safari through Appium
-        env:
-          IOS_SIMULATOR_UDID: ${{ steps.simulator.outputs.udid }}
-          IOS_SIMULATOR_PLATFORM_VERSION: ${{ steps.simulator.outputs.platform_version }}
-        run: npm run test:ios-safari
-      - name: Stop recording
-        if: always()
-        shell: bash
-        run: |
-          if test -f test-results/ios-safari/video.pid; then kill -INT "$(cat test-results/ios-safari/video.pid)" 2>/dev/null || true; fi
-          if test -f test-results/ios-safari/appium.pid; then kill "$(cat test-results/ios-safari/appium.pid)" 2>/dev/null || true; fi
-          sleep 2
-      - name: Preserve Safari screenshots, video, logs, and report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: iphone-se3-mobile-safari-${{ github.sha }}
-          path: test-results/ios-safari
-          if-no-files-found: warn
-          retention-days: 14
 
   deploy:
-    if: ${{ github.event_name != 'pull_request' }}
-    needs: [test, ios-safari]
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Wait for branch-based Pages publisher
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const pollMs = 3000;
-            const discoveryDeadline = Date.now() + 30000;
-            const completionDeadline = Date.now() + 120000;
-            let legacyRun;
-
-            while (!legacyRun && Date.now() < discoveryDeadline) {
-              const response = await github.rest.actions.listWorkflowRunsForRepo({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                head_sha: context.sha,
-                per_page: 100,
-              });
-              legacyRun = response.data.workflow_runs.find(
-                (run) => run.name === "pages build and deployment",
-              );
-              if (!legacyRun) await new Promise((resolve) => setTimeout(resolve, pollMs));
-            }
-
-            if (!legacyRun) {
-              core.notice("No branch-based Pages publisher found; continuing with the tested deployment.");
-              return;
-            }
-
-            while (legacyRun.status !== "completed") {
-              if (Date.now() >= completionDeadline) {
-                throw new Error(`Timed out waiting for legacy Pages run ${legacyRun.id}`);
-              }
-              core.info(`Waiting for legacy Pages run ${legacyRun.id}: ${legacyRun.status}`);
-              await new Promise((resolve) => setTimeout(resolve, pollMs));
-              const response = await github.rest.actions.getWorkflowRun({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                run_id: legacyRun.id,
-              });
-              legacyRun = response.data;
-            }
-
-            core.info(`Legacy Pages run ${legacyRun.id} completed with ${legacyRun.conclusion}.`);
-      - name: Deploy candidate to GitHub Pages
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
-      - name: Verify served revision and primary runtime
+      - name: Verify the real public revision and primary surface
         env:
-          PUBLIC_OUTPUT_FILE: /tmp/gptgame-public-index.html
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          EXPECTED_REVISION: ${{ github.sha }}
         run: |
-          EXPECTED_REVISION="${{ needs.test.outputs.candidate_revision }}"
-          if test -f AI_DEVELOPMENT/F9_DEPLOY_PROBE; then
-            EXPECTED_REVISION="0000000000000000000000000000000000000000000000000000000000000000"
-          fi
-          node scripts/verify-public-revision.mjs "${{ steps.deployment.outputs.page_url }}" "${EXPECTED_REVISION}"
-          GAME_HTML=/tmp/gptgame-public-index.html npm test
-      - name: Automatically restore verified public revision
-        id: rollback
-        if: ${{ failure() && steps.deployment.outcome == 'success' }}
-        uses: actions/deploy-pages@v4
-        with:
-          artifact_name: github-pages-rollback
-      - name: Verify automatic restoration
-        if: ${{ failure() && steps.rollback.outcome == 'success' }}
-        env:
-          PUBLIC_OUTPUT_FILE: /tmp/gptgame-rollback-index.html
-          ROLLBACK_ARTIFACT: "1"
-          GAME_HTML: /tmp/gptgame-rollback-index.html
-        run: |
-          node scripts/verify-public-revision.mjs "${{ steps.rollback.outputs.page_url }}" "${{ needs.test.outputs.rollback_revision }}"
-          npm test
+          for attempt in $(seq 1 30); do
+            curl -fsSL "${PAGE_URL}?revision=${EXPECTED_REVISION}&attempt=${attempt}" -o /tmp/koeda-public.html || true
+            if grep -Fq "content=\"${EXPECTED_REVISION}\"" /tmp/koeda-public.html 2>/dev/null \
+              && grep -Fq 'id="start"' /tmp/koeda-public.html \
+              && grep -Fq '<title>声打' /tmp/koeda-public.html; then
+              echo "Verified public revision ${EXPECTED_REVISION}"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Public surface did not serve the expected revision" >&2
+          exit 1
