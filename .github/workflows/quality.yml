@@ -15,22 +15,47 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Verify the self-contained kana-scored game
+      - name: Verify the auto-listening kana-scored game
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
-          source=Path('index.html').read_text(encoding='utf-8')
-          required=['<title>声打','source-v1.2','id="start"','id="game"','id="result"','id="mic"','id="reset-input"','function toHiragana(','function compareReadings(','PROMPT_TARGETS={easy:75,normal:75,hard:60}','maxAlternatives=5','localStorage']
-          missing=[x for x in required if x not in source]
-          if missing: raise SystemExit(f'Missing markers: {missing}')
-          forbidden=['id="skip"','plateEnd','HOMOPHONES','キーで練習','keyboard-form','data-mode="keyboard"']
-          found=[x for x in forbidden if x in source]
-          if found: raise SystemExit(f'Removed behavior returned: {found}')
-          scripts=re.findall(r'<script>([\s\S]*?)</script>',source)
-          if len(scripts)!=1 or re.search(r'<script[^>]+src=',source): raise SystemExit('Expected one inline script')
-          if len(source.encode())>120000: raise SystemExit('Source budget exceeded')
-          Path('/tmp/koeda-inline.js').write_text(scripts[0],encoding='utf-8')
-          print(f'Kana-scored voice game OK; {len(source.encode())} bytes')
+
+          source = Path('index.html').read_text(encoding='utf-8')
+          required = [
+              '<title>声打', 'source-v1.3', 'id="start"', 'id="game"',
+              'id="result"', 'id="mic"', 'id="reset-input"',
+              'id="answer-review"', 'id="diff-target"', 'id="diff-answer"',
+              'id="next-prompt"', 'function requestMicPermission()',
+              'function beginPrompt()', 'function toHiragana(',
+              'function kanaCount(', 'function alignReadings(',
+              'function compareReadings(',
+              'PROMPT_TARGETS={easy:150,normal:150,hard:120}',
+              'RESULT_HOLD_MS=2600', 'state.correctChars+=best.matchedKana',
+              'maxAlternatives=5', 'body.playing{height:100dvh;overflow:hidden',
+              'ひらがな/分', 'localStorage'
+          ]
+          missing = [marker for marker in required if marker not in source]
+          if missing:
+              raise SystemExit(f'Missing v1.3 markers: {missing}')
+
+          forbidden = [
+              'id="skip"', 'plateEnd', 'HOMOPHONES', 'キーで練習',
+              'keyboard-form', 'data-mode="keyboard"', 'confirm('
+          ]
+          found = [marker for marker in forbidden if marker in source]
+          if found:
+              raise SystemExit(f'Removed behavior returned: {found}')
+
+          scripts = re.findall(r'<script>([\s\S]*?)</script>', source)
+          if len(scripts) != 1 or re.search(r'<script[^>]+src=', source):
+              raise SystemExit('Expected exactly one inline script')
+
+          size = len(source.encode('utf-8'))
+          if size > 120_000:
+              raise SystemExit(f'Source budget exceeded: {size}')
+
+          Path('/tmp/koeda-inline.js').write_text(scripts[0], encoding='utf-8')
+          print(f'Koeda v1.3 markers OK; {size} bytes')
           PY
           node --check /tmp/koeda-inline.js
