@@ -1,0 +1,143 @@
+name: Apply instant next-question flow
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: koeda-instant-next
+  cancel-in-progress: true
+
+jobs:
+  migrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Move to the next question immediately
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          source = path.read_text(encoding='utf-8')
+
+          replacements = [
+              (
+                  '自動で聞き取り開始。話し終わったら回答を確定。',
+                  '自動で聞き取り開始。確定後はすぐ次のお題。'
+              ),
+              (
+                  '開始ボタンを押した時点でマイク許可を求めます。許可後は問題ごとに自動で聞き取りを開始し、同じ大きなボタンを押すと回答を確定します。問題ごとの時間制限とスキップはありません。',
+                  '開始ボタンを押した時点でマイク許可を求めます。許可後は問題ごとに自動で聞き取りを開始し、回答を確定するとすぐ次のお題へ進みます。直前の採点結果は次のお題中も残ります。'
+              ),
+              (
+                  '.response-zone{display:grid;align-content:end;min-height:0}',
+                  '.response-zone{display:grid;align-content:end;min-height:0;gap:6px}'
+              ),
+              (
+                  '.answer-review{border:1px solid var(--line);background:#fafaf6;border-radius:15px;padding:10px;text-align:left;min-height:174px}',
+                  '.answer-review{border:1px solid var(--line);background:#fafaf6;border-radius:15px;padding:8px;text-align:left;min-height:0;max-height:118px;overflow:auto}'
+              ),
+              (
+                  '.review-next{display:block;margin:7px auto 0;border:1px solid var(--line);background:#fff;border-radius:999px;min-height:32px;padding:5px 14px;font-size:11px;font-weight:900}',
+                  '.review-next{display:block;margin:5px 0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;min-height:28px;padding:3px 11px;font-size:10px;font-weight:900}'
+              ),
+              (
+                  'body.playing .response-zone{min-height:0}body.reviewing .heard,body.reviewing .mic-area{display:none}',
+                  'body.playing .response-zone{min-height:0}'
+              ),
+              (
+                  '.answer-review{min-height:157px;padding:7px}',
+                  '.answer-review{min-height:0;max-height:96px;padding:6px}'
+              ),
+              (
+                  '<button class="review-next" id="next-prompt">結果を閉じて次へ</button>',
+                  '<button class="review-next" id="next-prompt">前の結果を閉じる</button>'
+              ),
+              (
+                  "  $('#answer-review').hidden=true;\n  document.body.classList.remove('reviewing');\n  setMic('idle');",
+                  "  setMic('idle');"
+              ),
+              (
+                  "  $('#review-summary').textContent=best.errors?`ミス ${best.errors}ひらがな　赤＝言い違い・黄＝抜け／余分`:'ミスなし・完全一致';",
+                  "  $('#review-summary').textContent=best.errors?`前の回答：ミス ${best.errors}ひらがな　赤＝言い違い・黄＝抜け／余分`:'前の回答：ミスなし・完全一致';"
+              ),
+              (
+                  "  document.body.classList.add('reviewing');\n  $('#feedback').textContent=`この回答は正確率${accuracy}%、${gained}点です。`;",
+                  "  $('#feedback').textContent=`前の回答は正確率${accuracy}%、${gained}点です。次のお題を聞き取り中です。`;"
+              ),
+              (
+                  "  state.reviewing=true;\n  state.reviewStarted=performance.now();\n  state.finishAfterReview=state.endTime-state.reviewStarted<=0;\n  cancelAnimationFrame(state.raf);\n  $('#status').textContent='結果を確認中・時間停止';\n  setMic('reviewing');\n  showReview(best,gained);\n  clearTimeout(state.reviewTimer);\n  state.reviewTimer=setTimeout(endReview,RESULT_HOLD_MS);",
+                  "  showReview(best,gained);\n  if(state.endTime-performance.now()<=0)return finish();\n  state.index++;\n  beginPrompt();"
+              ),
+              (
+                  "function endReview(){\n  if(!state.running||!state.reviewing)return;\n  clearTimeout(state.reviewTimer);\n  const held=performance.now()-state.reviewStarted;\n  if(!state.finishAfterReview){\n    state.pausedMs+=held;\n    state.endTime+=held;\n  }\n  state.reviewing=false;\n  document.body.classList.remove('reviewing');\n  $('#answer-review').hidden=true;\n  if(state.finishAfterReview)return finish();\n  state.index++;\n  beginPrompt();\n  state.raf=requestAnimationFrame(update);\n}",
+                  "function endReview(){\n  $('#answer-review').hidden=true;\n}"
+              ),
+              (
+                  "  screen('game');\n  showPrompt();\n  startClock();",
+                  "  screen('game');\n  $('#answer-review').hidden=true;\n  showPrompt();\n  startClock();"
+              )
+          ]
+
+          for old, new in replacements:
+              count = source.count(old)
+              if count != 1:
+                  raise SystemExit(f'expected exactly one replacement, found {count}: {old[:90]!r}')
+              source = source.replace(old, new)
+
+          path.write_text(source, encoding='utf-8')
+
+          readme = Path('README.md')
+          text = readme.read_text(encoding='utf-8')
+          old = '5. 回答結果と間違えたひらがなを約2.6秒表示してから、次の問題へ進みます。結果表示中はゲーム時間を止めます。'
+          new = '5. 回答を確定するとすぐ次の問題へ進み、マイクも自動でオンになります。直前の採点結果と間違えたひらがなは、次の問題中も下部に残ります。'
+          if text.count(old) != 1:
+              raise SystemExit('README operation text not found')
+          text = text.replace(old, new)
+          old = '正確率は全回答のひらがな単位の一致数から計算します。速度は、正しく読めたひらがなの数を実際のゲーム時間で割った「ひらがな/分」です。結果確認中の時間は速度計算に含めません。'
+          new = '正確率は全回答のひらがな単位の一致数から計算します。速度は、正しく読めたひらがなの数を実際のゲーム時間で割った「ひらがな/分」です。採点後もゲーム時間を止めず、すぐ次のお題へ進みます。'
+          if text.count(old) != 1:
+              raise SystemExit('README timing text not found')
+          readme.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          source = Path('index.html').read_text(encoding='utf-8')
+          assert 'RESULT_HOLD_MS=2600' in source
+          assert 'setTimeout(endReview,RESULT_HOLD_MS)' not in source
+          assert "state.index++;\n  beginPrompt();" in source
+          assert '前の結果を閉じる' in source
+          assert '直前の採点結果は次のお題中も残ります' in source
+          assert 'body.reviewing .heard' not in source
+
+          complete = source.split('function completeSubmission(){', 1)[1].split('function endReview(){', 1)[0]
+          assert 'state.reviewing=true' not in complete
+          assert 'cancelAnimationFrame(state.raf)' not in complete
+          assert 'showReview(best,gained)' in complete
+          assert 'beginPrompt()' in complete
+
+          prompt = source.split('function showPrompt(){', 1)[1].split('function appendDiff(', 1)[0]
+          assert "$('#answer-review').hidden=true" not in prompt
+
+          scripts = re.findall(r'<script>([\s\S]*?)</script>', source)
+          assert len(scripts) == 1
+          Path('/tmp/koeda-inline.js').write_text(scripts[0], encoding='utf-8')
+          print('Instant next-question flow verified')
+          PY
+          node --check /tmp/koeda-inline.js
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html README.md
+          git commit -m 'feat: advance immediately after scoring'
+          git push
