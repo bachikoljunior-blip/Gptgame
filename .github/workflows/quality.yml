@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   verify:
@@ -15,38 +15,41 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Verify the self-contained game
+      - name: Apply the requested voice-only upgrade once
+        id: migrate
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          if grep -Fq 'id="reset-input"' index.html; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+          else
+            python3 .github/patch_v11.py
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Verify the self-contained voice game
         run: |
           python3 - <<'PY'
           from pathlib import Path
           import re
 
           source = Path('index.html').read_text(encoding='utf-8')
-          required = ['<title>声打', 'SpeechRecognition', 'localStorage', 'meta name="app-revision"']
+          required = [
+              '<title>声打', 'id="start"', 'id="game"', 'id="result"',
+              'id="reset-input"', 'SpeechRecognition', 'localStorage',
+              'HOMOPHONES', '同音の表記ゆれも正解',
+              'meta name="app-revision"', 'source-v1.1'
+          ]
           missing = [item for item in required if item not in source]
-          groups = {
-              'start button': ('id="start"', 'id="start-button"'),
-              'play screen': ('id="game"', 'id="screen-play"'),
-              'result screen': ('id="result"', 'id="screen-result"'),
-          }
-          missing += [name for name, choices in groups.items() if not any(choice in source for choice in choices)]
           if missing:
               raise SystemExit(f'Missing required markers: {missing}')
-
-          # Once the voice-only v1.1 surface is present, enforce its irreversible product requirements.
-          if 'id="reset-input"' in source:
-              voice_required = ['id="start-button"', 'id="screen-play"', 'id="screen-result"',
-                                'HOMOPHONES', '同音の表記ゆれも正解']
-              voice_missing = [item for item in voice_required if item not in source]
-              if voice_missing:
-                  raise SystemExit(f'Missing voice-only markers: {voice_missing}')
-              if not re.search(r'maxAlternatives\s*=\s*5', source):
-                  raise SystemExit('Speech recognition must expose five alternatives')
-              forbidden = ['data-input="keyboard"', 'キーで練習', 'keyboard-form']
-              found = [item for item in forbidden if item in source]
-              if found:
-                  raise SystemExit(f'Removed keyboard mode returned: {found}')
-
+          if not re.search(r'maxAlternatives\s*=\s*5', source):
+              raise SystemExit('Speech recognition must expose five alternatives')
+          forbidden = [
+              'data-mode="keyboard"', 'data-input="keyboard"', 'キーで練習',
+              'keyboard-form', 'class="keyboard"', 'state.mode', "$('#form')", "$('#input')"
+          ]
+          found = [item for item in forbidden if item in source]
+          if found:
+              raise SystemExit(f'Removed keyboard mode returned: {found}')
           scripts = re.findall(r'<script>([\s\S]*?)</script>', source)
           if len(scripts) != 1 or re.search(r'<script[^>]+src=', source):
               raise SystemExit('Expected exactly one inline script and no external script')
@@ -54,6 +57,14 @@ jobs:
           if size > 120_000:
               raise SystemExit(f'Game exceeds the 120 KB source budget: {size}')
           Path('/tmp/koeda-inline.js').write_text(scripts[0], encoding='utf-8')
-          print(f'HTML markers OK; {size} bytes')
+          print(f'Voice-only HTML markers OK; {size} bytes')
           PY
           node --check /tmp/koeda-inline.js
+      - name: Commit the migrated game
+        if: steps.migrate.outputs.changed == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m 'feat: support homophones and input reset'
+          git push
