@@ -5,67 +5,621 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fffaf1">
 <meta name="description" content="声打（こえだ）—声でお題を読み、速さと正確さを競う日本語音声入力ゲーム">
-<meta name="app-revision" content="source-v1.2">
+<meta name="app-revision" content="source-v1.3">
 <title>声打（こえだ）— 声で、どこまでいける？</title>
 <style>
-:root{--bg:#fffaf1;--paper:#fff;--ink:#20241f;--muted:#696e66;--line:#dedfd5;--red:#e14b35;--red2:#b83221;--green:#315f49;--soft:#edf3e8;--shadow:0 18px 45px #27312817;font-family:"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;color:var(--ink);background:var(--bg);font-synthesis:none}*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(circle at 85% 8%,#f1e6d3 0 17%,transparent 34%),var(--bg)}button{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation}button:focus-visible{outline:3px solid var(--green);outline-offset:3px}[hidden]{display:none!important}.wrap{width:min(1080px,calc(100% - 34px));margin:auto}.top{height:78px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:25px;letter-spacing:.04em}.logo{width:42px;height:46px;border-radius:15px;background:var(--red);display:grid;place-items:center;color:#fff;font-size:25px}.brand small{display:block;font-size:9px;letter-spacing:.26em}.ghost{border:1px solid var(--line);background:#ffffffc7;border-radius:999px;padding:10px 15px;min-height:44px}.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:38px;align-items:center;padding:44px 0 34px}.kicker{font-size:12px;letter-spacing:.15em;color:var(--green);font-weight:900}.hero h1{font-size:clamp(45px,7vw,78px);line-height:1.16;letter-spacing:-.07em;margin:14px 0}.hero h1 em{font-style:normal;color:var(--red)}.lead{color:var(--muted);line-height:2;font-size:15px}.demo{position:relative;min-height:290px;display:grid;place-items:center}.orb{position:absolute;width:270px;height:270px;border-radius:50%;background:#efeee2}.card{position:relative;width:min(320px,95%);background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:var(--shadow);transform:rotate(-3deg)}.card small{color:var(--muted)}.card strong{display:block;font-size:34px;line-height:1.5;margin:28px 0}.wave{height:42px;display:flex;align-items:center;gap:5px}.wave i{display:block;width:5px;height:12px;background:var(--green);border-radius:8px;animation:pulse 1s ease-in-out infinite}.wave i:nth-child(2n){height:28px;animation-delay:.15s}.wave i:nth-child(3n){height:20px;animation-delay:.3s}@keyframes pulse{50%{transform:scaleY(.45)}}.panel{background:#fff;border:1px solid var(--line);border-radius:24px;padding:25px;box-shadow:0 5px 0 #e8e7dd80}.panel h2{margin:0 0 20px}.setup{display:grid;grid-template-columns:1fr 1.2fr 1.15fr;gap:18px}.group label{display:block;font-weight:900;font-size:12px;margin-bottom:9px}.choices{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}.choices button{border:1px solid var(--line);background:#fff;border-radius:11px;padding:11px 5px;min-height:58px;font-weight:900}.choices button small{display:block;color:var(--muted);font-weight:500;font-size:10px}.choices button[aria-pressed=true]{border-color:var(--green);background:var(--soft);color:var(--green)}.start{border:0;border-radius:12px;background:var(--red);color:#fff;box-shadow:0 4px 0 var(--red2);min-height:58px;padding:12px;font-weight:900;width:100%;margin-top:26px}.note{color:var(--muted);font-size:11px;margin:18px 0 0;border-top:1px solid #eee;padding-top:13px;line-height:1.8}.game{max-width:850px;margin:24px auto}.gamehead{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px}.stats{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px;margin-bottom:18px}.stat{text-align:center;border-right:1px solid var(--line)}.stat:last-child{border:0}.stat small{display:block;color:var(--muted);font-size:10px;letter-spacing:.08em}.stat strong{font-size:29px}.prompt{background:#fff;border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:var(--shadow);text-align:center}.prompttop{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;gap:12px}.reading{color:var(--muted);font-size:13px;letter-spacing:.06em;margin:32px 0 8px}.phrase{font-size:clamp(28px,5.5vw,48px);line-height:1.55;margin:0 0 22px}.heard{position:relative;min-height:104px;padding:18px 18px 12px;border:1px solid var(--line);background:#fafaf6;border-radius:17px;text-align:left}.heard small{display:block;color:var(--muted);margin-bottom:9px}.heard strong{display:block;text-align:center;font-size:19px;line-height:1.6;overflow-wrap:anywhere;padding:3px 74px 0 0}.clear-input{position:absolute;right:10px;top:10px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;font-size:11px;color:var(--muted);min-height:36px}.mic-area{display:grid;place-items:center;margin-top:24px}.mic{width:min(300px,100%);min-height:76px;border:0;border-radius:999px;background:var(--red);color:#fff;box-shadow:0 5px 0 var(--red2);font-weight:900;font-size:17px;padding:13px 22px}.mic span{display:block;font-size:12px;font-weight:600;opacity:.9;margin-top:4px}.mic[data-state=listening]{background:var(--green);box-shadow:0 5px 0 #1f4534;animation:listen 1.2s ease-in-out infinite}.mic:disabled{opacity:.62;cursor:default}@keyframes listen{50%{transform:scale(1.025)}}.feedback{text-align:center;min-height:31px;font-weight:900;margin:14px 0 0}.ok{color:var(--green)}.bad{color:var(--red)}.result{max-width:700px;margin:42px auto;text-align:center}.result h1{font-size:clamp(35px,7vw,60px);margin:8px}.scorebox{background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:var(--shadow);margin:24px 0}.bigscore{font-size:72px;font-weight:900;color:var(--red);line-height:1}.resultgrid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);margin-top:24px;padding-top:20px}.resultgrid strong{display:block;font-size:27px}.resultgrid small{color:var(--muted)}.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.primary{background:var(--red);color:#fff;border:0;border-radius:12px;padding:14px 22px;font-weight:900}.secondary{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 22px;font-weight:800}.board{margin-top:28px;text-align:left}.board ol{padding-left:26px}.board li{padding:8px;border-bottom:1px solid var(--line)}.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#20241f;color:#fff;padding:12px 18px;border-radius:999px;z-index:20}.footer{color:var(--muted);font-size:11px;text-align:center;padding:40px 0 24px}.live{display:inline-block;width:8px;height:8px;background:var(--green);border-radius:50%;margin-right:8px;animation:blink 1s infinite}@keyframes blink{50%{opacity:.3}}@media(max-width:760px){.hero{grid-template-columns:1fr;padding-top:22px}.demo{display:none}.setup{grid-template-columns:1fr}.start{margin-top:0}.panel{padding:18px}.stats{padding:9px 3px}.stat strong{font-size:22px}.prompt{padding:19px 14px}.reading{margin-top:27px}.resultgrid{grid-template-columns:repeat(2,1fr);gap:18px}.top{height:66px}.brand{font-size:22px}.heard strong{padding-right:0;padding-top:32px}.clear-input{top:7px;right:7px}.gamehead strong{font-size:13px}}@media(max-width:360px){.wrap{width:min(100% - 20px,1080px)}.choices button{font-size:12px}.stat strong{font-size:19px}.stat small{font-size:9px}.phrase{font-size:26px}.mic{min-height:70px}.resultgrid strong{font-size:23px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+:root{--bg:#fffaf1;--paper:#fff;--ink:#20241f;--muted:#696e66;--line:#dedfd5;--red:#e94b36;--red2:#b83221;--green:#315f49;--soft:#edf3e8;--yellow:#fff1bd;--shadow:0 18px 45px #27312817;font-family:"Hiragino Sans","Yu Gothic",Meiryo,sans-serif;color:var(--ink);background:var(--bg);font-synthesis:none}*{box-sizing:border-box}html{min-height:100%}body{margin:0;min-height:100dvh;background:radial-gradient(circle at 85% 8%,#f1e6d3 0 17%,transparent 34%),var(--bg)}button{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation}button:focus-visible{outline:3px solid var(--green);outline-offset:3px}button:disabled{cursor:default;opacity:.62}[hidden]{display:none!important}.wrap{width:min(1080px,calc(100% - 34px));margin:auto}.top{height:78px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:25px;letter-spacing:.04em}.logo{width:42px;height:46px;border-radius:15px;background:var(--red);display:grid;place-items:center;color:#fff;font-size:25px}.brand small{display:block;font-size:9px;letter-spacing:.26em}.ghost{border:1px solid var(--line);background:#ffffffc7;border-radius:999px;padding:9px 14px;min-height:42px}.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:38px;align-items:center;padding:44px 0 34px}.kicker{font-size:12px;letter-spacing:.15em;color:var(--green);font-weight:900}.hero h1{font-size:clamp(45px,7vw,78px);line-height:1.16;letter-spacing:-.07em;margin:14px 0}.hero h1 em{font-style:normal;color:var(--red)}.lead{color:var(--muted);line-height:2;font-size:15px}.demo{position:relative;min-height:290px;display:grid;place-items:center}.orb{position:absolute;width:270px;height:270px;border-radius:50%;background:#efeee2}.card{position:relative;width:min(320px,95%);background:#fff;border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:var(--shadow);transform:rotate(-3deg)}.card small{color:var(--muted)}.card strong{display:block;font-size:34px;line-height:1.5;margin:28px 0}.wave{height:42px;display:flex;align-items:center;gap:5px}.wave i{display:block;width:5px;height:12px;background:var(--green);border-radius:8px;animation:pulse 1s ease-in-out infinite}.wave i:nth-child(2n){height:28px;animation-delay:.15s}.wave i:nth-child(3n){height:20px;animation-delay:.3s}@keyframes pulse{50%{transform:scaleY(.45)}}.panel{background:#fff;border:1px solid var(--line);border-radius:24px;padding:25px;box-shadow:0 5px 0 #e8e7dd80}.panel h2{margin:0 0 20px}.setup{display:grid;grid-template-columns:1fr 1.2fr 1.15fr;gap:18px}.group label{display:block;font-weight:900;font-size:12px;margin-bottom:9px}.choices{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}.choices button{border:1px solid var(--line);background:#fff;border-radius:11px;padding:11px 5px;min-height:58px;font-weight:900}.choices button small{display:block;color:var(--muted);font-weight:500;font-size:10px}.choices button[aria-pressed=true]{border-color:var(--green);background:var(--soft);color:var(--green)}.start{border:0;border-radius:12px;background:var(--red);color:#fff;box-shadow:0 4px 0 var(--red2);min-height:58px;padding:12px;font-weight:900;width:100%;margin-top:26px}.note{color:var(--muted);font-size:11px;margin:18px 0 0;border-top:1px solid #eee;padding-top:13px;line-height:1.8}.game{max-width:850px;margin:24px auto}.gamehead{display:flex;justify-content:space-between;align-items:center;gap:12px}.gamehead .kicker{margin:0 0 4px}.gamehead strong{font-size:14px}.stats{display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border:1px solid var(--line);border-radius:17px;padding:9px 4px}.stat{text-align:center;border-right:1px solid var(--line)}.stat:last-child{border:0}.stat small{display:block;color:var(--muted);font-size:9px;letter-spacing:.06em}.stat strong{font-size:25px;line-height:1.15}.prompt{background:#fff;border:1px solid var(--line);border-radius:23px;padding:18px;box-shadow:var(--shadow);text-align:center}.prompttop{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;gap:12px}.question{display:grid;align-content:center;min-height:0}.reading{color:var(--muted);font-size:12px;letter-spacing:.05em;margin:8px 0 3px}.phrase{line-height:1.38;margin:0;font-weight:700;overflow-wrap:anywhere}.phrase.short{font-size:clamp(31px,5.2vw,48px)}.phrase.long{font-size:clamp(25px,4.3vw,38px)}.phrase.very-long{font-size:clamp(21px,3.5vw,31px)}.response-zone{display:grid;align-content:end;min-height:0}.heard{position:relative;min-height:76px;padding:10px 12px;border:1px solid var(--line);background:#fafaf6;border-radius:15px;text-align:left}.heard small{display:block;color:var(--muted);font-size:10px;margin-bottom:4px}.heard strong{display:block;text-align:center;font-size:18px;line-height:1.45;overflow-wrap:anywhere;padding:4px 74px 0 0}.clear-input{position:absolute;right:7px;top:7px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 9px;font-size:10px;color:var(--muted);min-height:32px}.mic-area{display:grid;place-items:center;margin-top:10px}.mic{width:min(330px,100%);min-height:64px;border:0;border-radius:999px;background:var(--red);color:#fff;box-shadow:0 5px 0 var(--red2);font-weight:900;font-size:17px;padding:10px 20px}.mic span{display:block;font-size:11px;font-weight:600;opacity:.9;margin-top:3px}.mic[data-state=listening]{background:var(--green);box-shadow:0 5px 0 #1f4534;animation:listen 1.2s ease-in-out infinite}.mic[data-state=reviewing]{background:#777;box-shadow:0 5px 0 #555}@keyframes listen{50%{transform:scale(1.018)}}.feedback{text-align:center;min-height:20px;font-weight:900;font-size:12px;margin:6px 0 0}.answer-review{border:1px solid var(--line);background:#fafaf6;border-radius:15px;padding:10px;text-align:left;min-height:174px}.review-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:900;margin-bottom:3px}.review-head strong:first-child{color:var(--green)}.review-head strong:last-child{color:var(--red)}.review-summary{margin:0 0 6px;text-align:center;color:var(--muted);font-size:10px}.diff-grid{display:grid;grid-template-columns:38px minmax(0,1fr);gap:5px 7px;align-items:start}.diff-label{font-size:10px;color:var(--muted);font-weight:900;padding-top:3px}.diff-line{font-size:16px;line-height:1.5;text-align:left;overflow-wrap:anywhere;word-break:break-all}.diff-line span{display:inline-block;min-width:.75em;text-align:center;border-radius:4px;padding:0 .04em;margin:0 .01em}.diff-ok{color:var(--green)}.diff-miss{background:#ffe0dc;color:#a42b1e;text-decoration:underline;text-decoration-thickness:2px}.diff-missing,.diff-extra,.diff-gap{background:var(--yellow);color:#725300}.review-next{display:block;margin:7px auto 0;border:1px solid var(--line);background:#fff;border-radius:999px;min-height:32px;padding:5px 14px;font-size:11px;font-weight:900}.ok{color:var(--green)}.bad{color:var(--red)}.result{max-width:700px;margin:42px auto;text-align:center}.result h1{font-size:clamp(35px,7vw,60px);margin:8px}.scorebox{background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:var(--shadow);margin:24px 0}.bigscore{font-size:72px;font-weight:900;color:var(--red);line-height:1}.resultgrid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);margin-top:24px;padding-top:20px}.resultgrid strong{display:block;font-size:27px}.resultgrid small{color:var(--muted)}.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}.primary{background:var(--red);color:#fff;border:0;border-radius:12px;padding:14px 22px;font-weight:900}.secondary{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 22px;font-weight:800}.board{margin-top:28px;text-align:left}.board ol{padding-left:26px}.board li{padding:8px;border-bottom:1px solid var(--line)}.toast{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);background:#20241f;color:#fff;padding:12px 18px;border-radius:999px;z-index:20}.footer{color:var(--muted);font-size:11px;text-align:center;padding:40px 0 24px}.live{display:inline-block;width:8px;height:8px;background:var(--green);border-radius:50%;margin-right:8px;animation:blink 1s infinite}@keyframes blink{50%{opacity:.3}}
+body.playing{height:100dvh;overflow:hidden;background:var(--bg)}body.playing .top,body.playing .footer{display:none}body.playing main.wrap{width:min(900px,100%);height:100dvh;padding:max(7px,env(safe-area-inset-top)) max(9px,env(safe-area-inset-right)) max(7px,env(safe-area-inset-bottom)) max(9px,env(safe-area-inset-left))}body.playing .game{height:100%;margin:0 auto;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:7px}body.playing .gamehead{min-height:42px}body.playing .stats{min-height:55px}body.playing .prompt{min-height:0;overflow:hidden;display:grid;grid-template-rows:auto minmax(72px,auto) minmax(0,1fr) auto;gap:6px}body.playing .response-zone{min-height:0}body.reviewing .heard,body.reviewing .mic-area{display:none}
+@media(max-width:760px){.hero{grid-template-columns:1fr;padding-top:22px}.demo{display:none}.setup{grid-template-columns:1fr}.start{margin-top:0}.panel{padding:18px}.resultgrid{grid-template-columns:repeat(2,1fr);gap:18px}.top{height:66px}.brand{font-size:22px}.heard strong{padding-right:0;padding-top:26px}.clear-input{top:6px;right:6px}.gamehead strong{font-size:12px}.wrap{width:min(100% - 22px,1080px)}}
+@media(max-height:700px){body.playing main.wrap{padding:max(5px,env(safe-area-inset-top)) 7px max(5px,env(safe-area-inset-bottom))}body.playing .game{gap:5px}body.playing .gamehead{min-height:35px}.gamehead .kicker{font-size:10px;margin-bottom:1px}.gamehead strong{font-size:10px}.ghost{min-height:34px;padding:5px 10px;font-size:11px}body.playing .stats{min-height:45px;padding:5px 2px}.stat strong{font-size:20px}.stat small{font-size:8px}body.playing .prompt{padding:9px 10px;gap:4px;border-radius:18px;grid-template-rows:auto minmax(64px,auto) minmax(0,1fr) auto}.prompttop{font-size:9px}.reading{font-size:10px;margin:3px 0 1px}.phrase.short{font-size:29px}.phrase.long{font-size:23px}.phrase.very-long{font-size:19px}.heard{min-height:64px;padding:7px 9px}.heard strong{font-size:15px;padding-top:22px}.clear-input{font-size:9px;min-height:28px;padding:4px 7px}.mic-area{margin-top:7px}.mic{min-height:54px;font-size:15px;padding:7px 15px}.mic span{font-size:9px}.answer-review{min-height:157px;padding:7px}.review-head{font-size:12px}.review-summary{font-size:9px;margin-bottom:4px}.diff-line{font-size:14px;line-height:1.35}.diff-grid{grid-template-columns:32px minmax(0,1fr);gap:3px 5px}.diff-label{font-size:9px}.review-next{margin-top:4px;min-height:27px;padding:3px 10px;font-size:9px}.feedback{font-size:10px;min-height:15px;margin-top:2px}}
+@media(max-width:360px){.choices button{font-size:12px}.stat strong{font-size:18px}.stat small{font-size:8px}.phrase.short{font-size:27px}.phrase.long{font-size:22px}.phrase.very-long{font-size:18px}.resultgrid strong{font-size:23px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+
 </style>
 </head>
 <body>
 <header class="top wrap"><div class="brand"><span class="logo">◉</span><span>声打<small>KOEDA</small></span></div><button class="ghost" id="sound">効果音 OFF</button></header>
 <main class="wrap">
-<section id="home"><div class="hero"><div><p class="kicker"><span class="live"></span>VOICE SPEED GAME</p><h1>声で、<br>どこまで<em>いける？</em></h1><p class="lead">表示された日本語を読み、マイクをもう一度押して回答を確定。<br>言い間違いも含めて速さと正確さを採点します。</p></div><div class="demo"><div class="orb"></div><div class="card"><small>マイクを押して回答</small><strong>今日はいい<br>天気ですね</strong><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div></div>
-<div class="panel"><h2>チャレンジ設定</h2><div class="setup"><div class="group"><label>制限時間</label><div class="choices" id="dur"><button data-v="30" aria-pressed="false">30秒</button><button data-v="60" aria-pressed="true">60秒<small>おすすめ</small></button><button data-v="90" aria-pressed="false">90秒</button></div></div><div class="group"><label>むずかしさ</label><div class="choices" id="diff"><button data-v="easy" aria-pressed="false">やさしい<small>75問</small></button><button data-v="normal" aria-pressed="true">ふつう<small>75問</small></button><button data-v="hard" aria-pressed="false">むずかしい<small>60問</small></button></div></div><div><button class="start" id="start">ゲーム画面へ →</button></div></div><p class="note" id="support">ゲーム時間は最初にマイクを押した瞬間から開始します。回答中は大きなマイクボタンをもう一度押すと採点します。漢字表記は内部でひらがな読みに変換して比較します。</p></div></section>
-<section id="game" class="game" hidden><div class="gamehead"><div><p class="kicker" id="course">VOICE / NORMAL</p><strong>マイクを押す → 話す → もう一度押して確定</strong></div><button class="ghost" id="quit">終了</button></div><div class="stats"><div class="stat"><small>のこり</small><strong id="time">60</strong></div><div class="stat"><small>SCORE</small><strong id="score">0</strong></div><div class="stat"><small>文字/分</small><strong id="cpm">0</strong></div><div class="stat"><small>正確率</small><strong id="liveAccuracy">—</strong></div></div><div class="prompt"><div class="prompttop"><span id="number">お題 01</span><span id="status">時間はマイクで開始</span></div><p class="reading" id="reading"></p><h1 class="phrase" id="phrase"></h1><div class="heard"><small>認識した回答</small><button class="clear-input" id="reset-input">入力を消去</button><strong id="heard">マイクを押すと聞き取りを始めます</strong></div><div class="mic-area"><button class="mic" id="mic" data-state="idle">🎙 マイクを押して回答<span>時間が始まります</span></button></div><p class="feedback" id="feedback" aria-live="polite"></p></div></section>
-<section id="result" class="result" hidden><p class="kicker">CHALLENGE COMPLETE</p><h1>声の記録ができました。</h1><div class="scorebox"><small>YOUR SCORE</small><div class="bigscore" id="finalScore">0</div><p id="rankText"></p><div class="resultgrid"><div><strong id="finalCpm">0</strong><small>文字/分</small></div><div><strong id="accuracy">—</strong><small>正確率</small></div><div><strong id="answered">0</strong><small>回答数</small></div><div><strong id="maxCombo">0</strong><small>最大コンボ</small></div></div></div><div class="actions"><button class="primary" id="again">もう一度</button><button class="secondary" id="copy">結果をコピー</button><button class="secondary" id="homeBtn">設定へ戻る</button></div><div class="board"><h3>このコースのマイ記録</h3><ol id="board"></ol></div></section>
-</main><footer class="footer">声打 v1.2 — 回答はひらがな読みに変換して採点。記録はこのブラウザ内だけに保存されます。</footer><div class="toast" id="toast" hidden></div>
+<section id="home">
+  <div class="hero">
+    <div><p class="kicker"><span class="live"></span>VOICE SPEED GAME</p><h1>声で、<br>どこまで<em>いける？</em></h1><p class="lead">ゲーム開始でマイクを許可すると、すぐに1問目の聞き取りを開始。<br>漢字もひらがな読みに直し、言い間違いまで採点します。</p></div>
+    <div class="demo"><div class="orb"></div><div class="card"><small>マイクは自動でオン</small><strong>今日はいい<br>天気ですね</strong><div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+  </div>
+  <div class="panel"><h2>チャレンジ設定</h2><div class="setup">
+    <div class="group"><label>制限時間</label><div class="choices" id="dur"><button data-v="30" aria-pressed="false">30秒</button><button data-v="60" aria-pressed="true">60秒<small>おすすめ</small></button><button data-v="90" aria-pressed="false">90秒</button></div></div>
+    <div class="group"><label>むずかしさ</label><div class="choices" id="diff"><button data-v="easy" aria-pressed="false">やさしい<small>150問</small></button><button data-v="normal" aria-pressed="true">ふつう<small>150問</small></button><button data-v="hard" aria-pressed="false">むずかしい<small>120問</small></button></div></div>
+    <div><button class="start" id="start">マイクを許可して開始 →</button></div>
+  </div><p class="note" id="support">開始ボタンを押した時点でマイク許可を求めます。許可後は問題ごとに自動で聞き取りを開始し、同じ大きなボタンを押すと回答を確定します。問題ごとの時間制限とスキップはありません。</p></div>
+</section>
+<section id="game" class="game" hidden>
+  <div class="gamehead"><div><p class="kicker" id="course">VOICE / NORMAL</p><strong>自動で聞き取り開始。話し終わったら回答を確定。</strong></div><button class="ghost" id="quit">途中終了</button></div>
+  <div class="stats"><div class="stat"><small>のこり</small><strong id="time">60</strong></div><div class="stat"><small>SCORE</small><strong id="score">0</strong></div><div class="stat"><small>ひらがな/分</small><strong id="cpm">0</strong></div><div class="stat"><small>正確率</small><strong id="liveAccuracy">—</strong></div></div>
+  <div class="prompt">
+    <div class="prompttop"><span id="number">お題 01</span><span id="status">マイク準備中</span></div>
+    <div class="question"><p class="reading" id="reading"></p><h1 class="phrase short" id="phrase"></h1></div>
+    <div class="response-zone">
+      <div class="heard"><small>認識した回答</small><button class="clear-input" id="reset-input">入力を消去</button><strong id="heard">マイクを準備しています…</strong></div>
+      <div class="mic-area"><button class="mic" id="mic" data-state="idle">マイクを準備中<span>問題開始時に自動でオンになります</span></button></div>
+      <section class="answer-review" id="answer-review" aria-live="polite" hidden>
+        <div class="review-head"><strong id="review-accuracy">正確率 —</strong><strong id="review-score">+0点</strong></div>
+        <p class="review-summary" id="review-summary"></p>
+        <div class="diff-grid"><span class="diff-label">正解</span><div class="diff-line" id="diff-target"></div><span class="diff-label">回答</span><div class="diff-line" id="diff-answer"></div></div>
+        <button class="review-next" id="next-prompt">結果を閉じて次へ</button>
+      </section>
+    </div>
+    <p class="feedback" id="feedback" aria-live="polite"></p>
+  </div>
+</section>
+<section id="result" class="result" hidden>
+  <p class="kicker">CHALLENGE COMPLETE</p><h1>声の記録ができました。</h1>
+  <div class="scorebox"><small>YOUR SCORE</small><div class="bigscore" id="finalScore">0</div><p id="rankText"></p><div class="resultgrid"><div><strong id="finalCpm">0</strong><small>ひらがな/分</small></div><div><strong id="accuracy">—</strong><small>正確率</small></div><div><strong id="answered">0</strong><small>回答数</small></div><div><strong id="maxCombo">0</strong><small>最大コンボ</small></div></div></div>
+  <div class="actions"><button class="primary" id="again">もう一度</button><button class="secondary" id="copy">結果をコピー</button><button class="secondary" id="homeBtn">設定へ戻る</button></div>
+  <div class="board"><h3>このコースのマイ記録</h3><ol id="board"></ol></div>
+</section>
+</main>
+<footer class="footer">声打 v1.3 — マイク自動開始・ひらがな数で速度計測・回答差分を表示。記録はこのブラウザ内だけに保存されます。</footer><div class="toast" id="toast" hidden></div>
 <script>
 (()=>{'use strict';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const BASE={"easy":[["猫","ねこ"],["青空","あおぞら"],["新幹線","しんかんせん"],["おにぎり","おにぎり"],["夏休み","なつやすみ"],["図書館","としょかん"],["流れ星","ながれぼし"],["焼きたてパン","やきたてぱん"],["朝ごはん","あさごはん"],["音声入力","おんせいにゅうりょく"],["自己ベスト","じこべすと"],["赤いりんご","あかいりんご"],["静かな公園","しずかなこうえん"],["温かいお茶","あたたかいおちゃ"],["小さな花","ちいさなはな"]],"normal":[["今日はいい天気ですね","きょうはいいてんきですね"],["お寿司が食べたいです","おすしがたべたいです"],["明日の会議は十時からです","あしたのかいぎはじゅうじからです"],["駅前のカフェで待ち合わせます","えきまえのかふぇでまちあわせます"],["新しいアイデアを試してみよう","あたらしいあいであをためしてみよう"],["週末は家族と映画を見ます","しゅうまつはかぞくとえいがをみます"],["ゆっくりはっきり話してください","ゆっくりはっきりはなしてください"],["温かいコーヒーを一杯ください","あたたかいこーひーをいっぱいください"],["小さな一歩が未来を変える","ちいさないっぽがみらいをかえる"],["声で文字を入力すると速い","こえでもじをにゅうりょくするとはやい"],["春の風が窓から入ってきた","はるのかぜがまどからはいってきた"],["忘れ物がないか確認しましょう","わすれものがないかかくにんしましょう"],["このゲームで自己ベストを狙う","このげーむでじこべすとをねらう"],["夕焼けの空を写真に撮りました","ゆうやけのそらをしゃしんにとりました"],["困ったときは深呼吸をしよう","こまったときはしんこきゅうをしよう"]],"hard":[["人工知能によって仕事の進め方が変わります","じんこうちのうによってしごとのすすめかたがかわります"],["隣の客はよく柿食う客だ","となりのきゃくはよくかきくうきゃくだ"],["東京特許許可局の許可を確認する","とうきょうとっきょきょかきょくのきょかをかくにんする"],["生麦生米生卵を落ち着いて読む","なまむぎなまごめなまたまごをおちついてよむ"],["音声認識の精度は環境によって変わります","おんせいにんしきのせいどはかんきょうによってかわります"],["素早く正確に話すことが高得点への近道です","すばやくせいかくにはなすことがこうとくてんへのちかみちです"],["新しい技術を使って毎日の作業を効率化します","あたらしいぎじゅつをつかってまいにちのさぎょうをこうりつかします"],["国際化と地域文化の両方を大切に考える","こくさいかとちいきぶんかのりょうほうをたいせつにかんがえる"],["伝えたい内容を簡潔な言葉でまとめてください","つたえたいないようをかんけつなことばでまとめてください"],["予想していなかった出来事にも柔軟に対応する","よそうしていなかったできごとにもじゅうなんにたいおうする"],["継続的な改善が大きな成果につながっていきます","けいぞくてきなかいぜんがおおきなせいかにつながっていきます"],["発表の前に資料とマイクの状態を確認しましょう","はっぴょうのまえにしりょうとまいくのじょうたいをかくにんしましょう"]]};
-const WRAPPERS={"easy":[["","","",""],["言葉は","ことばは","です","です"],["","","と声に出します","とこえにだします"],["","","を思い浮かべます","をおもいうかべます"],["","","について話します","についてはなします"]],"normal":[["","","",""],["落ち着いて、","おちついて","",""],["はっきり、","はっきり","",""],["","","と伝えます","とつたえます"],["","","。もう一度読みます","もういちどよみます"]],"hard":[["","","",""],["息を整えて、","いきをととのえて","",""],["一度で、","いちどで","",""],["","","と明確に伝えます","とめいかくにつたえます"],["","","。最後まで丁寧に読みます","さいごまでていねいによみます"]]};
-const WORD_READINGS=[["言葉","ことば"],["声","こえ"],["出します","だします"],["思い浮かべます","おもいうかべます"],["話します","はなします"],["落ち着いて","おちついて"],["伝えます","つたえます"],["一度","いちど"],["読みます","よみます"],["息","いき"],["整えて","ととのえて"],["明確","めいかく"],["最後","さいご"],["丁寧","ていねい"],["猫","ねこ"],["青空","あおぞら"],["新幹線","しんかんせん"],["お握り","おにぎり"],["夏休み","なつやすみ"],["図書館","としょかん"],["流れ星","ながれぼし"],["焼きたて","やきたて"],["朝ご飯","あさごはん"],["朝御飯","あさごはん"],["音声入力","おんせいにゅうりょく"],["自己ベスト","じこべすと"],["赤い","あかい"],["林檎","りんご"],["静かな","しずかな"],["公園","こうえん"],["講演","こうえん"],["温かい","あたたかい"],["暖かい","あたたかい"],["お茶","おちゃ"],["小さな","ちいさな"],["花","はな"],["今日","きょう"],["天気","てんき"],["寿司","すし"],["鮨","すし"],["食べたい","たべたい"],["明日","あした"],["会議","かいぎ"],["懐疑","かいぎ"],["十","じゅう"],["時","じ"],["駅前","えきまえ"],["待ち合わせます","まちあわせます"],["新しい","あたらしい"],["試して","ためして"],["週末","しゅうまつ"],["家族","かぞく"],["映画","えいが"],["見ます","みます"],["話してください","はなしてください"],["一杯","いっぱい"],["一歩","いっぽ"],["未来","みらい"],["変える","かえる"],["文字","もじ"],["入力","にゅうりょく"],["速い","はやい"],["早い","はやい"],["春","はる"],["風","かぜ"],["風邪","かぜ"],["窓","まど"],["入ってきた","はいってきた"],["忘れ物","わすれもの"],["確認","かくにん"],["狙う","ねらう"],["夕焼け","ゆうやけ"],["空","そら"],["写真","しゃしん"],["撮りました","とりました"],["困った","こまった"],["深呼吸","しんこきゅう"],["人工知能","じんこうちのう"],["仕事","しごと"],["進め方","すすめかた"],["変わります","かわります"],["隣","となり"],["客","きゃく"],["柿","かき"],["牡蠣","かき"],["食う","くう"],["東京","とうきょう"],["特許","とっきょ"],["許可局","きょかきょく"],["許可","きょか"],["生麦","なまむぎ"],["生米","なまごめ"],["生卵","なまたまご"],["読む","よむ"],["音声認識","おんせいにんしき"],["精度","せいど"],["制度","せいど"],["環境","かんきょう"],["素早く","すばやく"],["正確","せいかく"],["高得点","こうとくてん"],["近道","ちかみち"],["技術","ぎじゅつ"],["使って","つかって"],["毎日","まいにち"],["作業","さぎょう"],["効率化","こうりつか"],["国際化","こくさいか"],["地域文化","ちいきぶんか"],["両方","りょうほう"],["大切","たいせつ"],["考える","かんがえる"],["伝えたい","つたえたい"],["内容","ないよう"],["簡潔","かんけつ"],["まとめて","まとめて"],["予想","よそう"],["出来事","できごと"],["柔軟","じゅうなん"],["対応","たいおう"],["継続的","けいぞくてき"],["改善","かいぜん"],["大きな","おおきな"],["成果","せいか"],["製菓","せいか"],["発表","はっぴょう"],["前","まえ"],["資料","しりょう"],["状態","じょうたい"],["一","いち"],["二","に"],["三","さん"],["四","よん"],["五","ご"],["六","ろく"],["七","なな"],["八","はち"],["九","きゅう"],["百","ひゃく"],["千","せん"],["万","まん"]];
-const PROMPT_TARGETS={easy:75,normal:75,hard:60};
+const WRAPPERS={
+  "easy":[
+    ["","","",""],
+    ["言葉は","ことばは","です","です"],
+    ["","","と声に出します","とこえにだします"],
+    ["","","を思い浮かべます","をおもいうかべます"],
+    ["","","について話します","についてはなします"],
+    ["ゆっくり、","ゆっくり","と読みます","とよみます"],
+    ["はっきり、","はっきり","と言います","といいます"],
+    ["","","という言葉です","ということばです"],
+    ["今日の言葉は","きょうのことばは","です","です"],
+    ["","","を一度読みます","をいちどよみます"]
+  ],
+  "normal":[
+    ["","","",""],
+    ["落ち着いて、","おちついて","",""],
+    ["はっきり、","はっきり","",""],
+    ["","","と伝えます","とつたえます"],
+    ["","","。もう一度読みます","もういちどよみます"],
+    ["続けて、","つづけて","",""],
+    ["","","と声に出します","とこえにだします"],
+    ["丁寧に、","ていねいに","",""],
+    ["","","と確認します","とかくにんします"],
+    ["一息で、","ひといきで","",""]
+  ],
+  "hard":[
+    ["","","",""],
+    ["息を整えて、","いきをととのえて","",""],
+    ["一度で、","いちどで","",""],
+    ["","","と明確に伝えます","とめいかくにつたえます"],
+    ["","","。最後まで丁寧に読みます","さいごまでていねいによみます"],
+    ["焦らずに、","あせらずに","",""],
+    ["","","と説明してください","とせつめいしてください"],
+    ["発音に注意して、","はつおんにちゅういして","",""],
+    ["","","と続けて読みます","とつづけてよみます"],
+    ["区切らずに、","くぎらずに","",""]
+  ]
+};
+const WORD_READINGS=[["言葉","ことば"],["声","こえ"],["出します","だします"],["思い浮かべます","おもいうかべます"],["話します","はなします"],["落ち着いて","おちついて"],["伝えます","つたえます"],["一度","いちど"],["読みます","よみます"],["息","いき"],["整えて","ととのえて"],["明確","めいかく"],["最後","さいご"],["丁寧","ていねい"],["猫","ねこ"],["青空","あおぞら"],["新幹線","しんかんせん"],["お握り","おにぎり"],["夏休み","なつやすみ"],["図書館","としょかん"],["流れ星","ながれぼし"],["焼きたて","やきたて"],["朝ご飯","あさごはん"],["朝御飯","あさごはん"],["音声入力","おんせいにゅうりょく"],["自己ベスト","じこべすと"],["赤い","あかい"],["林檎","りんご"],["静かな","しずかな"],["公園","こうえん"],["講演","こうえん"],["温かい","あたたかい"],["暖かい","あたたかい"],["お茶","おちゃ"],["小さな","ちいさな"],["花","はな"],["今日","きょう"],["天気","てんき"],["寿司","すし"],["鮨","すし"],["食べたい","たべたい"],["明日","あした"],["会議","かいぎ"],["懐疑","かいぎ"],["十","じゅう"],["時","じ"],["駅前","えきまえ"],["待ち合わせます","まちあわせます"],["新しい","あたらしい"],["試して","ためして"],["週末","しゅうまつ"],["家族","かぞく"],["映画","えいが"],["見ます","みます"],["話してください","はなしてください"],["一杯","いっぱい"],["一歩","いっぽ"],["未来","みらい"],["変える","かえる"],["文字","もじ"],["入力","にゅうりょく"],["速い","はやい"],["早い","はやい"],["春","はる"],["風","かぜ"],["風邪","かぜ"],["窓","まど"],["入ってきた","はいってきた"],["忘れ物","わすれもの"],["確認","かくにん"],["狙う","ねらう"],["夕焼け","ゆうやけ"],["空","そら"],["写真","しゃしん"],["撮りました","とりました"],["困った","こまった"],["深呼吸","しんこきゅう"],["人工知能","じんこうちのう"],["仕事","しごと"],["進め方","すすめかた"],["変わります","かわります"],["隣","となり"],["客","きゃく"],["柿","かき"],["牡蠣","かき"],["食う","くう"],["東京","とうきょう"],["特許","とっきょ"],["許可局","きょかきょく"],["許可","きょか"],["生麦","なまむぎ"],["生米","なまごめ"],["生卵","なまたまご"],["読む","よむ"],["音声認識","おんせいにんしき"],["精度","せいど"],["制度","せいど"],["環境","かんきょう"],["素早く","すばやく"],["正確","せいかく"],["高得点","こうとくてん"],["近道","ちかみち"],["技術","ぎじゅつ"],["使って","つかって"],["毎日","まいにち"],["作業","さぎょう"],["効率化","こうりつか"],["国際化","こくさいか"],["地域文化","ちいきぶんか"],["両方","りょうほう"],["大切","たいせつ"],["考える","かんがえる"],["伝えたい","つたえたい"],["内容","ないよう"],["簡潔","かんけつ"],["まとめて","まとめて"],["予想","よそう"],["出来事","できごと"],["柔軟","じゅうなん"],["対応","たいおう"],["継続的","けいぞくてき"],["改善","かいぜん"],["大きな","おおきな"],["成果","せいか"],["製菓","せいか"],["発表","はっぴょう"],["前","まえ"],["資料","しりょう"],["状態","じょうたい"],["一","いち"],["二","に"],["三","さん"],["四","よん"],["五","ご"],["六","ろく"],["七","なな"],["八","はち"],["九","きゅう"],["百","ひゃく"],["千","せん"],["万","まん"],["ゆっくり","ゆっくり"],["と言います","といいます"],["という言葉","ということば"],["今日の言葉","きょうのことば"],["続けて","つづけて"],["丁寧に","ていねいに"],["確認します","かくにんします"],["一息","ひといき"],["焦らずに","あせらずに"],["説明してください","せつめいしてください"],["発音","はつおん"],["注意して","ちゅういして"],["続けて読みます","つづけてよみます"],["区切らずに","くぎらずに"]];
+
+const PROMPT_TARGETS={easy:150,normal:150,hard:120};
+const RESULT_HOLD_MS=2600;
 const buildPrompts=(mode)=>BASE[mode].flatMap(([text,reading])=>WRAPPERS[mode].map(([pre,preR,post,postR])=>({text:pre+text+post,reading:preR+reading+postR})));
 const PROMPTS={easy:buildPrompts('easy'),normal:buildPrompts('normal'),hard:buildPrompts('hard')};
-for(const mode of Object.keys(PROMPT_TARGETS)){if(PROMPTS[mode].length!==PROMPT_TARGETS[mode])throw Error(`prompt count ${mode}`)}
+for(const mode of Object.keys(PROMPT_TARGETS)){
+  if(PROMPTS[mode].length!==PROMPT_TARGETS[mode])throw Error(`prompt count ${mode}`);
+  if(new Set(PROMPTS[mode].map(prompt=>prompt.text)).size!==PROMPT_TARGETS[mode])throw Error(`duplicate prompt ${mode}`);
+}
+
 const FULL_READINGS=new Map();
-for(const mode of Object.keys(PROMPTS))for(const p of PROMPTS[mode])FULL_READINGS.set(cleanSurface(p.text),normalizeKana(p.reading));
+for(const mode of Object.keys(PROMPTS)){
+  for(const prompt of PROMPTS[mode])FULL_READINGS.set(cleanSurface(prompt.text),normalizeKana(prompt.reading));
+}
 const READING_MAP=new Map(WORD_READINGS.map(([surface,reading])=>[cleanSurface(surface),normalizeKana(reading)]));
 for(const [surface,reading] of FULL_READINGS)READING_MAP.set(surface,reading);
 const READING_KEYS=[...READING_MAP.keys()].sort((a,b)=>b.length-a.length);
-const state={duration:60,difficulty:'normal',running:false,clockStarted:false,listening:false,submitting:false,score:0,combo:0,maxCombo:0,answered:0,correctUnits:0,totalUnits:0,correctChars:0,index:0,deck:[],startTime:0,endTime:0,rec:null,recToken:0,candidates:[''],interim:'',sound:false,ranked:true,raf:0,finalizeTimer:0};
-function cleanSurface(s){return String(s||'').normalize('NFKC').toLowerCase().replace(/[\s、。,.!！?？「」『』・~〜]/g,'')}
-function normalizeKana(s){return cleanSurface(s).replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-96)).replace(/ー/g,'')}
-function numberReading(input){let n=Number(input);if(!Number.isFinite(n)||n<0||n>99999)return String(input);if(n===0)return'ぜろ';const d=['','いち','に','さん','よん','ご','ろく','なな','はち','きゅう'];const small=x=>{let r='';const th=Math.floor(x/1000),hu=Math.floor(x%1000/100),te=Math.floor(x%100/10),on=x%10;if(th)r+=(th===1?'':d[th])+'せん';if(hu)r+=(hu===1?'':d[hu])+'ひゃく';if(te)r+=(te===1?'':d[te])+'じゅう';if(on)r+=d[on];return r};const man=Math.floor(n/10000),rest=n%10000;return(man?d[man]+'まん':'')+small(rest)}
-function toHiragana(input){let s=cleanSurface(input).replace(/\d+/g,m=>numberReading(m)).replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-96));let out='';for(let i=0;i<s.length;){let hit='';for(const key of READING_KEYS){if(key&&s.startsWith(key,i)){hit=key;break}}if(hit){out+=READING_MAP.get(hit);i+=hit.length;continue}const c=s[i];out+=c==='ー'?'':c;i++}return normalizeKana(out)}
-function distance(a,b){a=[...a];b=[...b];let prev=Array.from({length:b.length+1},(_,i)=>i);for(let i=0;i<a.length;i++){const next=[i+1];for(let j=0;j<b.length;j++)next[j+1]=Math.min(next[j]+1,prev[j+1]+1,prev[j]+(a[i]===b[j]?0:1));prev=next}return prev[b.length]}
-function compareReadings(answer,target){answer=toHiragana(answer);target=toHiragana(target);const total=Math.max(answer.length,target.length,1),errors=distance(answer,target),correct=Math.max(0,total-errors);return{answer,target,total,errors,correct,ratio:correct/total}}
-function bestCandidate(candidates,target){let best={text:'',...compareReadings('',target)};for(const text of [...new Set(candidates.map(x=>String(x||'').trim()))]){const c={text,...compareReadings(text,target)};if(c.ratio>best.ratio||(c.ratio===best.ratio&&c.errors<best.errors))best=c}return best}
-function shuffle(a){a=[...a];for(let i=a.length-1;i;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function press(group,val){$$(`#${group} button`).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v==val)))}
-function screen(id){['home','game','result'].forEach(x=>$('#'+x).hidden=x!==id);scrollTo({top:0,behavior:'smooth'})}
-function toast(t){$('#toast').textContent=t;$('#toast').hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>$('#toast').hidden=true,2200)}
-function beep(f=620){if(!state.sound)return;try{const A=window.AudioContext||window.webkitAudioContext,a=new A(),o=a.createOscillator(),g=a.createGain();o.frequency.value=f;g.gain.setValueAtTime(.045,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+.12);o.connect(g).connect(a.destination);o.start();o.stop(a.currentTime+.13)}catch{}}
-function current(){return state.deck[state.index%state.deck.length]}
-function cumulativeAccuracy(){return state.totalUnits?Math.round(100*state.correctUnits/state.totalUnits):null}
-function showPrompt(){const p=current();state.candidates=[''];state.interim='';$('#number').textContent=`お題 ${String(state.index+1).padStart(2,'0')} / ${state.deck.length}`;$('#reading').textContent=p.reading;$('#phrase').textContent=p.text;$('#heard').textContent='マイクを押すと聞き取りを始めます';$('#feedback').textContent='';setMic('idle')}
-function setMic(kind){const b=$('#mic');b.dataset.state=kind;b.disabled=kind==='submitting';if(kind==='listening')b.innerHTML='■ もう一度押して確定<span>聞き取り中です</span>';else if(kind==='submitting')b.innerHTML='採点中…<span>少しだけお待ちください</span>';else b.innerHTML=state.clockStarted?'🎙 マイクを押して回答<span>次のお題を読みます</span>':'🎙 マイクを押して回答<span>時間が始まります</span>'}
-function stopRecognition(){state.recToken++;if(state.rec){state.rec.onend=null;try{state.rec.stop()}catch{}state.rec=null}}
-function newRecognition(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R)throw Error('このブラウザは音声認識に対応していません');const token=++state.recToken,r=new R();state.rec=r;r.lang='ja-JP';r.continuous=true;r.interimResults=true;r.maxAlternatives=5;r.onresult=e=>{if(token!==state.recToken||!state.listening)return;for(let i=e.resultIndex;i<e.results.length;i++){const result=e.results[i],alts=[];for(let j=0;j<Math.min(5,result.length);j++)alts.push(result[j]?.transcript||'');if(result.isFinal){const old=state.candidates;state.candidates=Array.from({length:5},(_,j)=>(old[j]||old[0]||'')+(alts[j]||alts[0]||''));state.interim=''}else state.interim=alts[0]||''}$('#heard').textContent=((state.candidates[0]||'')+state.interim).trim()||'聞き取り中…'};r.onerror=e=>{if(token!==state.recToken||['no-speech','aborted'].includes(e.error))return;state.ranked=false;toast(e.error==='not-allowed'?'マイクが許可されていません':'音声認識エラー')};r.onend=()=>{if(token!==state.recToken)return;state.rec=null;if(state.submitting)return completeSubmission();if(state.listening&&state.running)setTimeout(()=>{if(state.listening&&state.running)try{newRecognition().start()}catch{}},100)};return r}
-async function startListening(){if(!state.running||state.listening||state.submitting)return;if(!state.clockStarted){try{const stream=await navigator.mediaDevices?.getUserMedia({audio:true});stream?.getTracks().forEach(t=>t.stop())}catch(e){toast('マイクを開始できません');return}state.clockStarted=true;state.startTime=performance.now();state.endTime=state.startTime+state.duration*1000;state.raf=requestAnimationFrame(update)}state.candidates=[''];state.interim='';state.listening=true;setMic('listening');$('#heard').textContent='聞き取り中…';try{newRecognition().start()}catch(e){state.listening=false;setMic('idle');toast(e.message||'音声認識を開始できません')}}
-function submitAnswer(){if(!state.running||!state.listening||state.submitting)return;state.listening=false;state.submitting=true;setMic('submitting');if(state.interim){state.candidates[0]=(state.candidates[0]||'')+state.interim;state.interim=''}const rec=state.rec;if(rec){rec.onend=()=>{state.rec=null;completeSubmission()};try{rec.stop()}catch{completeSubmission()};clearTimeout(state.finalizeTimer);state.finalizeTimer=setTimeout(completeSubmission,450)}else completeSubmission()}
-function completeSubmission(){if(!state.submitting)return;clearTimeout(state.finalizeTimer);state.submitting=false;stopRecognition();const p=current(),best=bestCandidate(state.candidates,p.reading);state.totalUnits+=best.total;state.correctUnits+=best.correct;state.correctChars+=Math.min(best.correct,toHiragana(p.reading).length);state.answered++;const answerAccuracy=Math.round(best.ratio*100);if(best.ratio>=.9){state.combo++;state.maxCombo=Math.max(state.maxCombo,state.combo)}else state.combo=0;const mult=state.combo>=21?2:state.combo>=16?1.75:state.combo>=11?1.5:state.combo>=6?1.25:1;const gained=Math.round(toHiragana(p.reading).length*10*best.ratio*mult);state.score+=gained;$('#feedback').textContent=`この回答 ${answerAccuracy}%　+${gained}点`;$('#feedback').className='feedback '+(best.ratio>=.9?'ok':'bad');$('#heard').textContent=best.text||'（聞き取りなし）';beep(best.ratio>=.9?650:280);state.index++;renderStats();if(state.clockStarted&&performance.now()>=state.endTime)return setTimeout(finish,350);setTimeout(()=>{if(state.running)showPrompt()},350)}
-function resetInput(){if(!state.running||state.submitting)return;state.candidates=[''];state.interim='';$('#heard').textContent=state.listening?'聞き取りを消去しました。続けて話せます':'入力を消去しました';if(state.listening){stopRecognition();setTimeout(()=>{if(state.listening&&state.running)try{newRecognition().start()}catch{}},80)}toast('入力だけ消去しました')}
-function renderStats(){const elapsed=state.clockStarted?Math.max((performance.now()-state.startTime)/60000,1/60):0;$('#score').textContent=state.score;$('#cpm').textContent=elapsed?Math.round(state.correctChars/elapsed):0;const a=cumulativeAccuracy();$('#liveAccuracy').textContent=a===null?'—':a+'%'}
-function update(){if(!state.running||!state.clockStarted)return;const left=Math.max(0,state.endTime-performance.now());$('#time').textContent=Math.ceil(left/1000);$('#status').textContent=state.listening?'聞き取り中':state.submitting?'採点中':'マイクを押して回答';renderStats();if(left<=0){$('#time').textContent='0';if(state.listening)return submitAnswer();if(!state.submitting)return finish();return}state.raf=requestAnimationFrame(update)}
-function startGame(){stopRecognition();cancelAnimationFrame(state.raf);Object.assign(state,{running:true,clockStarted:false,listening:false,submitting:false,score:0,combo:0,maxCombo:0,answered:0,correctUnits:0,totalUnits:0,correctChars:0,index:0,deck:shuffle(PROMPTS[state.difficulty]),startTime:0,endTime:0,candidates:[''],interim:'',ranked:true});$('#time').textContent=state.duration;$('#course').textContent=`VOICE / ${state.difficulty.toUpperCase()} / ${state.duration} SEC`;$('#status').textContent='時間はマイクで開始';renderStats();screen('game');showPrompt()}
-function finish(quit=false){if(!state.running)return;state.running=false;state.listening=false;state.submitting=false;cancelAnimationFrame(state.raf);clearTimeout(state.finalizeTimer);stopRecognition();const elapsed=state.clockStarted?Math.max(1,(Math.min(performance.now(),state.endTime)-state.startTime)/1000):1,cpm=Math.round(state.correctChars/(elapsed/60)),acc=cumulativeAccuracy();$('#finalScore').textContent=state.score;$('#finalCpm').textContent=cpm;$('#accuracy').textContent=acc===null?'—':acc+'%';$('#answered').textContent=state.answered;$('#maxCombo').textContent=state.maxCombo;$('#rankText').textContent=quit?'途中終了のため参考記録です。':state.answered?`${state.answered}問を採点しました。`:'まだ回答がありません。';const rec={score:state.score,cpm,acc:acc??0,answered:state.answered,max:state.maxCombo,at:Date.now()};if(!quit&&state.answered&&state.ranked){const k=key(),arr=load(k);arr.push(rec);arr.sort((a,b)=>b.score-a.score||b.acc-a.acc);localStorage.setItem(k,JSON.stringify(arr.slice(0,10)))}renderBoard();screen('result')}
-function key(){return`koeda:v12:${state.difficulty}:${state.duration}`}
-function load(k){try{const a=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
-function renderBoard(){const a=load(key());$('#board').innerHTML=a.length?a.map(r=>`<li><strong>${r.score.toLocaleString()}点</strong>　${r.cpm}文字/分・${r.acc}%・${r.answered}問 <small>${new Date(r.at).toLocaleDateString('ja-JP')}</small></li>`).join(''):'<li>まだ記録がありません</li>'}
-$('#dur').onclick=e=>{const b=e.target.closest('button');if(b){state.duration=+b.dataset.v;press('dur',state.duration)}};$('#diff').onclick=e=>{const b=e.target.closest('button');if(b){state.difficulty=b.dataset.v;press('diff',state.difficulty)}};$('#start').onclick=startGame;$('#mic').onclick=()=>state.listening?submitAnswer():startListening();$('#reset-input').onclick=resetInput;$('#quit').onclick=()=>finish(true);$('#again').onclick=startGame;$('#homeBtn').onclick=()=>screen('home');$('#copy').onclick=async()=>{const t=`声打で${$('#finalScore').textContent}点！ ${$('#finalCpm').textContent}文字/分・正確率${$('#accuracy').textContent} #声打`;try{await navigator.clipboard.writeText(t);toast('結果をコピーしました')}catch{toast(t)}};$('#sound').onclick=()=>{state.sound=!state.sound;$('#sound').textContent=`効果音 ${state.sound?'ON':'OFF'}`;beep()};document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.running){state.ranked=false;if(state.listening)resetInput()}});window.addEventListener('beforeunload',stopRecognition);if(!(window.SpeechRecognition||window.webkitSpeechRecognition)){const s=$('#support');s.textContent='このブラウザは音声認識に対応していません。Chrome系ブラウザでHTTPSまたはlocalhostから開いてください。';$('#start').disabled=true}
-window.__KOEDA_TEST__={PROMPTS,PROMPT_TARGETS,toHiragana,compareReadings,bestCandidate,state,startGame,completeSubmission,resetInput,finish};
+
+const state={
+  duration:60,difficulty:'normal',running:false,starting:false,clockStarted:false,
+  listening:false,submitting:false,reviewing:false,score:0,combo:0,maxCombo:0,
+  answered:0,correctUnits:0,totalUnits:0,correctChars:0,index:0,deck:[],
+  startTime:0,endTime:0,pausedMs:0,reviewStarted:0,finishAfterReview:false,
+  rec:null,recToken:0,candidates:[''],interim:'',sound:false,ranked:true,
+  raf:0,finalizeTimer:0,reviewTimer:0,permissionGranted:false
+};
+
+function cleanSurface(value){
+  return String(value||'').normalize('NFKC').toLowerCase().replace(/[\s、。,.!！?？「」『』・~〜]/g,'');
+}
+function katakanaToHiragana(value){
+  return String(value).replace(/[ァ-ヶ]/g,char=>String.fromCharCode(char.charCodeAt(0)-96));
+}
+function longVowelFor(char){
+  const groups=[
+    ['あ','ぁあかがさざただなはばぱまゃやらゎわ'],
+    ['い','ぃいきぎしじちぢにひびぴみりゐ'],
+    ['う','ぅうくぐすずつづぬふぶぷむゅゆるゔ'],
+    ['え','ぇえけげせぜてでねへべぺめれゑ'],
+    ['お','ぉおこごそぞとどのほぼぽもょよろを']
+  ];
+  return groups.find(([,chars])=>chars.includes(char))?.[0]||'';
+}
+function normalizeKana(value){
+  const source=katakanaToHiragana(cleanSurface(value));
+  let output='';
+  for(const char of source){
+    if(char==='ー'){
+      output+=longVowelFor([...output].at(-1));
+    }else{
+      output+=char;
+    }
+  }
+  return output;
+}
+function numberReading(input){
+  const number=Number(input);
+  if(!Number.isFinite(number)||number<0||number>99999)return String(input);
+  if(number===0)return'ぜろ';
+  const digits=['','いち','に','さん','よん','ご','ろく','なな','はち','きゅう'];
+  const small=value=>{
+    let result='';
+    const thousands=Math.floor(value/1000);
+    const hundreds=Math.floor(value%1000/100);
+    const tens=Math.floor(value%100/10);
+    const ones=value%10;
+    if(thousands)result+=(thousands===1?'':digits[thousands])+'せん';
+    if(hundreds)result+=(hundreds===1?'':digits[hundreds])+'ひゃく';
+    if(tens)result+=(tens===1?'':digits[tens])+'じゅう';
+    if(ones)result+=digits[ones];
+    return result;
+  };
+  const tenThousands=Math.floor(number/10000);
+  const remainder=number%10000;
+  return(tenThousands?digits[tenThousands]+'まん':'')+small(remainder);
+}
+function toHiragana(input){
+  const source=katakanaToHiragana(cleanSurface(input).replace(/\d+/g,match=>numberReading(match)));
+  let output='';
+  for(let index=0;index<source.length;){
+    let hit='';
+    for(const key of READING_KEYS){
+      if(key&&source.startsWith(key,index)){hit=key;break;}
+    }
+    if(hit){
+      output+=READING_MAP.get(hit);
+      index+=hit.length;
+    }else{
+      output+=source[index];
+      index++;
+    }
+  }
+  return normalizeKana(output);
+}
+function isHiragana(char){return /^[ぁ-ゖゔ]$/u.test(char);}
+function kanaCount(value){return [...toHiragana(value)].filter(isHiragana).length;}
+
+function alignReadings(answerInput,targetInput){
+  const answer=[...toHiragana(answerInput)];
+  const target=[...toHiragana(targetInput)];
+  const rows=target.length+1,columns=answer.length+1;
+  const table=Array.from({length:rows},()=>Array(columns).fill(0));
+  for(let row=0;row<rows;row++)table[row][0]=row;
+  for(let column=0;column<columns;column++)table[0][column]=column;
+  for(let row=1;row<rows;row++){
+    for(let column=1;column<columns;column++){
+      table[row][column]=Math.min(
+        table[row-1][column]+1,
+        table[row][column-1]+1,
+        table[row-1][column-1]+(target[row-1]===answer[column-1]?0:1)
+      );
+    }
+  }
+  const operations=[];
+  let row=target.length,column=answer.length;
+  while(row>0||column>0){
+    const targetChar=row>0?target[row-1]:'';
+    const answerChar=column>0?answer[column-1]:'';
+    if(row>0&&column>0&&targetChar===answerChar&&table[row][column]===table[row-1][column-1]){
+      operations.push({type:'match',target:targetChar,answer:answerChar});row--;column--;continue;
+    }
+    if(row>0&&column>0&&table[row][column]===table[row-1][column-1]+1){
+      operations.push({type:'replace',target:targetChar,answer:answerChar});row--;column--;continue;
+    }
+    if(row>0&&table[row][column]===table[row-1][column]+1){
+      operations.push({type:'missing',target:targetChar,answer:''});row--;continue;
+    }
+    operations.push({type:'extra',target:'',answer:answerChar});column--;
+  }
+  operations.reverse();
+  return{answer:answer.join(''),target:target.join(''),operations,distance:table[target.length][answer.length]};
+}
+function compareReadings(answer,target){
+  const aligned=alignReadings(answer,target);
+  const correct=aligned.operations.filter(operation=>operation.type==='match').length;
+  const total=Math.max(aligned.operations.length,1);
+  const matchedKana=aligned.operations.filter(operation=>operation.type==='match'&&isHiragana(operation.target)).length;
+  return{...aligned,total,correct,errors:total-correct,matchedKana,ratio:correct/total};
+}
+function bestCandidate(candidates,target){
+  let best={text:'',...compareReadings('',target)};
+  for(const text of [...new Set(candidates.map(value=>String(value||'').trim()))]){
+    const candidate={text,...compareReadings(text,target)};
+    if(
+      candidate.ratio>best.ratio||
+      (candidate.ratio===best.ratio&&candidate.errors<best.errors)||
+      (candidate.ratio===best.ratio&&candidate.errors===best.errors&&candidate.correct>best.correct)
+    )best=candidate;
+  }
+  return best;
+}
+
+function shuffle(values){
+  const result=[...values];
+  for(let index=result.length-1;index;index--){
+    const swap=Math.floor(Math.random()*(index+1));
+    [result[index],result[swap]]=[result[swap],result[index]];
+  }
+  return result;
+}
+function press(group,value){
+  $$(`#${group} button`).forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.v==value)));
+}
+function screen(id){
+  ['home','game','result'].forEach(name=>$('#'+name).hidden=name!==id);
+  document.body.classList.toggle('playing',id==='game');
+  if(id!=='game')document.body.classList.remove('reviewing');
+  scrollTo({top:0,behavior:'auto'});
+}
+function toast(message){
+  $('#toast').textContent=message;
+  $('#toast').hidden=false;
+  clearTimeout(toast.timer);
+  toast.timer=setTimeout(()=>$('#toast').hidden=true,2200);
+}
+function beep(frequency=620){
+  if(!state.sound)return;
+  try{
+    const Audio=window.AudioContext||window.webkitAudioContext;
+    const audio=new Audio(),oscillator=audio.createOscillator(),gain=audio.createGain();
+    oscillator.frequency.value=frequency;
+    gain.gain.setValueAtTime(.045,audio.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.001,audio.currentTime+.12);
+    oscillator.connect(gain).connect(audio.destination);
+    oscillator.start();oscillator.stop(audio.currentTime+.13);
+  }catch{}
+}
+function current(){return state.deck[state.index%state.deck.length];}
+function cumulativeAccuracy(){return state.totalUnits?Math.round(100*state.correctUnits/state.totalUnits):null;}
+function effectiveElapsedMs(now=performance.now()){
+  if(!state.clockStarted)return 0;
+  const endpoint=state.reviewing?state.reviewStarted:now;
+  return Math.max(0,Math.min(state.duration*1000,endpoint-state.startTime-state.pausedMs));
+}
+
+function setMic(kind){
+  const button=$('#mic');
+  button.dataset.state=kind;
+  button.disabled=kind==='submitting'||kind==='reviewing';
+  if(kind==='listening')button.innerHTML='■ 回答を確定<span>話し終わったら押してください</span>';
+  else if(kind==='submitting')button.innerHTML='採点中…<span>音声を確定しています</span>';
+  else if(kind==='reviewing')button.innerHTML='結果を確認中<span>時間は止まっています</span>';
+  else button.innerHTML='🎙 マイクを再開<span>聞き取りが止まったときに押してください</span>';
+}
+function showPrompt(){
+  const prompt=current();
+  state.candidates=[''];state.interim='';
+  $('#number').textContent=`お題 ${String(state.index+1).padStart(2,'0')} / ${state.deck.length}`;
+  $('#reading').textContent=prompt.reading;
+  const phrase=$('#phrase');
+  phrase.textContent=prompt.text;
+  const length=kanaCount(prompt.reading);
+  phrase.className='phrase '+(length>48?'very-long':length>30?'long':'short');
+  $('#heard').textContent='マイクを準備しています…';
+  $('#feedback').textContent='';
+  $('#answer-review').hidden=true;
+  document.body.classList.remove('reviewing');
+  setMic('idle');
+}
+function appendDiff(container,operations,side){
+  container.replaceChildren();
+  for(const operation of operations){
+    const span=document.createElement('span');
+    const value=operation[side];
+    if(operation.type==='match')span.className='diff-ok';
+    else if(operation.type==='replace')span.className='diff-miss';
+    else if(operation.type==='missing')span.className=side==='target'?'diff-missing':'diff-gap';
+    else span.className=side==='answer'?'diff-extra':'diff-gap';
+    span.textContent=value||'□';
+    container.append(span);
+  }
+}
+function showReview(best,gained){
+  const accuracy=Math.round(best.ratio*100);
+  $('#review-accuracy').textContent=`正確率 ${accuracy}%`;
+  $('#review-score').textContent=`+${gained}点`;
+  $('#review-summary').textContent=best.errors?`ミス ${best.errors}ひらがな　赤＝言い違い・黄＝抜け／余分`:'ミスなし・完全一致';
+  appendDiff($('#diff-target'),best.operations,'target');
+  appendDiff($('#diff-answer'),best.operations,'answer');
+  $('#answer-review').hidden=false;
+  document.body.classList.add('reviewing');
+  $('#feedback').textContent=`この回答は正確率${accuracy}%、${gained}点です。`;
+}
+
+function stopRecognition(){
+  state.recToken++;
+  if(state.rec){
+    state.rec.onend=null;
+    try{state.rec.stop();}catch{}
+    state.rec=null;
+  }
+}
+function newRecognition(){
+  const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!Recognition)throw Error('このブラウザは音声認識に対応していません');
+  const token=++state.recToken,recognition=new Recognition();
+  state.rec=recognition;
+  recognition.lang='ja-JP';
+  recognition.continuous=true;
+  recognition.interimResults=true;
+  recognition.maxAlternatives=5;
+  recognition.onresult=event=>{
+    if(token!==state.recToken||!state.listening)return;
+    for(let index=event.resultIndex;index<event.results.length;index++){
+      const result=event.results[index],alternatives=[];
+      for(let alternative=0;alternative<Math.min(5,result.length);alternative++)alternatives.push(result[alternative]?.transcript||'');
+      if(result.isFinal){
+        const previous=state.candidates;
+        state.candidates=Array.from({length:5},(_,alternative)=>(previous[alternative]||previous[0]||'')+(alternatives[alternative]||alternatives[0]||''));
+        state.interim='';
+      }else state.interim=alternatives[0]||'';
+    }
+    $('#heard').textContent=((state.candidates[0]||'')+state.interim).trim()||'聞き取り中…';
+  };
+  recognition.onerror=event=>{
+    if(token!==state.recToken||['no-speech','aborted'].includes(event.error))return;
+    state.ranked=false;
+    toast(event.error==='not-allowed'?'マイクが許可されていません':'音声認識エラー');
+  };
+  recognition.onend=()=>{
+    if(token!==state.recToken)return;
+    state.rec=null;
+    if(state.submitting)return completeSubmission();
+    if(state.listening&&state.running&&!state.reviewing){
+      setTimeout(()=>{
+        if(state.listening&&state.running&&!state.reviewing){
+          try{newRecognition().start();}catch{}
+        }
+      },100);
+    }
+  };
+  return recognition;
+}
+async function requestMicPermission(){
+  if(!navigator.mediaDevices?.getUserMedia)throw Error('この環境ではマイクを利用できません');
+  const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+  stream.getTracks().forEach(track=>track.stop());
+  state.permissionGranted=true;
+}
+function startClock(){
+  state.clockStarted=true;
+  state.startTime=performance.now();
+  state.endTime=state.startTime+state.duration*1000;
+  state.pausedMs=0;
+  cancelAnimationFrame(state.raf);
+  state.raf=requestAnimationFrame(update);
+}
+function startListening(){
+  if(!state.running||state.listening||state.submitting||state.reviewing)return;
+  state.candidates=[''];state.interim='';state.listening=true;
+  setMic('listening');
+  $('#heard').textContent='聞き取り中…';
+  $('#status').textContent='● マイク ON';
+  try{newRecognition().start();}
+  catch(error){
+    state.listening=false;setMic('idle');$('#status').textContent='マイク停止';
+    toast(error.message||'音声認識を開始できません');
+  }
+}
+function beginPrompt(){
+  showPrompt();
+  requestAnimationFrame(()=>{
+    if(state.running&&!state.reviewing)startListening();
+  });
+}
+function submitAnswer(){
+  if(!state.running||!state.listening||state.submitting||state.reviewing)return;
+  state.listening=false;state.submitting=true;setMic('submitting');$('#status').textContent='採点中';
+  if(state.interim){state.candidates[0]=(state.candidates[0]||'')+state.interim;state.interim='';}
+  const recognition=state.rec;
+  if(recognition){
+    recognition.onend=()=>{state.rec=null;completeSubmission();};
+    try{recognition.stop();}catch{completeSubmission();}
+    clearTimeout(state.finalizeTimer);
+    state.finalizeTimer=setTimeout(completeSubmission,450);
+  }else completeSubmission();
+}
+function completeSubmission(){
+  if(!state.submitting)return;
+  clearTimeout(state.finalizeTimer);
+  state.submitting=false;
+  stopRecognition();
+  const prompt=current(),best=bestCandidate(state.candidates,prompt.reading);
+  state.totalUnits+=best.total;
+  state.correctUnits+=best.correct;
+  state.correctChars+=best.matchedKana;
+  state.answered++;
+  if(best.ratio>=.9){state.combo++;state.maxCombo=Math.max(state.maxCombo,state.combo);}else state.combo=0;
+  const multiplier=state.combo>=21?2:state.combo>=16?1.75:state.combo>=11?1.5:state.combo>=6?1.25:1;
+  const gained=Math.round(kanaCount(prompt.reading)*10*best.ratio*multiplier);
+  state.score+=gained;
+  $('#heard').textContent=best.text||'（聞き取りなし）';
+  renderStats();
+  beep(best.ratio>=.9?650:280);
+  state.reviewing=true;
+  state.reviewStarted=performance.now();
+  state.finishAfterReview=state.endTime-state.reviewStarted<=0;
+  cancelAnimationFrame(state.raf);
+  $('#status').textContent='結果を確認中・時間停止';
+  setMic('reviewing');
+  showReview(best,gained);
+  clearTimeout(state.reviewTimer);
+  state.reviewTimer=setTimeout(endReview,RESULT_HOLD_MS);
+}
+function endReview(){
+  if(!state.running||!state.reviewing)return;
+  clearTimeout(state.reviewTimer);
+  const held=performance.now()-state.reviewStarted;
+  if(!state.finishAfterReview){
+    state.pausedMs+=held;
+    state.endTime+=held;
+  }
+  state.reviewing=false;
+  document.body.classList.remove('reviewing');
+  $('#answer-review').hidden=true;
+  if(state.finishAfterReview)return finish();
+  state.index++;
+  beginPrompt();
+  state.raf=requestAnimationFrame(update);
+}
+function resetInput(){
+  if(!state.running||!state.listening||state.submitting||state.reviewing)return;
+  state.candidates=[''];state.interim='';
+  $('#heard').textContent='入力を消去しました。続けて話せます';
+  stopRecognition();
+  setTimeout(()=>{
+    if(state.listening&&state.running&&!state.reviewing){
+      try{newRecognition().start();}catch{}
+    }
+  },80);
+  toast('入力だけ消去しました');
+}
+function renderStats(){
+  const elapsedMinutes=Math.max(effectiveElapsedMs()/60000,1/60);
+  $('#score').textContent=state.score;
+  $('#cpm').textContent=state.clockStarted?Math.round(state.correctChars/elapsedMinutes):0;
+  const accuracy=cumulativeAccuracy();
+  $('#liveAccuracy').textContent=accuracy===null?'—':accuracy+'%';
+}
+function update(){
+  if(!state.running||!state.clockStarted||state.reviewing)return;
+  const left=Math.max(0,state.endTime-performance.now());
+  $('#time').textContent=Math.ceil(left/1000);
+  $('#status').textContent=state.listening?'● マイク ON':state.submitting?'採点中':'マイク再開待ち';
+  renderStats();
+  if(left<=0){
+    $('#time').textContent='0';
+    if(state.listening)return submitAnswer();
+    if(!state.submitting)return finish();
+    return;
+  }
+  state.raf=requestAnimationFrame(update);
+}
+async function startGame(){
+  if(state.starting)return;
+  state.starting=true;
+  const controls=[$('#start'),$('#again')];
+  controls.forEach(button=>{if(button)button.disabled=true;});
+  const original=$('#start').textContent;
+  $('#start').textContent='マイクを確認しています…';
+  try{
+    await requestMicPermission();
+  }catch(error){
+    toast(error?.name==='NotAllowedError'?'マイクを許可してください':'マイクを開始できません');
+    $('#support').textContent='ゲーム開始にはマイク許可が必要です。ブラウザのサイト設定からマイクを許可してください。';
+    return;
+  }finally{
+    state.starting=false;
+    controls.forEach(button=>{if(button)button.disabled=false;});
+    $('#start').textContent=original;
+  }
+  stopRecognition();
+  cancelAnimationFrame(state.raf);
+  clearTimeout(state.reviewTimer);
+  Object.assign(state,{
+    running:true,clockStarted:false,listening:false,submitting:false,reviewing:false,
+    score:0,combo:0,maxCombo:0,answered:0,correctUnits:0,totalUnits:0,correctChars:0,
+    index:0,deck:shuffle(PROMPTS[state.difficulty]),startTime:0,endTime:0,pausedMs:0,
+    reviewStarted:0,finishAfterReview:false,candidates:[''],interim:'',ranked:true
+  });
+  document.body.dataset.difficulty=state.difficulty;
+  $('#time').textContent=state.duration;
+  $('#course').textContent=`VOICE / ${state.difficulty.toUpperCase()} / ${state.duration} SEC`;
+  renderStats();
+  screen('game');
+  showPrompt();
+  startClock();
+  startListening();
+}
+function finish(quit=false){
+  if(!state.running)return;
+  state.running=false;state.listening=false;state.submitting=false;state.reviewing=false;
+  cancelAnimationFrame(state.raf);
+  clearTimeout(state.finalizeTimer);clearTimeout(state.reviewTimer);
+  stopRecognition();
+  $('#answer-review').hidden=true;
+  document.body.classList.remove('reviewing');
+  const elapsedSeconds=Math.max(1,effectiveElapsedMs()/1000);
+  const cpm=Math.round(state.correctChars/(elapsedSeconds/60));
+  const accuracy=cumulativeAccuracy();
+  $('#finalScore').textContent=state.score;
+  $('#finalCpm').textContent=cpm;
+  $('#accuracy').textContent=accuracy===null?'—':accuracy+'%';
+  $('#answered').textContent=state.answered;
+  $('#maxCombo').textContent=state.maxCombo;
+  $('#rankText').textContent=quit?'途中終了のため参考記録です。':state.answered?`${state.answered}問を採点しました。`:'まだ回答がありません。';
+  const record={score:state.score,cpm,acc:accuracy??0,answered:state.answered,max:state.maxCombo,at:Date.now()};
+  if(!quit&&state.answered&&state.ranked){
+    const storageKey=key(),records=load(storageKey);
+    records.push(record);
+    records.sort((a,b)=>b.score-a.score||b.acc-a.acc);
+    localStorage.setItem(storageKey,JSON.stringify(records.slice(0,10)));
+  }
+  renderBoard();
+  screen('result');
+}
+function key(){return`koeda:v13:${state.difficulty}:${state.duration}`;}
+function load(storageKey){
+  try{const records=JSON.parse(localStorage.getItem(storageKey)||'[]');return Array.isArray(records)?records:[];}
+  catch{return[];}
+}
+function renderBoard(){
+  const records=load(key());
+  $('#board').innerHTML=records.length?records.map(record=>`<li><strong>${record.score.toLocaleString()}点</strong>　${record.cpm}ひらがな/分・${record.acc}%・${record.answered}問 <small>${new Date(record.at).toLocaleDateString('ja-JP')}</small></li>`).join(''):'<li>まだ記録がありません</li>';
+}
+
+$('#dur').onclick=event=>{const button=event.target.closest('button');if(button){state.duration=+button.dataset.v;press('dur',state.duration);}};
+$('#diff').onclick=event=>{const button=event.target.closest('button');if(button){state.difficulty=button.dataset.v;press('diff',state.difficulty);}};
+$('#start').onclick=startGame;
+$('#mic').onclick=()=>state.listening?submitAnswer():startListening();
+$('#reset-input').onclick=resetInput;
+$('#next-prompt').onclick=endReview;
+$('#quit').onclick=()=>finish(true);
+$('#again').onclick=startGame;
+$('#homeBtn').onclick=()=>screen('home');
+$('#copy').onclick=async()=>{
+  const text=`声打で${$('#finalScore').textContent}点！ ${$('#finalCpm').textContent}ひらがな/分・正確率${$('#accuracy').textContent} #声打`;
+  try{await navigator.clipboard.writeText(text);toast('結果をコピーしました');}catch{toast(text);}
+};
+$('#sound').onclick=()=>{state.sound=!state.sound;$('#sound').textContent=`効果音 ${state.sound?'ON':'OFF'}`;beep();};
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden&&state.running){
+    state.ranked=false;
+    if(state.listening){stopRecognition();$('#status').textContent='画面復帰待ち';}
+  }else if(!document.hidden&&state.running&&state.listening&&!state.reviewing){
+    try{newRecognition().start();}catch{}
+  }
+});
+window.addEventListener('beforeunload',stopRecognition);
+if(!(window.SpeechRecognition||window.webkitSpeechRecognition)){
+  $('#support').textContent='このブラウザは音声認識に対応していません。Chrome系ブラウザでHTTPSまたはlocalhostから開いてください。';
+  $('#start').disabled=true;
+}
+window.__KOEDA_TEST__={
+  PROMPTS,PROMPT_TARGETS,RESULT_HOLD_MS,toHiragana,kanaCount,alignReadings,compareReadings,
+  bestCandidate,state,startGame,startListening,submitAnswer,completeSubmission,endReview,resetInput,finish
+};
 })();
+
 </script>
-</body></html>
+</body>
+</html>
