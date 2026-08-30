@@ -15,7 +15,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Verify the auto-listening kana-scored game
+      - name: Verify the instant auto-listening kana game
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -26,26 +26,45 @@ jobs:
               '<title>声打', 'source-v1.3', 'id="start"', 'id="game"',
               'id="result"', 'id="mic"', 'id="reset-input"',
               'id="answer-review"', 'id="diff-target"', 'id="diff-answer"',
-              'id="next-prompt"', 'function requestMicPermission()',
-              'function beginPrompt()', 'function toHiragana(',
-              'function kanaCount(', 'function alignReadings(',
-              'function compareReadings(',
+              'id="next-prompt"', '前の結果を閉じる',
+              '直前の採点結果は次のお題中も残ります',
+              'function requestMicPermission()', 'function beginPrompt()',
+              'function toHiragana(', 'function kanaCount(',
+              'function alignReadings(', 'function compareReadings(',
               'PROMPT_TARGETS={easy:150,normal:150,hard:120}',
-              'RESULT_HOLD_MS=2600', 'state.correctChars+=best.matchedKana',
-              'maxAlternatives=5', 'body.playing{height:100dvh;overflow:hidden',
+              'state.correctChars+=best.matchedKana', 'maxAlternatives=5',
+              'body.playing{height:100dvh;overflow:hidden',
               'ひらがな/分', 'localStorage'
           ]
           missing = [marker for marker in required if marker not in source]
           if missing:
-              raise SystemExit(f'Missing v1.3 markers: {missing}')
+              raise SystemExit(f'Missing instant-flow markers: {missing}')
 
           forbidden = [
               'id="skip"', 'plateEnd', 'HOMOPHONES', 'キーで練習',
-              'keyboard-form', 'data-mode="keyboard"', 'confirm('
+              'keyboard-form', 'data-mode="keyboard"', 'confirm(',
+              'setTimeout(endReview,RESULT_HOLD_MS)',
+              'body.reviewing .heard,body.reviewing .mic-area'
           ]
           found = [marker for marker in forbidden if marker in source]
           if found:
               raise SystemExit(f'Removed behavior returned: {found}')
+
+          complete = source.split('function completeSubmission(){', 1)[1].split('function endReview(){', 1)[0]
+          for marker in ['showReview(best,gained)', 'state.index++;', 'beginPrompt();']:
+              if marker not in complete:
+                  raise SystemExit(f'Immediate advancement missing: {marker}')
+          for marker in ['state.reviewing=true', 'cancelAnimationFrame(state.raf)', 'state.reviewTimer=setTimeout']:
+              if marker in complete:
+                  raise SystemExit(f'Blocking review behavior returned: {marker}')
+
+          prompt = source.split('function showPrompt(){', 1)[1].split('function appendDiff(', 1)[0]
+          if "$('#answer-review').hidden=true" in prompt:
+              raise SystemExit('Previous result is hidden when the next prompt starts')
+
+          end_review = source.split('function endReview(){', 1)[1].split('function resetInput(){', 1)[0]
+          if "$('#answer-review').hidden=true" not in end_review or 'state.index++' in end_review:
+              raise SystemExit('The result-close button must only close the previous result')
 
           scripts = re.findall(r'<script>([\s\S]*?)</script>', source)
           if len(scripts) != 1 or re.search(r'<script[^>]+src=', source):
@@ -56,6 +75,6 @@ jobs:
               raise SystemExit(f'Source budget exceeded: {size}')
 
           Path('/tmp/koeda-inline.js').write_text(scripts[0], encoding='utf-8')
-          print(f'Koeda v1.3 markers OK; {size} bytes')
+          print(f'Instant next-question flow OK; {size} bytes')
           PY
           node --check /tmp/koeda-inline.js
