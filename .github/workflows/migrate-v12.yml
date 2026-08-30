@@ -31,10 +31,8 @@ jobs:
           if actual != expected:
               raise SystemExit(f'payload checksum mismatch: {actual}')
           files = json.loads(gzip.decompress(base64.b64decode(payload)))
-          for name, encoded in files.items():
-              path = Path(name)
-              path.parent.mkdir(parents=True, exist_ok=True)
-              path.write_bytes(base64.b64decode(encoded))
+          for name in ('index.html', 'README.md'):
+              Path(name).write_bytes(base64.b64decode(files[name]))
           PY
           python3 - <<'PY'
           from pathlib import Path
@@ -54,9 +52,9 @@ jobs:
           Path('/tmp/koeda-inline.js').write_text(scripts[0], encoding='utf-8')
           PY
           node --check /tmp/koeda-inline.js
-          rm -rf .github/koeda-v12 .github/workflows/migrate-v12.yml
+          rm -rf .github/koeda-v12
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
+          git add index.html README.md .github/koeda-v12
           git commit -m 'feat: score spoken answers by kana reading'
           git push
