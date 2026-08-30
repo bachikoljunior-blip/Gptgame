@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   verify:
@@ -15,16 +15,6 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Apply the requested voice-only upgrade once
-        id: migrate
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          if grep -Fq 'id="reset-input"' index.html; then
-            echo 'changed=false' >> "$GITHUB_OUTPUT"
-          else
-            python3 .github/patch_v11.py
-            echo 'changed=true' >> "$GITHUB_OUTPUT"
-          fi
       - name: Verify the self-contained voice game
         run: |
           python3 - <<'PY'
@@ -36,13 +26,16 @@ jobs:
               '<title>声打', 'id="start"', 'id="game"', 'id="result"',
               'id="reset-input"', 'SpeechRecognition', 'localStorage',
               'HOMOPHONES', '同音の表記ゆれも正解',
-              'meta name="app-revision"', 'source-v1.1'
+              'meta name="app-revision"', 'source-v1.1',
+              'function resetInput()', 'function variants(p)'
           ]
           missing = [item for item in required if item not in source]
           if missing:
               raise SystemExit(f'Missing required markers: {missing}')
+
           if not re.search(r'maxAlternatives\s*=\s*5', source):
               raise SystemExit('Speech recognition must expose five alternatives')
+
           forbidden = [
               'data-mode="keyboard"', 'data-input="keyboard"', 'キーで練習',
               'keyboard-form', 'class="keyboard"', 'state.mode', "$('#form')", "$('#input')"
@@ -50,6 +43,20 @@ jobs:
           found = [item for item in forbidden if item in source]
           if found:
               raise SystemExit(f'Removed keyboard mode returned: {found}')
+
+          reset = re.search(r'function resetInput\(\)\{([\s\S]*?)\}\nfunction startRec', source)
+          if not reset:
+              raise SystemExit('Could not isolate resetInput implementation')
+          reset_body = reset.group(1)
+          reset_required = ['stopRec()', "state.buffer=''", 'startRec()']
+          reset_missing = [item for item in reset_required if item not in reset_body]
+          if reset_missing:
+              raise SystemExit(f'Reset no longer restarts clean recognition: {reset_missing}')
+          reset_forbidden = ['state.score=', 'state.combo=', 'state.index=', 'state.plateEnd=', 'state.end=']
+          reset_damage = [item for item in reset_forbidden if item in reset_body]
+          if reset_damage:
+              raise SystemExit(f'Reset changed protected game state: {reset_damage}')
+
           scripts = re.findall(r'<script>([\s\S]*?)</script>', source)
           if len(scripts) != 1 or re.search(r'<script[^>]+src=', source):
               raise SystemExit('Expected exactly one inline script and no external script')
@@ -60,11 +67,3 @@ jobs:
           print(f'Voice-only HTML markers OK; {size} bytes')
           PY
           node --check /tmp/koeda-inline.js
-      - name: Commit the migrated game
-        if: steps.migrate.outputs.changed == 'true'
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html
-          git commit -m 'feat: support homophones and input reset'
-          git push
